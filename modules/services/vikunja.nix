@@ -26,8 +26,8 @@
         auth.openid = {
           enabled = true;
           providers.ivyid = {
-            name = "ivyid";
-            authurl = "https://id.ivy.rs";
+            name = "houseplantsID";
+            authurl = "https://id.houseplants.cloud";
             clientid = "9a681736-b7ce-4b16-ac94-22276d57657c";
             scope = "openid profile email";
           };

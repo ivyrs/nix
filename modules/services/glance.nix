@@ -71,17 +71,17 @@
                     title = "Services";
                     sites = [
                       {
-                        title = "Syncthing";
+                        title = "syncthing";
                         url = "http://elm.ocelot-perch.ts.net:8384";
                         icon = "https://cdn.jsdelivr.net/gh/selfhst/icons@main/png/syncthing.png";
                       }
                       {
-                        title = "Miniflux";
+                        title = "miniflux";
                         url = "http://elm.ocelot-perch.ts.net:3000";
                         icon = "https://cdn.jsdelivr.net/gh/selfhst/icons@main/png/miniflux.png";
                       }
                       {
-                        title = "htodo";
+                        title = "hTodo";
                         url = "https://todo.houseplants.cloud";
                         icon = "https://cdn.jsdelivr.net/gh/selfhst/icons@main/png/vikunja.png";
                       }
@@ -91,8 +91,8 @@
                         icon = "https://cdn.jsdelivr.net/gh/selfhst/icons@main/png/vaultwarden.png";
                       }
                       {
-                        title = "ivyid";
-                        url = "https://id.ivy.rs";
+                        title = "houseplantsID";
+                        url = "https://id.houseplants.cloud";
                         icon = "/assets/ivyid-logo.png";
                       }
                     ];
