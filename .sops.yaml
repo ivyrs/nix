@@ -1,0 +1,12 @@
+keys:
+  - &admin_ivy age1s3alvzg7mflyl6jrhdmke6l3qeczmsktsw5utuxhvr9x4xh20peqy6vt2w
+  - &host_aspen age1xwqwdp305u38ytak4rc7erj005r979u9q875g6n2jqsgx4y4gcmsvdk0h6
+  - &host_elm age13td2yjnfrcxydg4c2tk43muxxdsgzxmsyns0ygv892vp0p9grveqcvuut3
+
+creation_rules:
+  - path_regex: secrets/.*\.yaml$
+    key_groups:
+      - age:
+          - *admin_ivy
+          - *host_aspen
+          - *host_elm

@@ -1,0 +1,4 @@
+- [x] setup syncthing on aspen
+- [x] setup sops
+- [x] make home manager multi file
+- [ ] convert miniflux to nix

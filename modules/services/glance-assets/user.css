@@ -1,0 +1,13 @@
+:root {
+    --color-widget-background: #181825;
+}
+.mobile-navigation,
+.footer {
+    display: none;
+}
+
+*,
+.uppercase,
+.widget-group-title {
+    text-transform: lowercase;
+}
