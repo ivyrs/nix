@@ -3,7 +3,7 @@
     services.pocket-id = {
       enable = true;
       settings = {
-        APP_URL = "https://id.ivy.rs";
+        APP_URL = "https://id.houseplants.cloud";
         TRUST_PROXY = true;
       };
       credentials.ENCRYPTION_KEY = config.sops.secrets.pocket-id-encryption-key.path;
