@@ -1,8 +1,11 @@
+{ inputs, config, ... }:
 {
-  flake.modules.homeManager.aspen = {
-    home.username = "ivy";
-    home.homeDirectory = "/Users/ivy";
-    home.stateVersion = "25.11";   # set once, don't bump casually
+  den.aspects.aspen.provides.to-users.homeManager = {
+    imports = [
+      inputs.nvf.homeManagerModules.default
+      config.flake.modules.homeManager.base
+      config.flake.modules.homeManager.syncthing
+    ];
 
     gui.enable = true;
   };

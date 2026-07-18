@@ -10,6 +10,8 @@
 
     import-tree.url = "github:vic/import-tree";
 
+    den.url = "github:denful/den";
+
     nix-darwin.url = "github:nix-darwin/nix-darwin/master";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
 

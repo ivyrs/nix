@@ -3,11 +3,13 @@
 Guidance for AI agents working in this repo. See `README.md` first for the
 overall layout.
 
-## The dendritic pattern — how modules work here
+## Den — how this flake is wired
 
-Every `.nix` file under `modules/` and `hosts/` is auto-imported by
-`import-tree` (wired in `flake.nix`). A file doesn't do anything on its own;
-it registers a value under `flake.modules.<class>.<name>`, e.g.:
+This flake is built on [Den](https://github.com/denful/den) (`inputs.den`,
+imported in `modules/den.nix`). Every `.nix` file under `modules/` and
+`hosts/` is still auto-imported by `import-tree` (wired in `flake.nix`), and
+files register reusable feature modules under `flake.modules.<class>.<name>`,
+e.g.:
 
 ```nix
 {
@@ -15,19 +17,47 @@ it registers a value under `flake.modules.<class>.<name>`, e.g.:
 }
 ```
 
-`<class>` is one of `nixos`, `darwin`, `homeManager`. Other files pull these
-in by reference — `config.flake.modules.nixos.syncthing` — usually inside a
-host's `default.nix`. `modules/configurations.nix` is the only place that
-turns `flake.modules.*` into real `darwinConfigurations` / `nixosConfigurations`.
+`<class>` is one of `nixos`, `darwin`, `homeManager`. That part is unchanged
+from before Den. What Den replaced is the layer above it:
+
+- **`den.hosts.<system>.<name>`** (in `modules/den.nix`) declares each
+  machine and its users. Den turns these into real `darwinConfigurations.*` /
+  `nixosConfigurations.*` outputs — there is no more hand-written
+  `modules/configurations.nix` assembling them.
+- **`den.aspects.<name>`** is a feature as a function of context
+  (`{ host, user }`), holding config for every Nix class it touches at once.
+  `hosts/aspen/default.nix` and `hosts/elm/default.nix` each define the host
+  aspect's `darwin`/`nixos` owned config; `hosts/aspen/home.nix` and
+  `hosts/elm/home.nix` define that host's `provides.to-users.homeManager`
+  (delivered to every user on the host — currently just `ivy`).
+  `modules/den.nix` defines the shared `ivy` user aspect, which only wires
+  `den.batteries.define-user` and `den.batteries.primary-user` (OS user
+  creation, primary-user groups/`system.primaryUser`) — genuinely
+  cross-host, cross-platform content.
 
 Implications for edits:
-- **Adding a reusable module**: create a new file anywhere under `modules/`
-  (or a host's own directory if it's genuinely host-specific), give it a
-  `flake.modules.<class>.<name>` attribute. No need to touch `flake.nix` or
-  any import list — it's picked up automatically by path glob, not by name,
-  so name it for what it configures, not where it lives.
-- **Using a module**: reference it via `config.flake.modules.<class>.<name>`
-  in the importing file's `imports`, don't copy its contents.
+- **Adding a reusable module**: same as before — create a new file under
+  `modules/`, give it a `flake.modules.<class>.<name>` attribute, picked up
+  automatically.
+- **Using a module inside a host aspect**: reference it via
+  `config.flake.modules.<class>.<name>` in the aspect's owned-config
+  `imports`, same pattern as before Den.
+- **Third-party OS modules** (sops-nix, nix-homebrew, home-manager itself)
+  are imported directly into a host aspect's owned-config `imports`, e.g.
+  `inputs.sops-nix.darwinModules.sops` in `hosts/aspen/default.nix`. Only
+  `home-manager`'s own OS module is handled by Den automatically (because
+  `ivy` has `homeManager` in its classes); Den forwards
+  `den.aspects.<host>.provides.to-users.homeManager` into
+  `home-manager.users.ivy` for you.
+- **Module-arg gotcha**: functions nested inside an aspect's owned config
+  (e.g. the `({ pkgs, ... }: { ... })` blocks in `hosts/*/default.nix`) are
+  evaluated by the underlying `darwinSystem`/`nixosSystem` call, which does
+  **not** get `inputs`/`den`/`config` as specialArgs the way the outer
+  aspect-definition file does. Reference `inputs`/`config` from the
+  **outer** file-level function's arguments via lexical closure — don't
+  re-request them as a parameter on the nested function, it'll error with
+  `attribute 'inputs' missing` (or `'self' missing` — use `inputs.self`,
+  not bare `self`).
 - **Don't** build a manual `imports = [ ./foo.nix ./bar.nix ]` list anywhere
   under `modules/`/`hosts/` — that defeats the point of import-tree.
 
@@ -37,7 +67,7 @@ Implications for edits:
 meant for one will generally not evaluate on the other (e.g. `system.defaults`
 is darwin-only, `boot.loader` is NixOS-only). When adding something intended
 to be shared across both, check it's platform-neutral before wiring it into
-both hosts' `default.nix`.
+both hosts' aspect definitions.
 
 ## Guardrails already left in the code — read before touching
 
@@ -45,13 +75,12 @@ both hosts' `default.nix`.
   `nixos-generate-config`; never hand-edit it.
 - `hosts/elm/default.nix`: `system.stateVersion` has a "don't fuck with this"
   comment — leave it alone even during unrelated refactors.
-- `hosts/aspen/home.nix`: `home.stateVersion` is "set once, don't bump
-  casually" — same rule.
-- Comments flagged `verify this` / `confirm this` (e.g. the `elm` system
-  string in `flake.nix`, `system = "x86_64-linux"` in
-  `modules/configurations.nix`) mark values the user hasn't independently
-  confirmed against the real machine — flag rather than silently trust when
-  reasoning about them.
+- `modules/den.nix`: `den.default.homeManager.home.stateVersion` is "set
+  once, don't bump casually" — same rule, applies to both hosts (hoisted
+  here since it was identical on both).
+- Comments flagged `verify this` / `confirm this` mark values the user
+  hasn't independently confirmed against the real machine — flag rather than
+  silently trust when reasoning about them.
 - `modules/darwin-homebrew.nix`: `cleanup = "zap"` means anything not listed
   in `brews`/`casks` gets uninstalled on activation — adding a cask means
   adding it here, not installing it out-of-band.
@@ -74,4 +103,6 @@ nix flake check
 and, if you have access to the target machine, a real rebuild
 (`nixos-rebuild switch --flake` on elm, `darwin-rebuild switch --flake .#aspen`
 on aspen) — `nix flake check` alone won't catch every activation-time issue
-(e.g. Homebrew/darwin-only assertions).
+(e.g. Homebrew/darwin-only assertions). `darwin-rebuild build --flake .#aspen`
+(build without activating) is a good middle ground when working from aspen
+itself.
