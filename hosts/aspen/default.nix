@@ -35,7 +35,6 @@
             ice-bar
             _1password-gui
             _1password-cli
-            feishin
           ];
 
           programs.zsh.enable = true;
