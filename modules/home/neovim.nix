@@ -1,5 +1,10 @@
+{ inputs, ... }:
 {
   flake.modules.homeManager.base = {
+    # nvf's HM module ships the programs.nvf options themselves, so it lives
+    # here with its config rather than in each host's home.nix.
+    imports = [ inputs.nvf.homeManagerModules.default ];
+
     programs.nvf = {
       enable = true;
       settings = {

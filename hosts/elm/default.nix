@@ -1,13 +1,17 @@
 { config, den, inputs, ... }:
 {
   den.aspects.elm = {
-    includes = [ den.batteries.hostname ];
+    includes = [
+      den.batteries.hostname
+      den.aspects.nix-settings
+    ];
 
     nixos = {
       imports = [
         ./_hardware-configuration.nix
         inputs.sops-nix.nixosModules.sops
         config.flake.modules.nixos.i18n
+        config.flake.modules.nixos.tailscale
         config.flake.modules.nixos.syncthing
         config.flake.modules.nixos.glance
         config.flake.modules.nixos.miniflux
@@ -16,9 +20,6 @@
         config.flake.modules.nixos.vaultwarden
         config.flake.modules.nixos.sops
         ({ pkgs, ... }: {
-          # nix settings
-          nix.settings.experimental-features = [ "nix-command" "flakes" ];
-
           # Bootloader.
           boot.loader.systemd-boot.enable = true;
           boot.loader.efi.canTouchEfiVariables = true;
@@ -34,26 +35,15 @@
 
           programs.zsh.enable = true;
 
-          # Allow unfree packages
-          nixpkgs.config.allowUnfree = true;
-
-          # List packages installed in system profile. To search, run:
-          # $ nix search wget
           environment.systemPackages = with pkgs; [
             curl
             just
             git
-            ghostty
+            ghostty # terminfo for SSH sessions from a Ghostty client
             ethtool
           ];
 
           services.openssh.enable = true;
-
-          services.tailscale = {
-            enable = true;
-            useRoutingFeatures = "server";
-            permitCertUid = "caddy";
-          };
 
           networking.firewall.enable = true;
 
