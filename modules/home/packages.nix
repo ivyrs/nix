@@ -1,24 +1,19 @@
 {
   flake.modules.homeManager.base = { pkgs, ... }: {
-    # Extend freely.
+    # Extend freely. Workstation-only tools live in workstation.nix.
     home.packages = with pkgs; [
       ripgrep
       fd
       jq
       bat
       eza
-      claude-code
       duf
       btop
       dust
       procs
       sd
       just
-      sops
-      age
-      ssh-to-age
-      nh
-      gh
+      nh # `just switch` runs `nh os switch` on every host — keep in base
     ];
   };
 

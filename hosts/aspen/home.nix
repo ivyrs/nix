@@ -1,7 +1,10 @@
 { config, den, ... }:
 {
   den.aspects.aspen.provides.to-users = {
-    includes = [ den.aspects.gui ];
+    includes = [
+      den.aspects.gui
+      den.aspects.workstation
+    ];
 
     homeManager = {
       imports = [
