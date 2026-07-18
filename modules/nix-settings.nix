@@ -18,9 +18,10 @@
       nix.settings.experimental-features = [ "nix-command" "flakes" ];
       nixpkgs.config.allowUnfree = true;
 
-      # Weekly GC + store optimisation.
+      # Weekly GC + store optimisation. NixOS takes a systemd calendar
+      # string here, not darwin's launchd interval attrset.
       nix.gc.automatic = true;
-      nix.gc.interval = { Weekday = 0; Hour = 3; Minute = 0; };
+      nix.gc.dates = "Sun 03:00";
       nix.gc.options = "--delete-older-than 30d";
       nix.optimise.automatic = true;
     };
