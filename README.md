@@ -57,7 +57,8 @@ modules/
       _*.nix                 # plain widget functions (underscore = skipped by import-tree)
       assets/                # logo + custom css served by glance
   home/                     # flake.modules.homeManager.base, split by concern
-    core.nix, packages.nix, git.nix, zsh.nix, neovim.nix, ...
+    core.nix, packages.nix, git.nix, neovim.nix, ...
+    shell.nix                # zsh + starship prompt + fzf/zoxide/direnv integrations
     ghostty.nix              # den.aspects.gui.homeManager (GUI-only, aspen)
     workstation.nix          # den.aspects.workstation.homeManager (workstation-only CLI, aspen)
 hosts/
