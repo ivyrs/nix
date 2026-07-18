@@ -40,6 +40,7 @@
             ice-bar
             _1password-gui
             _1password-cli
+            feishin
           ];
 
           system.defaults = {
