@@ -76,15 +76,15 @@
                         icon = "https://cdn.jsdelivr.net/gh/selfhst/icons@main/png/syncthing.png";
                       }
                       {
-                        title = "miniflux";
-                        url = "http://elm.ocelot-perch.ts.net:3000";
+                        title = "RSS";
+                        url = "https://rss.houseplants.cloud";
                         icon = "https://cdn.jsdelivr.net/gh/selfhst/icons@main/png/miniflux.png";
                       }
-                      {
-                        title = "hTodo";
-                        url = "https://todo.houseplants.cloud";
-                        icon = "https://cdn.jsdelivr.net/gh/selfhst/icons@main/png/vikunja.png";
-                      }
+                      # {
+                      #   title = "hTodo";
+                      #   url = "https://todo.houseplants.cloud";
+                      #   icon = "https://cdn.jsdelivr.net/gh/selfhst/icons@main/png/vikunja.png";
+                      # }
                       {
                         title = "vaultwarden";
                         url = "https://vault.houseplants.cloud";
