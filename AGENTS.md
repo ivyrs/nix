@@ -81,7 +81,7 @@ both hosts' aspect definitions.
 - Comments flagged `verify this` / `confirm this` mark values the user
   hasn't independently confirmed against the real machine — flag rather than
   silently trust when reasoning about them.
-- `modules/darwin-homebrew.nix`: `cleanup = "zap"` means anything not listed
+- `modules/darwin/homebrew.nix`: `cleanup = "zap"` means anything not listed
   in `brews`/`casks` gets uninstalled on activation — adding a cask means
   adding it here, not installing it out-of-band.
 - `secrets/secrets.yaml` is sops-encrypted and safe to commit as-is — never
@@ -91,6 +91,20 @@ both hosts' aspect definitions.
   (or `secrets/`) is invisible to `nix eval`/`nix build` until it's at least
   `git add`ed, even uncommitted — a "no matching creation rules found" or
   "attribute ... missing" error after adding a new file usually means this.
+- `modules/services/glance/_*.nix` are underscore-prefixed **on purpose**:
+  import-tree skips them, and they are plain functions/attrsets imported
+  explicitly by `glance/default.nix`, not flake-parts modules. Conversely,
+  any non-underscored `.nix` file under `modules/`/`hosts/` WILL be
+  auto-imported as a flake-parts module and must register via
+  `flake.modules.*`/`den.aspects.*` — don't drop a helper file there without
+  the underscore.
+- Shared constants come from `config.flake.lib.meta` (`modules/meta.nix`).
+  Read it at the **file level** and close over it — inside a nested
+  `({ pkgs, ... }: ...)` block, `config` is the OS/HM config, not the flake's
+  (same class of gotcha as the module-arg one above).
+- `modules/sops.nix`: the darwin `placeholder` secret is a canary, not dead
+  code — sops-nix's darwin module is a no-op with zero secrets, so it keeps
+  host-key decryption exercised on aspen. Don't delete it.
 
 ## Sanity-checking changes
 
