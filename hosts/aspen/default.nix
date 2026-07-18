@@ -9,6 +9,7 @@
         inputs.nix-homebrew.darwinModules.nix-homebrew
         config.flake.modules.darwin.homebrew
         config.flake.modules.darwin.sops
+        config.flake.modules.darwin.aerospace
         ({ pkgs, ... }: {
           nixpkgs.hostPlatform = "aarch64-darwin";
           nixpkgs.config.allowUnfree = true;
