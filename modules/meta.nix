@@ -1,15 +1,9 @@
-# Single source of truth for constants shared across modules (domain, OIDC
-# issuer, SMTP, syncthing IDs). Read it via `config.flake.lib.meta` in the
-# *file-level* module and close over it — never from inside a nested
-# ({ pkgs, ... }: ...) block, where `config` is the OS/HM config instead
-# (same class of gotcha as the `inputs` one in AGENTS.md).
 {
   flake.lib.meta = rec {
     domain = "houseplants.cloud";
     tailnet = "ocelot-perch.ts.net";
     email = "ivy@ivy.rs";
 
-    # pocket-id, the OIDC provider for all services on elm.
     oidcIssuer = "https://id.${domain}";
 
     smtp = {
