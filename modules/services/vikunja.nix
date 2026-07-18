@@ -1,3 +1,7 @@
+{ config, ... }:
+let
+  meta = config.flake.lib.meta;
+in
 {
   flake.modules.nixos.vikunja = { config, ... }: {
     services.postgresql = {
@@ -11,7 +15,7 @@
     services.vikunja = {
       enable = true;
       frontendScheme = "https";
-      frontendHostname = "todo.houseplants.cloud";
+      frontendHostname = "todo.${meta.domain}";
 
       database = {
         type = "postgres";
@@ -27,17 +31,17 @@
           enabled = true;
           providers.ivyid = {
             name = "houseplantsID";
-            authurl = "https://id.houseplants.cloud";
+            authurl = meta.oidcIssuer;
             clientid = "9a681736-b7ce-4b16-ac94-22276d57657c";
             scope = "openid profile email";
           };
         };
         mailer = {
           enabled = true;
-          host = "smtp.fastmail.com";
-          port = 587;
-          username = "ivy@ivy.rs";
-          fromemail = "todo@houseplants.cloud";
+          host = meta.smtp.host;
+          port = meta.smtp.port;
+          username = meta.smtp.username;
+          fromemail = "todo@${meta.domain}";
         };
       };
 

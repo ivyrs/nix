@@ -1,3 +1,7 @@
+{ config, ... }:
+let
+  meta = config.flake.lib.meta;
+in
 {
   flake.modules.nixos.glance = { config, ... }: {
     services.glance = {
@@ -72,27 +76,27 @@
                     sites = [
                       {
                         title = "syncthing";
-                        url = "http://elm.ocelot-perch.ts.net:8384";
+                        url = "http://elm.${meta.tailnet}:8384";
                         icon = "https://cdn.jsdelivr.net/gh/selfhst/icons@main/png/syncthing.png";
                       }
                       {
                         title = "RSS";
-                        url = "https://rss.houseplants.cloud";
+                        url = "https://rss.${meta.domain}";
                         icon = "https://cdn.jsdelivr.net/gh/selfhst/icons@main/png/miniflux.png";
                       }
                       # {
                       #   title = "hTodo";
-                      #   url = "https://todo.houseplants.cloud";
+                      #   url = "https://todo.${meta.domain}";
                       #   icon = "https://cdn.jsdelivr.net/gh/selfhst/icons@main/png/vikunja.png";
                       # }
                       {
                         title = "vaultwarden";
-                        url = "https://vault.houseplants.cloud";
+                        url = "https://vault.${meta.domain}";
                         icon = "https://cdn.jsdelivr.net/gh/selfhst/icons@main/png/vaultwarden.png";
                       }
                       {
                         title = "houseplantsID";
-                        url = "https://id.houseplants.cloud";
+                        url = meta.oidcIssuer;
                         icon = "/assets/ivyid-logo.png";
                       }
                     ];
@@ -106,19 +110,19 @@
                       }
                       {
                         type = "remote";
-                        url = "http://houseplants.ocelot-perch.ts.net:27973";
+                        url = "http://houseplants.${meta.tailnet}:27973";
                         name = "houseplants";
                         token = { _secret = config.sops.secrets.glance-agent-token.path; };
                       }
                       {
                         type = "remote";
-                        url = "http://lovecomputer.ocelot-perch.ts.net:27973";
+                        url = "http://lovecomputer.${meta.tailnet}:27973";
                         name = "lovecomputer";
                         token = { _secret = config.sops.secrets.glance-agent-token.path; };
                       }
                       {
                         type = "remote";
-                        url = "http://fountain.ocelot-perch.ts.net:27973";
+                        url = "http://fountain.${meta.tailnet}:27973";
                         name = "fountain";
                         token = { _secret = config.sops.secrets.glance-agent-token.path; };
                       }

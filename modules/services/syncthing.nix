@@ -1,3 +1,9 @@
+{ config, lib, ... }:
+let
+  st = config.flake.lib.meta.syncthing;
+  # Each machine lists every device except itself; IDs live in modules/meta.nix.
+  deviceSet = names: lib.genAttrs names (name: { id = st.devices.${name}; });
+in
 {
   flake.modules.nixos.syncthing = { config, ... }: {
     networking.firewall.interfaces."tailscale0".allowedTCPPorts = [ 8384 ];
@@ -16,13 +22,9 @@
           address = "0.0.0.0:8384";
           user = "ivy";
         };
-        devices = {
-          aspen = { id = "34BRASD-JF433B5-65QROJF-7WRJZ74-LISAYBR-4ADQBVC-XXX672X-O7IAJA6"; };
-          maple = { id = "5JH2CJ6-GEFOZAI-YTE2HIW-EK2NNHG-4CATBIM-WA4F2ZD-HUFTQIN-QXCBJAI"; };
-          birch = { id = "IGGM65Q-7D3CXXE-WL2DZBQ-JFTAVZH-2IGGI3T-NNSEIOE-Y26ERF2-357RMQM"; };
-        };
+        devices = deviceSet [ "aspen" "maple" "birch" ];
         folders."obsidian" = {
-          id = "obsidian-vault";        # identical ID everywhere
+          id = st.obsidianFolderId;
           path = "/var/lib/syncthing/obsidian";
           devices = [ "aspen" "maple" "birch" ];
           ignorePerms = true;
@@ -43,13 +45,9 @@
       overrideFolders = true;
 
       settings = {
-        devices = {
-          elm   = { id = "TJPGEOG-GD5YAMM-47UEI4V-XTTAS4J-USDHS2B-JLNX4ED-NBEBUPF-WMYMOAC"; };
-          maple = { id = "5JH2CJ6-GEFOZAI-YTE2HIW-EK2NNHG-4CATBIM-WA4F2ZD-HUFTQIN-QXCBJAI"; };
-          birch = { id = "IGGM65Q-7D3CXXE-WL2DZBQ-JFTAVZH-2IGGI3T-NNSEIOE-Y26ERF2-357RMQM"; };
-        };
+        devices = deviceSet [ "elm" "maple" "birch" ];
         folders."obsidian" = {
-          id = "obsidian-vault";        # identical ID everywhere
+          id = st.obsidianFolderId;
           path = "${config.home.homeDirectory}/Documents/obsidian";
           devices = [ "elm" "maple" "birch" ];
           ignorePerms = true;
