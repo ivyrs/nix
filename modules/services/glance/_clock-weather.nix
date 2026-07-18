@@ -16,7 +16,7 @@
             }
             {
               timezone = "America/Chicago";
-              label = "EST";
+              label = "central";
             }
             {
               timezone = "America/New_York";
@@ -24,7 +24,7 @@
             }
             {
               timezone = "Europe/Berlin";
-              label = "Berlin";
+              label = "berlin";
             }
           ];
         }
