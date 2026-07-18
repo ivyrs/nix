@@ -16,11 +16,24 @@ in
         };
       };
 
+      # Global excludes, written to ~/.config/git/ignore (git's default
+      # location, so no core.excludesfile needed). Per-repo concerns like
+      # /result belong in each repo's own .gitignore.
+      ignores = [
+        # macOS
+        ".DS_Store"
+        "._*"
+        # editor droppings
+        "*.swp"
+        "*.swo"
+        "*~"
+        # direnv
+        ".direnv/"
+      ];
+
       settings = {
         user.name = "ivy forever";
         user.email = meta.email;
-
-        core.excludesfile = "~/.gitignore";
         init.defaultBranch = "main";
         column.ui = "auto";
         color.ui = "auto";
