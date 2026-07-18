@@ -18,10 +18,14 @@
           transparent = true;
         };
 
-        # nvf's catppuccin wrapper doesn't expose color_overrides, so re-run
-        # setup ourselves after it (default DAG order puts this after the
-        # entryBefore-tagged theme block) to swap mauve for lavender as the
-        # accent hue.
+        vim.utility.oil-nvim = { # good file manager
+          enable = true;
+        };
+
+        vim.notes.obsidian.enable = true;
+        vim.notes.todo-comments.enable = true;
+
+        # use lavender accents
         vim.luaConfigRC.catppuccin-lavender-accent = ''
           require('catppuccin').setup({
             flavour = "mocha",
