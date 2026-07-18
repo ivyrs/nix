@@ -1,12 +1,14 @@
-{ inputs, config, ... }:
+{ inputs, config, den, ... }:
 {
-  den.aspects.aspen.provides.to-users.homeManager = {
-    imports = [
-      inputs.nvf.homeManagerModules.default
-      config.flake.modules.homeManager.base
-      config.flake.modules.homeManager.syncthing
-    ];
+  den.aspects.aspen.provides.to-users = {
+    includes = [ den.aspects.gui ];
 
-    gui.enable = true;
+    homeManager = {
+      imports = [
+        inputs.nvf.homeManagerModules.default
+        config.flake.modules.homeManager.base
+        config.flake.modules.homeManager.syncthing
+      ];
+    };
   };
 }
