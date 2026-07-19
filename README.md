@@ -42,6 +42,7 @@ secrets/
   secrets.yaml              # encrypted secrets, safe to commit
 modules/
   den.nix                   # den.hosts + den.default + shared `ivy` user aspect
+  home-configurations.nix   # standalone homeConfigurations.* for unmanaged machines
   meta.nix                  # flake.lib.meta — shared constants (domain, OIDC, SMTP, syncthing IDs)
   nix-settings.nix          # den.aspects.nix-settings (nix daemon settings, both classes)
   i18n.nix                  # flake.modules.nixos.i18n
@@ -110,6 +111,20 @@ just switch
 detects the OS and runs `darwin-rebuild` (aspen) or `nixos-rebuild` (elm)
 against `.#$(hostname -s)`. Other recipes: `just check` (`nix flake check`),
 `just update` (`nix flake update`).
+
+### On an unmanaged machine
+
+`modules/home-configurations.nix` exports standalone
+`homeConfigurations."ivy@<system>"` outputs (the `homeManager.base` bundle,
+no OS config) for putting this home environment on machines the flake
+doesn't manage. With nix installed there:
+
+```
+nix run home-manager -- switch --flake github:ivyturner/nix#ivy@x86_64-linux
+```
+
+The local account name must match the entry's username (`ivy`); for a
+different account, add a one-line entry in `home-configurations.nix`.
 
 ## Inputs of note
 
