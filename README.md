@@ -50,7 +50,7 @@ modules/
   darwin/                   # flake.modules.darwin.*, one file per concern
     aerospace.nix, homebrew.nix, system-defaults.nix, fonts.nix, touchid.nix
   services/                 # one file per service, regardless of class
-    tailscale.nix           # flake.modules.nixos.tailscale
+    tailscale.nix           # flake.modules.nixos.tailscale-{client,server}
     miniflux.nix, pocket-id.nix, vikunja.nix, vaultwarden.nix
     syncthing.nix            # flake.modules.nixos.syncthing / flake.modules.homeManager.syncthing
     glance/                 # flake.modules.nixos.glance, split into widget files

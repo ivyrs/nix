@@ -11,7 +11,7 @@
         ./_hardware-configuration.nix
         inputs.sops-nix.nixosModules.sops
         config.flake.modules.nixos.i18n
-        config.flake.modules.nixos.tailscale
+        config.flake.modules.nixos.tailscale-server
         config.flake.modules.nixos.syncthing
         config.flake.modules.nixos.glance
         config.flake.modules.nixos.miniflux
