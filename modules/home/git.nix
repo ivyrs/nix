@@ -4,17 +4,18 @@ let
 in
 {
   flake.modules.homeManager.base = {
+    # Installs delta and sets git's pager + interactive.diffFilter for us.
+    programs.delta = {
+      enable = true;
+      enableGitIntegration = true;
+      options = {
+        navigate = true; # use n and N to move between diff sections
+        dark = true; # or light = true, or omit for auto-detection
+      };
+    };
+
     programs.git = {
       enable = true;
-
-      # Installs delta and sets core.pager + interactive.diffFilter for us.
-      delta = {
-        enable = true;
-        options = {
-          navigate = true; # use n and N to move between diff sections
-          dark = true; # or light = true, or omit for auto-detection
-        };
-      };
 
       # Global excludes, written to ~/.config/git/ignore (git's default
       # location, so no core.excludesfile needed). Per-repo concerns like
