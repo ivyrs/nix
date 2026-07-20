@@ -14,6 +14,7 @@
     sops.secrets.nextcloud-oidc-client-secret.owner = "nextcloud";
     sops.secrets.nextcloud-smtp-password.owner = "nextcloud";
     sops.secrets.nextcloud-harp-shared-key-env = { };
+    sops.secrets.gotosocial-env = { };
   };
 
   flake.modules.darwin.sops = {

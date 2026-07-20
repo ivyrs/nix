@@ -19,6 +19,7 @@
         config.flake.modules.nixos.vikunja
         config.flake.modules.nixos.vaultwarden
         config.flake.modules.nixos.nextcloud
+        config.flake.modules.nixos.gotosocial
         config.flake.modules.nixos.sops
         ({ pkgs, ... }: {
           # Bootloader.
