@@ -26,6 +26,11 @@
       icon = "https://cdn.jsdelivr.net/gh/selfhst/icons@main/png/vaultwarden.png";
     }
     {
+      title = "nextcloud";
+      url = "https://cloud.${meta.domain}";
+      icon = "https://cdn.jsdelivr.net/gh/selfhst/icons@main/png/nextcloud.png";
+    }
+    {
       title = "houseplantsID";
       url = meta.oidcIssuer;
       icon = "/assets/ivyid-logo.png";

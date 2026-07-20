@@ -10,6 +10,10 @@
     sops.secrets.vikunja-env = { };
     sops.secrets.glance-agent-token = { };
     sops.secrets.vaultwarden-env = { };
+    sops.secrets.nextcloud-admin-password.owner = "nextcloud";
+    sops.secrets.nextcloud-oidc-client-secret.owner = "nextcloud";
+    sops.secrets.nextcloud-smtp-password.owner = "nextcloud";
+    sops.secrets.nextcloud-harp-shared-key-env = { };
   };
 
   flake.modules.darwin.sops = {
