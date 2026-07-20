@@ -18,7 +18,9 @@
       "Bash(curl -sL \"https://api.github.com/repos/denful/den/contents/templates\")",
       "Bash(python3 -c \"import json,sys; [print\\(x['name'], x['type']\\) for x in json.load\\(sys.stdin\\)]\")",
       "Bash(curl -sL \"https://api.github.com/repos/denful/den/contents/templates/default/modules\")",
-      "Bash(git commit *)"
+      "Bash(git commit *)",
+      "Bash(timeout 90 nix eval --raw 'github:NixOS/nixpkgs/nixpkgs-unstable#lib.version')",
+      "Bash(nix eval *)"
     ]
   }
 }
