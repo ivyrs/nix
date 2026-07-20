@@ -13,33 +13,35 @@
           inner.vertical = 8;
         };
 
+        default-root-container-orientation = "vertical";
+
         mode.main.binding = {
-          alt-h = "focus left";
-          alt-j = "focus down";
-          alt-k = "focus up";
-          alt-l = "focus right";
+          ctrl-alt-h = "focus left";
+          ctrl-alt-j = "focus down";
+          ctrl-alt-k = "focus up";
+          ctrl-alt-l = "focus right";
 
-          alt-shift-h = "move left";
-          alt-shift-j = "move down";
-          alt-shift-k = "move up";
-          alt-shift-l = "move right";
+          ctrl-alt-shift-h = "move left";
+          ctrl-alt-shift-j = "move down";
+          ctrl-alt-shift-k = "move up";
+          ctrl-alt-shift-l = "move right";
 
-          alt-slash = "layout tiles horizontal vertical";
-          alt-comma = "layout accordion horizontal vertical";
+          ctrl-alt-slash = "layout tiles horizontal vertical";
+          ctrl-alt-comma = "layout accordion horizontal vertical";
 
-          alt-1 = "workspace 1";
-          alt-2 = "workspace 2";
-          alt-3 = "workspace 3";
-          alt-4 = "workspace 4";
-          alt-5 = "workspace 5";
+          ctrl-alt-1 = "workspace 1";
+          ctrl-alt-2 = "workspace 2";
+          ctrl-alt-3 = "workspace 3";
+          ctrl-alt-4 = "workspace 4";
+          ctrl-alt-5 = "workspace 5";
 
-          alt-shift-1 = "move-node-to-workspace 1";
-          alt-shift-2 = "move-node-to-workspace 2";
-          alt-shift-3 = "move-node-to-workspace 3";
-          alt-shift-4 = "move-node-to-workspace 4";
-          alt-shift-5 = "move-node-to-workspace 5";
+          ctrl-alt-shift-1 = "move-node-to-workspace 1";
+          ctrl-alt-shift-2 = "move-node-to-workspace 2";
+          ctrl-alt-shift-3 = "move-node-to-workspace 3";
+          ctrl-alt-shift-4 = "move-node-to-workspace 4";
+          ctrl-alt-shift-5 = "move-node-to-workspace 5";
 
-          alt-shift-semicolon = "mode service";
+          ctrl-alt-shift-semicolon = "mode service";
         };
 
         mode.service.binding = {
