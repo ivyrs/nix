@@ -16,6 +16,13 @@ in
       };
 
       extraApps = { inherit (config.services.nextcloud.package.packages.apps) user_oidc; };
+      # Declaring extraApps makes the module disable the App Store by
+      # default (appstoreEnable defaults to null, which renders as
+      # `appstoreenabled => false` in config.php whenever extraApps is
+      # non-empty) — silently taking down both the regular app store and
+      # AppAPI's ExApp store with it. Force it back on; user_oidc stays
+      # nix-managed regardless since it's only ever installed via extraApps.
+      appstoreEnable = true;
 
       # Recommended by Nextcloud's admin overview: run background jobs at a
       # low-usage hour (UTC) instead of no window at all, and bump the
