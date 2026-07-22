@@ -39,7 +39,7 @@ in {
         security = {
           REVERSE_PROXY_LIMIT = 1;
           # tailnet IP of the external Caddy proxy that fronts the other
-          # houseplants.cloud services (see modules/services/nextcloud.nix)
+          # houseplants.cloud services (see modules/aspects/system/nextcloud.nix)
           REVERSE_PROXY_TRUSTED_PROXIES = "100.64.20.1";
         };
 

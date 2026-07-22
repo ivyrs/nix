@@ -9,7 +9,7 @@
     sops.secrets.ivy-password-hash = {};
     # Shared glance-agent auth token: elm's glance dashboard uses it as a
     # client (see glance/_server-stats.nix) and every host running
-    # flake.modules.nixos.glance-agent uses it as the server, so it's
+    # den.aspects.glance-agent uses it as the server, so it's
     # declared here rather than in sops-elm-services below.
     sops.secrets.glance-agent-token = {};
   };
@@ -37,7 +37,7 @@
     sops.defaultSopsFile = ../secrets/secrets.yaml;
     sops.age.sshKeyPaths = ["/etc/ssh/ssh_host_ed25519_key"];
 
-    # aerc's IMAP/SMTP password (see modules/home/aerc.nix); owned by ivy so
+    # aerc's IMAP/SMTP password (see modules/aspects/home/aerc.nix); owned by ivy so
     # home-manager's passwordCommand can read it without sudo.
     sops.secrets.aerc-fastmail-password.owner = "ivy";
   };
