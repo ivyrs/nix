@@ -15,10 +15,16 @@
         ./_hardware-configuration.nix
         ./_disko.nix
         inputs.disko.nixosModules.disko
+        inputs.sops-nix.nixosModules.sops
         config.flake.modules.nixos.i18n
         config.flake.modules.nixos.tailscale-server
         config.flake.modules.nixos.lovecomputer-caddy
-        ({pkgs, ...}: {
+        config.flake.modules.nixos.sops
+        ({
+          pkgs,
+          config,
+          ...
+        }: {
           # Bootloader.
           boot.loader.systemd-boot.enable = true;
           boot.loader.efi.canTouchEfiVariables = true;
@@ -27,11 +33,15 @@
           # route; IPv6 comes via SLAAC. No static config needed.
           networking.useDHCP = true;
 
-          # Define a user account. Don't forget to set a password with 'passwd'.
+          # Password + SSH key are declarative (see modules/sops.nix); see AGENTS.md/memory for retrieving the password.
           users.users.ivy = {
             description = "ivy";
             packages = [];
             shell = pkgs.zsh;
+            hashedPasswordFile = config.sops.secrets.ivy-password-hash.path;
+            openssh.authorizedKeys.keys = [
+              "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICtFawaAWSklr1GGYiBZzGr/ydKSSOatBfGfY72eqKGZ aspen"
+            ];
           };
 
           programs.zsh.enable = true;
@@ -45,6 +55,7 @@
           services.openssh = {
             enable = true;
             openFirewall = false; # SSH is tailnet-only; see allowedTCPPorts below.
+            settings.PasswordAuthentication = false; # key-only; the declarative password is for console/VNC recovery, not SSH.
           };
 
           networking.firewall.enable = true;

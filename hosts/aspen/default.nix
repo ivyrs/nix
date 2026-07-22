@@ -42,6 +42,11 @@
           ];
 
           programs.zsh.enable = true;
+
+          # Remote Login (SSH). authorized_keys is managed via home-manager
+          # (see hosts/aspen/home.nix) since nix-darwin's users.users module
+          # has no openssh.authorizedKeys option, unlike NixOS's.
+          services.openssh.enable = true;
         })
       ];
     };

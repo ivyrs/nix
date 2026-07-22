@@ -2,6 +2,8 @@ keys:
   - &admin_ivy age1s3alvzg7mflyl6jrhdmke6l3qeczmsktsw5utuxhvr9x4xh20peqy6vt2w
   - &host_aspen age1xwqwdp305u38ytak4rc7erj005r979u9q875g6n2jqsgx4y4gcmsvdk0h6
   - &host_elm age13td2yjnfrcxydg4c2tk43muxxdsgzxmsyns0ygv892vp0p9grveqcvuut3
+  - &host_houseplants age18k38qf03syeg5zsyunzz0llgn9jx9x5r9etlzwkytdst2v9f3g3q0605au
+  - &host_lovecomputer age1ftp8f6adpzes6ud9lpju4f4jnmxlka0qdqgmhh4gtekc9f2kepss3jnw0w
 
 creation_rules:
   - path_regex: secrets/.*\.yaml$
@@ -10,3 +12,5 @@ creation_rules:
           - *admin_ivy
           - *host_aspen
           - *host_elm
+          - *host_houseplants
+          - *host_lovecomputer

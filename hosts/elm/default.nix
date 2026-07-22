@@ -26,18 +26,27 @@
         config.flake.modules.nixos.gotosocial
         config.flake.modules.nixos.forgejo
         config.flake.modules.nixos.sops
-        ({pkgs, ...}: {
+        config.flake.modules.nixos.sops-elm-services
+        ({
+          pkgs,
+          config,
+          ...
+        }: {
           # Bootloader.
           boot.loader.systemd-boot.enable = true;
           boot.loader.efi.canTouchEfiVariables = true;
 
           networking.networkmanager.enable = true;
 
-          # Define a user account. Don't forget to set a password with 'passwd'.
+          # Password + SSH key are declarative (see modules/sops.nix); see AGENTS.md/memory for retrieving the password.
           users.users.ivy = {
             description = "ivy";
             packages = [];
             shell = pkgs.zsh;
+            hashedPasswordFile = config.sops.secrets.ivy-password-hash.path;
+            openssh.authorizedKeys.keys = [
+              "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICtFawaAWSklr1GGYiBZzGr/ydKSSOatBfGfY72eqKGZ aspen"
+            ];
           };
 
           programs.zsh.enable = true;
@@ -50,7 +59,10 @@
             ethtool
           ];
 
-          services.openssh.enable = true;
+          services.openssh = {
+            enable = true;
+            settings.PasswordAuthentication = false; # key-only; the declarative password is for local console recovery, not SSH.
+          };
 
           networking.firewall.enable = true;
 

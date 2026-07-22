@@ -1,8 +1,17 @@
 {
+  # Shared by every NixOS host: file location + the ivy login password.
+  # Per-service secrets live in `sops-elm-services` below since owners like
+  # "forgejo"/"nextcloud" only exist as users on elm.
   flake.modules.nixos.sops = {
     sops.defaultSopsFile = ../secrets/secrets.yaml;
     sops.age.sshKeyPaths = ["/etc/ssh/ssh_host_ed25519_key"];
 
+    sops.secrets.ivy-password-hash = {};
+  };
+
+  # elm-only: secrets for services that only run there (forgejo/nextcloud
+  # owners don't exist as users on houseplants/lovecomputer).
+  flake.modules.nixos.sops-elm-services = {
     sops.secrets.glance-city = {};
     sops.secrets.syncthing-gui-password.owner = "syncthing";
     sops.secrets.miniflux-admin-credentials = {};
