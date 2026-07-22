@@ -9,12 +9,14 @@ Ivy's machine configurations, managed as a single Nix flake.
 | aspen       | aarch64-darwin (nix-darwin + home-manager) | Personal macOS machine |
 | elm         | x86_64-linux (NixOS, nixpkgs-stable)       | Home server behind the tailnet: Syncthing, glance, miniflux, pocket-id, vaultwarden, Nextcloud, GoToSocial, Forgejo (vikunja currently disabled) |
 | houseplants | aarch64-linux (NixOS, Hetzner VPS)         | Public edge: Caddy reverse-proxies each `houseplants.cloud`/`ivy.rs` hostname to the matching service on elm over Tailscale; the only host with ports open to the raw internet |
+| lovecomputer | aarch64-linux (NixOS, Hetzner VPS)        | Second public edge: Caddy serves static sites (`lovecomputer.net`, `ivy.rs`, etc.) |
 
-elm's services sit on bare ports behind the tailnet; houseplants is the only
-thing that terminates real internet traffic (`networking.firewall.allowedTCPPorts
-= [80 443]` in `hosts/houseplants/default.nix`) and proxies in over
-`elm.<tailnet>:<port>` (see `modules/services/caddy.nix`). Every other host
-only opens ports on `tailscale0`.
+elm's services sit on bare ports behind the tailnet; houseplants and
+lovecomputer are the only things that terminate real internet traffic
+(`networking.firewall.allowedTCPPorts = [80 443]`) and proxy in over
+`elm.<tailnet>:<port>` where needed (see `modules/aspects/system/caddy.nix` /
+`lovecomputer-caddy.nix`). Every other host only opens ports on
+`tailscale0`.
 
 ## Layout
 
@@ -23,98 +25,116 @@ aspect-oriented Nix framework. It's a formalization of the "dendritic
 pattern": [`import-tree`](https://github.com/vic/import-tree) recursively
 imports every `.nix` file under `modules/` and `hosts/` (via
 [`flake-parts`](https://github.com/hercules-ci/flake-parts)' `flakeModules.modules`),
-and each file registers itself under a `flake.modules.<class>.<name>`
-namespace — there's no central registry to update, add a file and it's
-picked up. Den sits on top of that with two more layers:
+and each file registers itself either under a `flake.modules.<class>.<name>`
+namespace (plain reusable modules) or a `den.aspects.<name>` namespace
+(features that can span multiple Nix classes, get `includes`d by name, and
+get delivered to hosts/users) — there's no central registry to update, add a
+file and it's picked up. Den sits on top of `import-tree` with two more
+layers:
 
 - **`den.hosts`** — declares each machine and its users
-  (`modules/den.nix`). Den turns these into real `darwinConfigurations.*` /
-  `nixosConfigurations.*` outputs automatically.
+  (`hosts/<host>/default.nix`, per-host). Den turns these into real
+  `darwinConfigurations.*` / `nixosConfigurations.*` outputs automatically.
 - **`den.aspects.<name>`** — a feature as a function of context, holding
   configuration for every Nix class it touches at once (`nixos`, `darwin`,
-  `homeManager`). `hosts/aspen/`, `hosts/elm/`, and `hosts/houseplants/` each
-  define a host aspect (system config) and, via `provides.to-users.homeManager`,
-  the home-manager config delivered to that host's user. `modules/den.nix`
-  defines the shared `ivy` user aspect (just OS user/primary-user wiring,
-  via `den.batteries.*` — see below).
+  `homeManager`). `hosts/aspen/`, `hosts/elm/`, `hosts/houseplants/`, and
+  `hosts/lovecomputer/` each define a host aspect (system config, named to
+  match the host so Den auto-applies it) and, via
+  `provides.to-users.includes`/`provides.to-users.homeManager`, the
+  home-manager config delivered to that host's user.
+  `modules/users/ivy.nix` defines the shared `ivy` user aspect — name-matched
+  to the `ivy` user declared on every host, so it auto-applies everywhere
+  without being listed in any host's `includes`.
 
 ```
 flake.nix                  # inputs + import-tree/flake-parts wiring
 .sops.yaml                  # sops-nix creation rules + age recipients
 secrets/
   secrets.yaml              # encrypted secrets, safe to commit
+packages/
+  glance-agent/              # custom package, exposed via modules/meta/packages.nix
 modules/
-  den.nix                   # den.hosts + den.default + shared `ivy` user aspect
-  home-configurations.nix   # standalone homeConfigurations.* for unmanaged machines
-  meta.nix                  # flake.lib.meta — shared constants (domain, tailnet, OIDC, SMTP, syncthing IDs)
-  formatter.nix             # flake.formatter — alejandra, one per system
-  nix-settings.nix          # den.aspects.nix-settings (nix daemon settings, both classes)
-  i18n.nix                  # flake.modules.nixos.i18n
-  sops.nix                  # flake.modules.nixos.sops / flake.modules.darwin.sops
-  darwin/                   # flake.modules.darwin.*, one file per concern
-    aerospace.nix, homebrew.nix, system-defaults.nix, fonts.nix, touchid.nix
-  services/                 # one file per service, regardless of class
-    tailscale.nix           # flake.modules.nixos.tailscale-{client,server}
-    caddy.nix                # flake.modules.nixos.caddy — the houseplants edge proxy, one virtualHost per public hostname
-    lovecomputer-caddy.nix   # flake.modules.nixos.lovecomputer-caddy — lovecomputer's edge proxy, same shape as caddy.nix
-    miniflux.nix, pocket-id.nix, vikunja.nix, vaultwarden.nix
-    nextcloud.nix, gotosocial.nix, forgejo.nix
-    syncthing.nix            # flake.modules.nixos.syncthing / flake.modules.homeManager.syncthing
-    glance/                 # flake.modules.nixos.glance, split into widget files
-      default.nix            # registration + page assembly
-      _*.nix                 # plain widget functions (underscore = skipped by import-tree)
-      assets/                # logo + custom css served by glance
-  home/                     # flake.modules.homeManager.base, split by concern
-    core.nix, packages.nix, git.nix, neovim.nix, ...
-    shell.nix                # zsh + starship prompt + fzf/zoxide/direnv integrations
-    ghostty.nix              # den.aspects.gui.homeManager (GUI-only, aspen)
-    workstation.nix          # den.aspects.workstation.homeManager (workstation-only CLI, aspen)
+  meta/
+    meta.nix                 # flake.lib.meta — shared constants (domain, tailnet, OIDC, SMTP, syncthing IDs)
+    formatter.nix             # flake.formatter — alejandra, one per system
+    packages.nix              # flake.packages.<system>.* — custom packages from packages/
+    home-configurations.nix   # standalone homeConfigurations.* for unmanaged machines
+  hosts/
+    declarations.nix          # den.default state versions + den.schema.user.classes (cross-host only)
+  users/
+    ivy.nix                   # den.aspects.ivy — shared user wiring + the NixOS account (SSH key, password, shell)
+  sops.nix                    # flake.modules.nixos.sops / flake.modules.darwin.sops
+  aspects/
+    darwin/                   # den.aspects.<name>.darwin, one file per concern
+      aerospace.nix, homebrew.nix, system-defaults.nix, fonts.nix, touchid.nix
+    system/                   # den.aspects.<name>.nixos, one file per service/concern
+      i18n.nix, nix-settings.nix
+      tailscale.nix           # den.aspects.tailscale-{client,server}.nixos
+      caddy.nix                # den.aspects.caddy.nixos — the houseplants edge proxy, one virtualHost per public hostname
+      lovecomputer-caddy.nix   # den.aspects.lovecomputer-caddy.nixos — lovecomputer's edge proxy, same shape as caddy.nix
+      miniflux.nix, pocket-id.nix, vikunja.nix, vaultwarden.nix
+      nextcloud.nix, gotosocial.nix, forgejo.nix, glance-agent.nix
+      syncthing.nix            # den.aspects.syncthing.{nixos,homeManager}
+      glance/                 # den.aspects.glance.nixos, split into widget files
+        default.nix            # registration + page assembly
+        _*.nix                 # plain widget functions (underscore = skipped by import-tree)
+        assets/                # logo + custom css served by glance
+    home/                     # den.aspects.<name>.homeManager, split by concern
+      core.nix, packages.nix, git.nix, neovim.nix, ...
+      shell.nix                # zsh + starship prompt + fzf/zoxide/direnv integrations
+      home-manager.nix         # den.aspects.home-manager — bundles core/packages/shell/git/neovim/tmux, included by every host
+      ghostty.nix              # den.aspects.gui.homeManager (GUI-only, aspen)
+      workstation.nix          # den.aspects.workstation.homeManager (workstation-only CLI, aspen)
 hosts/
   aspen/
-    default.nix              # den.aspects.aspen.darwin (host-specific darwin config)
-    home.nix                 # den.aspects.aspen.provides.to-users.homeManager
+    default.nix              # den.hosts.aarch64-darwin.aspen + den.aspects.aspen.darwin (host-specific darwin config)
+    home.nix                 # den.aspects.aspen.provides.to-users (home-manager, via includes)
   elm/
-    default.nix              # den.aspects.elm.nixos (host-specific NixOS config)
-    home.nix                 # den.aspects.elm.provides.to-users.homeManager
+    default.nix              # den.hosts.x86_64-linux.elm + den.aspects.elm.nixos (host-specific NixOS config)
+    home.nix                 # den.aspects.elm.provides.to-users.includes
     _hardware-configuration.nix  # generated by nixos-generate-config, do not edit
   houseplants/
-    default.nix              # den.aspects.houseplants.nixos (public edge: caddy + tailscale-server)
-    home.nix                 # den.aspects.houseplants.provides.to-users.homeManager
+    default.nix              # den.hosts.aarch64-linux.houseplants + den.aspects.houseplants.nixos (public edge: caddy + tailscale-server)
+    home.nix                 # den.aspects.houseplants.provides.to-users.includes
     _hardware-configuration.nix, _disko.nix  # generated (nixos-anywhere), do not edit
   lovecomputer/
-    default.nix              # den.aspects.lovecomputer.nixos (public edge: static sites via lovecomputer-caddy + tailscale-server)
-    home.nix                 # den.aspects.lovecomputer.provides.to-users.homeManager
+    default.nix              # den.hosts.aarch64-linux.lovecomputer + den.aspects.lovecomputer.nixos (public edge: static sites via lovecomputer-caddy + tailscale-server)
+    home.nix                 # den.aspects.lovecomputer.provides.to-users.includes
     _hardware-configuration.nix, _disko.nix  # generated (nixos-anywhere), do not edit
 ```
 
 Cross-module constants (the `houseplants.cloud` domain, OIDC issuer, SMTP
-account, syncthing device IDs) live in `modules/meta.nix` under
+account, syncthing device IDs) live in `modules/meta/meta.nix` under
 `flake.lib.meta` — change them there, not in the consuming service files.
 
-Reusable feature modules under `modules/` are unchanged from before Den —
-still named-registered under `flake.modules.<class>.<name>` and pulled into
-a host's aspect via `config.flake.modules.<class>.<name>` in its `imports`.
-Den only replaced the layer that used to hand-assemble
-`flake.darwinConfigurations`/`flake.nixosConfigurations`
-(previously `modules/configurations.nix`, now generated by Den from
-`den.hosts` + `den.aspects`).
+Plain reusable modules under `modules/sops.nix` are unchanged from before Den
+— still named-registered under `flake.modules.<class>.<name>` and pulled
+into a host's aspect via `config.flake.modules.<class>.<name>` in its
+`imports`. Everything else that used to be a plain `flake.modules.<class>`
+registration (darwin/home/service concerns) is now a real
+`den.aspects.<name>` — see the layout above.
 
 ### Batteries
 
-`modules/den.nix` uses two of Den's built-in `den.batteries.*` on the shared
-`ivy` user aspect:
+`modules/users/ivy.nix` uses two of Den's built-in `den.batteries.*` on the
+shared `ivy` user aspect:
 
 - `den.batteries.define-user` — sets `users.users.ivy` (name/home) and
   home-manager's `home.username`/`home.homeDirectory`, on both platforms.
 - `den.batteries.primary-user` — `wheel`/`networkmanager` groups on NixOS,
   `system.primaryUser` on Darwin.
 
+It also holds the NixOS-only `den.aspects.ivy.nixos` block (shell, declarative
+password, the aspen SSH pubkey) — Den auto-applies this to every host with an
+`ivy` user, so it's not listed in any host's `includes`.
+
 Each host's `default.nix` also includes `den.batteries.hostname`, which sets
 `networking.hostName`, and the shared `den.aspects.nix-settings` aspect
-(`modules/nix-settings.nix`). On the home-manager side, aspen's `home.nix`
-opts into `den.aspects.gui` (ghostty, discord) and `den.aspects.workstation`
-(claude-code, gh, sops tooling); headless elm, houseplants, and lovecomputer
-all get `homeManager.base` only.
+(`modules/aspects/system/nix-settings.nix`). On the home-manager side,
+aspen's `home.nix` opts into `den.aspects.gui` (ghostty, discord) and
+`den.aspects.workstation` (claude-code, gh, sops tooling) in addition to
+`den.aspects.home-manager` (the base bundle every host gets); headless elm,
+houseplants, and lovecomputer only include `den.aspects.home-manager`.
 
 ## Usage
 
@@ -147,10 +167,11 @@ alejandra), `just update` (`nix flake update`).
 
 ### On an unmanaged machine
 
-`modules/home-configurations.nix` exports standalone
-`homeConfigurations."ivy@<system>"` outputs (the `homeManager.base` bundle,
-no OS config) for putting this home environment on machines the flake
-doesn't manage. With nix installed there:
+`modules/meta/home-configurations.nix` exports standalone
+`homeConfigurations."ivy@<system>"` outputs (the `den.aspects.home-manager`
+bundle, rendered via Den's own `den.lib.aspects.resolve` helper, no OS
+config) for putting this home environment on machines the flake doesn't
+manage. With nix installed there:
 
 ```
 nix run home-manager -- switch --flake github:ivyturner/nix#ivy@x86_64-linux
@@ -163,7 +184,7 @@ different account, add a one-line entry in `home-configurations.nix`.
 
 - `nixpkgs` (unstable) backs aspen and houseplants; `nixpkgs-stable` (26.05)
   backs elm — keep the latter's release version matching `nixos-version` on
-  elm. elm's host entry in `modules/den.nix` pins both `instantiate`
+  elm. elm's host entry in `hosts/elm/default.nix` pins both `instantiate`
   (`nixpkgs-stable.lib.nixosSystem`) and `home-manager.module`
   (`home-manager-stable`) to match.
 - `sops-nix` is wired into aspen and elm, for secrets. houseplants and
@@ -191,10 +212,11 @@ sops secrets/secrets.yaml
 ```
 
 This requires a personal age private key at `~/.config/sops/age/keys.txt`
-(path pinned via `SOPS_AGE_KEY_FILE` in `modules/home/core.nix`) whose public
-key is listed in `.sops.yaml` as `admin_ivy`. That private key lives only on
-your own machine(s) — back it up somewhere durable, since losing it (without
-still having a host that can decrypt) means re-encrypting from scratch.
+(path pinned via `SOPS_AGE_KEY_FILE` in `modules/aspects/home/core.nix`)
+whose public key is listed in `.sops.yaml` as `admin_ivy`. That private key
+lives only on your own machine(s) — back it up somewhere durable, since
+losing it (without still having a host that can decrypt) means
+re-encrypting from scratch.
 
 New secrets: add the value via `sops`, then declare it in `modules/sops.nix`
 (`sops.secrets.<name> = { };`) and reference it at
