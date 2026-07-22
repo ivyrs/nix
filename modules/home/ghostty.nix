@@ -11,7 +11,7 @@
       settings = {
         theme = "Catppuccin Mocha";
         font-family = "IBM Plex Mono";
-        font-size = 12;
+        font-size = 14;
         background-opacity = 0.96;
         cursor-style = "block";
         macos-titlebar-style = "tabs";

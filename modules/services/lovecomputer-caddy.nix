@@ -11,18 +11,12 @@ in {
         file_server
       '';
 
-      virtualHosts."hot-beans.lovecomputer.net".extraConfig = ''
-        root * /opt/sites/hot-beans
-        file_server
-      '';
-
       virtualHosts."dont-th.ink".extraConfig = ''
-        root * /opt/sites/dont-th.ink
-        file_server
+        redir * https://thei.rs/spiral
       '';
 
       virtualHosts."ivy.rs" = {
-        serverAliases = ["ivyro.se" "ivyrose.gay"];
+        serverAliases = ["ivyro.se"];
         extraConfig = ''
           root * /opt/sites/ivy.rs
           file_server
@@ -61,18 +55,6 @@ in {
 
       virtualHosts."ivyrose.mom".extraConfig = ''
         redir * https://xela.zone
-      '';
-
-      virtualHosts."git.lovecomputer.net".extraConfig = ''
-        reverse_proxy fountain.${meta.tailnet}:3000
-      '';
-
-      virtualHosts."knot.lovecomputer.net".extraConfig = ''
-        reverse_proxy fountain.${meta.tailnet}:5555
-      '';
-
-      virtualHosts."auth.lovecomputer.net".extraConfig = ''
-        reverse_proxy fountain.${meta.tailnet}:9000
       '';
 
       virtualHosts."id.ivy.rs".extraConfig = ''
