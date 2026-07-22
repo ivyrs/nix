@@ -11,12 +11,6 @@
     }
     {
       type = "remote";
-      url = "http://lovecomputer.${meta.tailnet}:27973";
-      name = "lovecomputer";
-      token = {_secret = tokenFile;};
-    }
-    {
-      type = "remote";
       url = "http://fountain.${meta.tailnet}:27973";
       name = "fountain";
       token = {_secret = tokenFile;};

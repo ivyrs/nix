@@ -56,6 +56,7 @@ modules/
   services/                 # one file per service, regardless of class
     tailscale.nix           # flake.modules.nixos.tailscale-{client,server}
     caddy.nix                # flake.modules.nixos.caddy — the houseplants edge proxy, one virtualHost per public hostname
+    lovecomputer-caddy.nix   # flake.modules.nixos.lovecomputer-caddy — lovecomputer's edge proxy, same shape as caddy.nix
     miniflux.nix, pocket-id.nix, vikunja.nix, vaultwarden.nix
     nextcloud.nix, gotosocial.nix, forgejo.nix
     syncthing.nix            # flake.modules.nixos.syncthing / flake.modules.homeManager.syncthing
@@ -79,6 +80,10 @@ hosts/
   houseplants/
     default.nix              # den.aspects.houseplants.nixos (public edge: caddy + tailscale-server)
     home.nix                 # den.aspects.houseplants.provides.to-users.homeManager
+    _hardware-configuration.nix, _disko.nix  # generated (nixos-anywhere), do not edit
+  lovecomputer/
+    default.nix              # den.aspects.lovecomputer.nixos (public edge: static sites via lovecomputer-caddy + tailscale-server)
+    home.nix                 # den.aspects.lovecomputer.provides.to-users.homeManager
     _hardware-configuration.nix, _disko.nix  # generated (nixos-anywhere), do not edit
 ```
 
@@ -108,8 +113,8 @@ Each host's `default.nix` also includes `den.batteries.hostname`, which sets
 `networking.hostName`, and the shared `den.aspects.nix-settings` aspect
 (`modules/nix-settings.nix`). On the home-manager side, aspen's `home.nix`
 opts into `den.aspects.gui` (ghostty, discord) and `den.aspects.workstation`
-(claude-code, gh, sops tooling); headless elm and houseplants both get
-`homeManager.base` only.
+(claude-code, gh, sops tooling); headless elm, houseplants, and lovecomputer
+all get `homeManager.base` only.
 
 ## Usage
 
@@ -120,13 +125,13 @@ just switch
 ```
 
 detects the OS and runs `nh darwin switch` (aspen) or `nh os switch` (elm,
-houseplants) against `.#$(hostname -s)`.
+houseplants, lovecomputer) against `.#$(hostname -s)`.
 
-To deploy to elm or houseplants from aspen (or any machine on the tailnet),
-without SSHing in first:
+To deploy to elm, houseplants, or lovecomputer from aspen (or any machine on
+the tailnet), without SSHing in first:
 
 ```
-just deploy elm          # or: just deploy houseplants
+just deploy elm          # or: just deploy houseplants / just deploy lovecomputer
 ```
 
 builds and activates over SSH via the host's Tailscale name
@@ -161,10 +166,12 @@ different account, add a one-line entry in `home-configurations.nix`.
   elm. elm's host entry in `modules/den.nix` pins both `instantiate`
   (`nixpkgs-stable.lib.nixosSystem`) and `home-manager.module`
   (`home-manager-stable`) to match.
-- `sops-nix` is wired into aspen and elm, for secrets. houseplants doesn't
-  need it — it's a static Caddy edge with no secrets of its own.
-- `disko` declares houseplants' disk layout (`hosts/houseplants/_disko.nix`),
-  used for its original `nixos-anywhere` install; not used on aspen/elm.
+- `sops-nix` is wired into aspen and elm, for secrets. houseplants and
+  lovecomputer don't need it — both are static Caddy edges with no secrets
+  of their own.
+- `disko` declares houseplants' and lovecomputer's disk layouts
+  (`hosts/houseplants/_disko.nix`, `hosts/lovecomputer/_disko.nix`), used
+  for their original `nixos-anywhere` installs; not used on aspen/elm.
 - `nix-homebrew` manages Homebrew casks/brews declaratively on aspen.
 - `den` (`github:denful/den`) provides the `den.hosts`/`den.aspects`/
   `den.batteries` framework described above.
