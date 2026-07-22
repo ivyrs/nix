@@ -12,6 +12,10 @@ switch:
 deploy host:
     nh os switch -e passwordless -H {{ host }} --target-host "ivy@{{ host }}.ocelot-perch.ts.net" --build-host "ivy@{{ host }}.ocelot-perch.ts.net" .
 
+# Format the repo with alejandra.
+fmt:
+    nix fmt
+
 # Evaluate the flake and run its checks.
 check:
     nix flake check
