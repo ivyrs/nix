@@ -7,7 +7,7 @@ overall layout.
 
 This flake is built on [Den](https://github.com/denful/den) (`inputs.den`,
 imported via `modules/hosts/declarations.nix`). Every `.nix` file under
-`modules/` and `hosts/` is still auto-imported by `import-tree` (wired in
+`modules/` and `hosts/` is auto-imported by `import-tree` (wired in
 `flake.nix`), and files register themselves one of two ways:
 
 - **Plain reusable modules** — `flake.modules.<class>.<name>`, e.g.:
@@ -16,7 +16,7 @@ imported via `modules/hosts/declarations.nix`). Every `.nix` file under
   { flake.modules.nixos.sops = { ... }; }
   ```
 
-  `modules/sops.nix` is the only thing still using this form; everything
+  `modules/sops.nix` is the only thing using this form; everything
   else (darwin/service/home-manager concerns) has been converted to the
   form below.
 
