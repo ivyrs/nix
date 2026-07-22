@@ -15,5 +15,17 @@
       name = "fountain";
       token = {_secret = tokenFile;};
     }
+    {
+      type = "remote";
+      url = "http://houseplants.${meta.tailnet}:27973";
+      name = "houseplants";
+      token = {_secret = tokenFile;};
+    }
+    {
+      type = "remote";
+      url = "http://lovecomputer.${meta.tailnet}:27973";
+      name = "lovecomputer";
+      token = {_secret = tokenFile;};
+    }
   ];
 }

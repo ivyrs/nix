@@ -7,6 +7,11 @@
     sops.age.sshKeyPaths = ["/etc/ssh/ssh_host_ed25519_key"];
 
     sops.secrets.ivy-password-hash = {};
+    # Shared glance-agent auth token: elm's glance dashboard uses it as a
+    # client (see glance/_server-stats.nix) and every host running
+    # flake.modules.nixos.glance-agent uses it as the server, so it's
+    # declared here rather than in sops-elm-services below.
+    sops.secrets.glance-agent-token = {};
   };
 
   # elm-only: secrets for services that only run there (forgejo/nextcloud
@@ -17,7 +22,6 @@
     sops.secrets.miniflux-admin-credentials = {};
     sops.secrets.pocket-id-encryption-key = {};
     sops.secrets.vikunja-env = {};
-    sops.secrets.glance-agent-token = {};
     sops.secrets.vaultwarden-env = {};
     sops.secrets.nextcloud-admin-password.owner = "nextcloud";
     sops.secrets.nextcloud-oidc-client-secret.owner = "nextcloud";

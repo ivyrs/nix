@@ -19,6 +19,7 @@
         config.flake.modules.nixos.i18n
         config.flake.modules.nixos.tailscale-server
         config.flake.modules.nixos.caddy
+        config.flake.modules.nixos.glance-agent
         config.flake.modules.nixos.sops
         ({
           pkgs,
