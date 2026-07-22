@@ -86,7 +86,7 @@ in
         # avoids that path entirely.
         LoadCredential = "mail_smtppassword:${config.sops.secrets.nextcloud-smtp-password.path}";
         ExecStart = pkgs.writeShellScript "nextcloud-oidc-provider-setup" ''
-          ${config.services.nextcloud.occ}/bin/nextcloud-occ user_oidc:provider ivyid \
+          ${config.services.nextcloud.occ}/bin/nextcloud-occ user_oidc:provider houseplants \
             --clientid="f6af92ea-3466-4a98-bd68-528446898f60" \
             --clientsecret-file="${config.sops.secrets.nextcloud-oidc-client-secret.path}" \
             --discoveryuri="${meta.oidcIssuer}/.well-known/openid-configuration" \

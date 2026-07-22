@@ -29,7 +29,7 @@ in
         auth.local.enabled = false;
         auth.openid = {
           enabled = true;
-          providers.ivyid = {
+          providers.houseplants = {
             name = "houseplantsID";
             authurl = meta.oidcIssuer;
             clientid = "9a681736-b7ce-4b16-ac94-22276d57657c";
