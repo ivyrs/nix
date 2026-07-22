@@ -4,6 +4,8 @@
   inputs,
   ...
 }: {
+  den.hosts.aarch64-linux.houseplants.users.ivy = {};
+
   den.aspects.houseplants = {
     includes = [
       den.batteries.hostname
@@ -21,11 +23,7 @@
         config.flake.modules.nixos.caddy
         config.flake.modules.nixos.glance-agent
         config.flake.modules.nixos.sops
-        ({
-          pkgs,
-          config,
-          ...
-        }: {
+        ({pkgs, ...}: {
           # Bootloader.
           boot.loader.systemd-boot.enable = true;
           boot.loader.efi.canTouchEfiVariables = true;
@@ -34,18 +32,9 @@
           # route; IPv6 comes via SLAAC. No static config needed.
           networking.useDHCP = true;
 
-          # Password + SSH key are declarative (see modules/sops.nix); see AGENTS.md/memory for retrieving the password.
-          users.users.ivy = {
-            description = "ivy";
-            packages = [];
-            shell = pkgs.zsh;
-            hashedPasswordFile = config.sops.secrets.ivy-password-hash.path;
-            openssh.authorizedKeys.keys = [
-              "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICtFawaAWSklr1GGYiBZzGr/ydKSSOatBfGfY72eqKGZ aspen"
-            ];
-          };
-
-          programs.zsh.enable = true;
+          # Password + SSH key + shell are declarative via the shared
+          # den.aspects.ivy.nixos (modules/users/ivy.nix); see AGENTS.md/memory
+          # for retrieving the password.
 
           environment.systemPackages = with pkgs; [
             curl

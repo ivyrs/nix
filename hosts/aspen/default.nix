@@ -4,6 +4,12 @@
   inputs,
   ...
 }: {
+  den.hosts.aarch64-darwin.aspen.users.ivy = {};
+
+  # aspen keeps using `inputs.nix-darwin.lib.darwinSystem` directly — the
+  # input is named `nix-darwin` here, not Den's default `darwin`.
+  den.hosts.aarch64-darwin.aspen.instantiate = inputs.nix-darwin.lib.darwinSystem;
+
   den.aspects.aspen = {
     includes = [
       den.batteries.hostname

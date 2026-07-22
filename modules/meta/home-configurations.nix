@@ -24,7 +24,7 @@
             then "/Users/${username}"
             else "/home/${username}";
           # Standalone homes don't get den.default's stateVersion; keep in step
-          # with modules/den.nix.
+          # with modules/hosts/declarations.nix.
           home.stateVersion = "25.11";
         }
       ];

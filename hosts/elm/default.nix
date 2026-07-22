@@ -4,6 +4,13 @@
   inputs,
   ...
 }: {
+  den.hosts.x86_64-linux.elm.users.ivy = {};
+
+  # elm stays pinned to nixpkgs-stable / home-manager-stable to match its
+  # NixOS release (see README's "Inputs of note").
+  den.hosts.x86_64-linux.elm.instantiate = inputs.nixpkgs-stable.lib.nixosSystem;
+  den.hosts.x86_64-linux.elm.home-manager.module = inputs.home-manager-stable.nixosModules.home-manager;
+
   den.aspects.elm = {
     includes = [
       den.batteries.hostname
@@ -27,29 +34,16 @@
         config.flake.modules.nixos.forgejo
         config.flake.modules.nixos.sops
         config.flake.modules.nixos.sops-elm-services
-        ({
-          pkgs,
-          config,
-          ...
-        }: {
+        ({pkgs, ...}: {
           # Bootloader.
           boot.loader.systemd-boot.enable = true;
           boot.loader.efi.canTouchEfiVariables = true;
 
           networking.networkmanager.enable = true;
 
-          # Password + SSH key are declarative (see modules/sops.nix); see AGENTS.md/memory for retrieving the password.
-          users.users.ivy = {
-            description = "ivy";
-            packages = [];
-            shell = pkgs.zsh;
-            hashedPasswordFile = config.sops.secrets.ivy-password-hash.path;
-            openssh.authorizedKeys.keys = [
-              "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICtFawaAWSklr1GGYiBZzGr/ydKSSOatBfGfY72eqKGZ aspen"
-            ];
-          };
-
-          programs.zsh.enable = true;
+          # Password + SSH key + shell are declarative via the shared
+          # den.aspects.ivy.nixos (modules/users/ivy.nix); see AGENTS.md/memory
+          # for retrieving the password.
 
           environment.systemPackages = with pkgs; [
             curl
