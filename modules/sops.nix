@@ -15,16 +15,17 @@
     sops.secrets.nextcloud-smtp-password.owner = "nextcloud";
     sops.secrets.nextcloud-harp-shared-key-env = { };
     sops.secrets.gotosocial-env = { };
+    sops.secrets.forgejo-internal-token.owner = "forgejo";
+    sops.secrets.forgejo-oauth2-jwt-secret.owner = "forgejo";
+    sops.secrets.forgejo-lfs-jwt-secret.owner = "forgejo";
   };
 
   flake.modules.darwin.sops = {
     sops.defaultSopsFile = ../secrets/secrets.yaml;
     sops.age.sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
 
-    # Canary, not dead code: sops-nix's darwin module is entirely
-    # `mkIf (secrets != {})`, so without at least one secret nothing gets
-    # decrypted at activation and a broken host key would go unnoticed
-    # until a real secret needs it.
-    sops.secrets.placeholder = { };
+    # aerc's IMAP/SMTP password (see modules/home/aerc.nix); owned by ivy so
+    # home-manager's passwordCommand can read it without sudo.
+    sops.secrets.aerc-fastmail-password.owner = "ivy";
   };
 }
