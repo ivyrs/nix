@@ -16,6 +16,10 @@
         vim.telescope.enable = true;
         vim.statusline.lualine.enable = true;
 
+        vim.languages = {
+          astro.enable = true;
+        };
+
         vim.theme = {
           enable = true;
           name = "catppuccin";
