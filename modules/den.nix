@@ -6,6 +6,7 @@
 
   den.hosts.aarch64-darwin.aspen.users.ivy = { };
   den.hosts.x86_64-linux.elm.users.ivy = { };
+  den.hosts.aarch64-linux.houseplants.users.ivy = { };
 
   # aspen keeps using `inputs.nix-darwin.lib.darwinSystem` directly — the
   # input is named `nix-darwin` here, not Den's default `darwin`.
