@@ -1,5 +1,5 @@
 {
-  flake.modules.homeManager.base = {
+  den.aspects.core.homeManager = {
     programs.home-manager.enable = true;
 
     # We only use zsh integrations; don't let per-tool defaults follow this

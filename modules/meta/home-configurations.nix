@@ -8,7 +8,7 @@
 # below for a different account name.
 {
   inputs,
-  config,
+  den,
   lib,
   ...
 }: let
@@ -16,7 +16,7 @@
     inputs.home-manager.lib.homeManagerConfiguration {
       pkgs = inputs.nixpkgs.legacyPackages.${system};
       modules = [
-        config.flake.modules.homeManager.base
+        (den.lib.aspects.resolve "homeManager" den.aspects.home-manager)
         {
           home.username = username;
           home.homeDirectory =

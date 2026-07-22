@@ -1,7 +1,3 @@
-{config, ...}: {
-  den.aspects.houseplants.provides.to-users.homeManager = {
-    imports = [
-      config.flake.modules.homeManager.base
-    ];
-  };
+{den, ...}: {
+  den.aspects.houseplants.provides.to-users.includes = [den.aspects.home-manager];
 }

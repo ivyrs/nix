@@ -1,7 +1,3 @@
-{config, ...}: {
-  den.aspects.lovecomputer.provides.to-users.homeManager = {
-    imports = [
-      config.flake.modules.homeManager.base
-    ];
-  };
+{den, ...}: {
+  den.aspects.lovecomputer.provides.to-users.includes = [den.aspects.home-manager];
 }

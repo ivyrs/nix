@@ -3,7 +3,7 @@
 {config, ...}: let
   meta = config.flake.lib.meta;
 in {
-  flake.modules.homeManager.base = {
+  den.aspects.shell.homeManager = {
     programs.zsh = {
       enable = true;
       enableCompletion = true;

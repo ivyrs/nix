@@ -1,5 +1,5 @@
 {
-  flake.modules.homeManager.base = {pkgs, ...}: {
+  den.aspects.packages.homeManager = {pkgs, ...}: {
     # Extend freely. Workstation-only tools live in workstation.nix.
     home.packages = with pkgs; [
       ripgrep

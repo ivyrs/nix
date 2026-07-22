@@ -1,5 +1,5 @@
 {inputs, ...}: {
-  flake.modules.homeManager.base = {
+  den.aspects.neovim.homeManager = {
     # nvf's HM module ships the programs.nvf options themselves, so it lives
     # here with its config rather than in each host's home.nix.
     imports = [inputs.nvf.homeManagerModules.default];

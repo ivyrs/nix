@@ -1,7 +1,7 @@
 {config, ...}: let
   meta = config.flake.lib.meta;
 in {
-  flake.modules.homeManager.base = {
+  den.aspects.git.homeManager = {
     # Installs delta and sets git's pager + interactive.diffFilter for us.
     programs.delta = {
       enable = true;
