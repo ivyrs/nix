@@ -21,7 +21,10 @@
       "Bash(git commit *)",
       "Bash(timeout 90 nix eval --raw 'github:NixOS/nixpkgs/nixpkgs-unstable#lib.version')",
       "Bash(nix eval *)",
-      "Bash(ssh ivy@fountain.ocelot-perch.ts.net \"echo ok\")"
+      "Bash(ssh ivy@fountain.ocelot-perch.ts.net \"echo ok\")",
+      "Read(//etc/profiles/per-user/ivy/bin/**)",
+      "WebFetch(domain:docs.claude.com)",
+      "Bash(bash /Users/ivy/.claude/statusline-command.sh)"
     ]
   }
 }
