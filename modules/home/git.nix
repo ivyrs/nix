@@ -121,10 +121,12 @@ in {
       settings = {
         os.editPreset = "nvim";
 
-        git.paging = {
-          colorArg = "always";
-          pager = "delta --dark --paging=never";
-        };
+        git.pagers = [
+          {
+            colorArg = "always";
+            pager = "delta --dark --paging=never";
+          }
+        ];
 
         # Catppuccin mocha, lavender accent — matches fzf/neovim theming.
         gui = {
