@@ -20,7 +20,7 @@
 
     home-manager-stable.url = "github:nix-community/home-manager/release-26.05";
     home-manager-stable.inputs.nixpkgs.follows = "nixpkgs-stable";
-    
+
     nix-homebrew.url = "github:zhaofengli/nix-homebrew";
 
     sops-nix.url = "github:Mic92/sops-nix";
@@ -34,7 +34,7 @@
   };
 
   outputs = inputs:
-    inputs.flake-parts.lib.mkFlake { inherit inputs; } {
+    inputs.flake-parts.lib.mkFlake {inherit inputs;} {
       imports = [
         inputs.flake-parts.flakeModules.modules
         (inputs.import-tree ./modules)

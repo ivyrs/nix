@@ -45,9 +45,9 @@
         };
 
         mode.service.binding = {
-          esc = [ "reload-config" "mode main" ];
-          r = [ "flatten-workspace-tree" "mode main" ];
-          f = [ "layout floating tiling" "mode main" ];
+          esc = ["reload-config" "mode main"];
+          r = ["flatten-workspace-tree" "mode main"];
+          f = ["layout floating tiling" "mode main"];
         };
       };
     };

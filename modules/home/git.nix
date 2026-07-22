@@ -1,8 +1,6 @@
-{ config, ... }:
-let
+{config, ...}: let
   meta = config.flake.lib.meta;
-in
-{
+in {
   flake.modules.homeManager.base = {
     # Installs delta and sets git's pager + interactive.diffFilter for us.
     programs.delta = {
@@ -131,15 +129,15 @@ in
         # Catppuccin mocha, lavender accent — matches fzf/neovim theming.
         gui = {
           theme = {
-            activeBorderColor = [ "#b4befe" "bold" ];
-            inactiveBorderColor = [ "#a6adc8" ];
-            optionsTextColor = [ "#89b4fa" ];
-            selectedLineBgColor = [ "#313244" ];
-            cherryPickedCommitBgColor = [ "#45475a" ];
-            cherryPickedCommitFgColor = [ "#b4befe" ];
-            unstagedChangesColor = [ "#f38ba8" ];
-            defaultFgColor = [ "#cdd6f4" ];
-            searchingActiveBorderColor = [ "#f9e2af" ];
+            activeBorderColor = ["#b4befe" "bold"];
+            inactiveBorderColor = ["#a6adc8"];
+            optionsTextColor = ["#89b4fa"];
+            selectedLineBgColor = ["#313244"];
+            cherryPickedCommitBgColor = ["#45475a"];
+            cherryPickedCommitFgColor = ["#b4befe"];
+            unstagedChangesColor = ["#f38ba8"];
+            defaultFgColor = ["#cdd6f4"];
+            searchingActiveBorderColor = ["#f9e2af"];
           };
           authorColors."*" = "#b4befe";
           showRandomTip = false;

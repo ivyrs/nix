@@ -1,12 +1,16 @@
-{ inputs, den, lib, ... }:
 {
-  imports = [ inputs.den.flakeModule ];
+  inputs,
+  den,
+  lib,
+  ...
+}: {
+  imports = [inputs.den.flakeModule];
 
-  den.schema.user.classes = lib.mkDefault [ "homeManager" ];
+  den.schema.user.classes = lib.mkDefault ["homeManager"];
 
-  den.hosts.aarch64-darwin.aspen.users.ivy = { };
-  den.hosts.x86_64-linux.elm.users.ivy = { };
-  den.hosts.aarch64-linux.houseplants.users.ivy = { };
+  den.hosts.aarch64-darwin.aspen.users.ivy = {};
+  den.hosts.x86_64-linux.elm.users.ivy = {};
+  den.hosts.aarch64-linux.houseplants.users.ivy = {};
 
   # aspen keeps using `inputs.nix-darwin.lib.darwinSystem` directly — the
   # input is named `nix-darwin` here, not Den's default `darwin`.

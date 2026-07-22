@@ -1,17 +1,19 @@
-{ config, lib, ... }:
-let
+{
+  config,
+  lib,
+  ...
+}: let
   st = config.flake.lib.meta.syncthing;
   # Each machine lists every device except itself; IDs live in modules/meta.nix.
-  deviceSet = names: lib.genAttrs names (name: { id = st.devices.${name}; });
-in
-{
-  flake.modules.nixos.syncthing = { config, ... }: {
-    networking.firewall.interfaces."tailscale0".allowedTCPPorts = [ 8384 ];
+  deviceSet = names: lib.genAttrs names (name: {id = st.devices.${name};});
+in {
+  flake.modules.nixos.syncthing = {config, ...}: {
+    networking.firewall.interfaces."tailscale0".allowedTCPPorts = [8384];
     services.syncthing = {
       enable = true;
       dataDir = "/var/lib/syncthing";
       configDir = "/var/lib/syncthing/.config/syncthing";
-      openDefaultPorts = true;          # 22000/tcp+udp, 21027/udp
+      openDefaultPorts = true; # 22000/tcp+udp, 21027/udp
       overrideDevices = true;
       overrideFolders = true;
 
@@ -22,15 +24,18 @@ in
           address = "0.0.0.0:8384";
           user = "ivy";
         };
-        devices = deviceSet [ "aspen" "maple" "birch" ];
+        devices = deviceSet ["aspen" "maple" "birch"];
         folders."obsidian" = {
           id = st.obsidianFolderId;
           path = "/var/lib/syncthing/obsidian";
-          devices = [ "aspen" "maple" "birch" ];
+          devices = ["aspen" "maple" "birch"];
           ignorePerms = true;
           versioning = {
             type = "staggered";
-            params = { cleanInterval = "3600"; maxAge = "2592000"; };   # elm doubles as vault history/backup
+            params = {
+              cleanInterval = "3600";
+              maxAge = "2592000";
+            }; # elm doubles as vault history/backup
           };
         };
         options.urAccepted = -1;
@@ -38,18 +43,18 @@ in
     };
   };
 
-  flake.modules.homeManager.syncthing = { config, ... }: {
+  flake.modules.homeManager.syncthing = {config, ...}: {
     services.syncthing = {
       enable = true;
       overrideDevices = true;
       overrideFolders = true;
 
       settings = {
-        devices = deviceSet [ "elm" "maple" "birch" ];
+        devices = deviceSet ["elm" "maple" "birch"];
         folders."obsidian" = {
           id = st.obsidianFolderId;
           path = "${config.home.homeDirectory}/Documents/obsidian";
-          devices = [ "elm" "maple" "birch" ];
+          devices = ["elm" "maple" "birch"];
           ignorePerms = true;
         };
         options.urAccepted = -1;

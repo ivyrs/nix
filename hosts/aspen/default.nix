@@ -1,5 +1,9 @@
-{ config, den, inputs, ... }:
 {
+  config,
+  den,
+  inputs,
+  ...
+}: {
   den.aspects.aspen = {
     includes = [
       den.batteries.hostname
@@ -16,7 +20,7 @@
         config.flake.modules.darwin.system-defaults
         config.flake.modules.darwin.fonts
         config.flake.modules.darwin.touchid
-        ({ pkgs, ... }: {
+        ({pkgs, ...}: {
           nixpkgs.hostPlatform = "aarch64-darwin";
 
           system.stateVersion = 6;

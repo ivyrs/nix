@@ -1,6 +1,5 @@
 # Uptime monitor for the self-hosted services.
-{ meta }:
-{
+{meta}: {
   type = "monitor";
   cache = "1m";
   title = "Services";

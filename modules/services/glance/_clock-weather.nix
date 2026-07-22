@@ -1,6 +1,5 @@
 # Clock + calendar next to the weather, in one split column.
-{ cityFile }:
-{
+{cityFile}: {
   type = "split-column";
   widgets = [
     {
@@ -36,7 +35,7 @@
     }
     {
       type = "weather";
-      location = { _secret = cityFile; };
+      location = {_secret = cityFile;};
       units = "metric";
       hour-format = "24h";
       hide-location = true;

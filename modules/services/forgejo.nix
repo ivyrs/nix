@@ -1,9 +1,12 @@
-{ config, ... }:
-let
+{config, ...}: let
   meta = config.flake.lib.meta;
-in
-{
-  flake.modules.nixos.forgejo = { config, pkgs, lib, ... }: {
+in {
+  flake.modules.nixos.forgejo = {
+    config,
+    pkgs,
+    lib,
+    ...
+  }: {
     services.forgejo = {
       enable = true;
       package = pkgs.forgejo; # fountain tracked the rolling "15" tag, not forgejo-lts
@@ -85,6 +88,6 @@ in
     # unprivileged forgejo user (unlike forgejo.service itself, which uses
     # systemd's LoadCredential). Its ReadWritePaths puts it in a private mount
     # namespace, which hides sops-nix's /run/secrets.d unless bound in.
-    systemd.services.forgejo-secrets.serviceConfig.BindReadOnlyPaths = [ "/run/secrets.d" "/run/secrets" ];
+    systemd.services.forgejo-secrets.serviceConfig.BindReadOnlyPaths = ["/run/secrets.d" "/run/secrets"];
   };
 }

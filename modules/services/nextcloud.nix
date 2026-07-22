@@ -1,9 +1,11 @@
-{ config, ... }:
-let
+{config, ...}: let
   meta = config.flake.lib.meta;
-in
-{
-  flake.modules.nixos.nextcloud = { config, pkgs, ... }: {
+in {
+  flake.modules.nixos.nextcloud = {
+    config,
+    pkgs,
+    ...
+  }: {
     services.nextcloud = {
       enable = true;
       hostName = "cloud.${meta.domain}";
@@ -15,7 +17,7 @@ in
         adminpassFile = config.sops.secrets.nextcloud-admin-password.path;
       };
 
-      extraApps = { inherit (config.services.nextcloud.package.packages.apps) user_oidc; };
+      extraApps = {inherit (config.services.nextcloud.package.packages.apps) user_oidc;};
       # Declaring extraApps makes the module disable the App Store by
       # default (appstoreEnable defaults to null, which renders as
       # `appstoreenabled => false` in config.php whenever extraApps is
@@ -37,14 +39,14 @@ in
         # default server for any Host header — add the tailnet name and the
         # old public hostname too so Nextcloud's own untrusted-domain check
         # doesn't reject them.
-        trusted_domains = [ "nc.${meta.domain}" "elm.${meta.tailnet}" ];
+        trusted_domains = ["nc.${meta.domain}" "elm.${meta.tailnet}"];
 
         # Public HTTPS is terminated by a Caddy instance on a separate VPS,
         # which reaches elm over the tailnet and forwards plain HTTP to
         # nginx here. Without trusting its tailnet IP, Nextcloud can't tell
         # the original request was HTTPS (breaks user_oidc, which refuses to
         # run the OIDC flow unless it thinks the connection is HTTPS).
-        trusted_proxies = [ "100.64.20.1" ];
+        trusted_proxies = ["100.64.20.1"];
 
         mail_smtpmode = "smtp";
         mail_smtpauth = true;
@@ -73,8 +75,8 @@ in
     # first login already did that once; the duplicate got deleted by hand.
     systemd.services.nextcloud-oidc-provider = {
       description = "Register houseplantsID as a Nextcloud OIDC provider";
-      after = [ "nextcloud-setup.service" ];
-      wantedBy = [ "multi-user.target" ];
+      after = ["nextcloud-setup.service"];
+      wantedBy = ["multi-user.target"];
       serviceConfig = {
         Type = "oneshot";
         User = "nextcloud";
@@ -102,8 +104,8 @@ in
     # anyone. `occ app:enable` is idempotent.
     systemd.services.nextcloud-enable-totp = {
       description = "Enable Nextcloud's TOTP two-factor app";
-      after = [ "nextcloud-setup.service" ];
-      wantedBy = [ "multi-user.target" ];
+      after = ["nextcloud-setup.service"];
+      wantedBy = ["multi-user.target"];
       serviceConfig = {
         Type = "oneshot";
         User = "nextcloud";
@@ -128,15 +130,15 @@ in
     virtualisation.oci-containers.containers.appapi-harp = {
       image = "ghcr.io/nextcloud/nextcloud-appapi-harp:release";
       autoStart = true;
-      extraOptions = [ "--network=host" ];
-      environmentFiles = [ config.sops.secrets.nextcloud-harp-shared-key-env.path ];
+      extraOptions = ["--network=host"];
+      environmentFiles = [config.sops.secrets.nextcloud-harp-shared-key-env.path];
       environment.NC_INSTANCE_URL = "http://elm.${meta.tailnet}";
       volumes = [
         "/var/run/docker.sock:/var/run/docker.sock"
         "/var/lib/appapi-harp/certs:/certs"
       ];
     };
-    systemd.tmpfiles.rules = [ "d /var/lib/appapi-harp/certs 0700 root root -" ];
+    systemd.tmpfiles.rules = ["d /var/lib/appapi-harp/certs 0700 root root -"];
 
     # Required, not just for browser/WebSocket access: ExApp lifecycle calls
     # (e.g. the heartbeat check during deploy) hit `nextcloud_url` + "/exapps/…"
@@ -162,9 +164,9 @@ in
     # above.
     systemd.services.nextcloud-appapi-harp-register = {
       description = "Register HaRP as Nextcloud's AppAPI deploy daemon";
-      after = [ "nextcloud-setup.service" "docker-appapi-harp.service" ];
-      wants = [ "docker-appapi-harp.service" ];
-      wantedBy = [ "multi-user.target" ];
+      after = ["nextcloud-setup.service" "docker-appapi-harp.service"];
+      wants = ["docker-appapi-harp.service"];
+      wantedBy = ["multi-user.target"];
       serviceConfig = {
         Type = "oneshot";
         User = "nextcloud";
@@ -192,9 +194,9 @@ in
     # with "Error starting install of ExApp" (stderr: "php: command not found").
     # Referencing the pool's own phpPackage (not a fresh `pkgs.php`) keeps the
     # exact same extension set occ/php-fpm already use.
-    environment.systemPackages = [ config.services.phpfpm.pools.nextcloud.phpPackage ];
+    environment.systemPackages = [config.services.phpfpm.pools.nextcloud.phpPackage];
 
     # services.nextcloud pulls in services.nginx (mkDefault true) to front php-fpm.
-    networking.firewall.interfaces."tailscale0".allowedTCPPorts = [ 80 ];
+    networking.firewall.interfaces."tailscale0".allowedTCPPorts = [80];
   };
 }

@@ -1,9 +1,7 @@
-{ config, ... }:
-let
+{config, ...}: let
   meta = config.flake.lib.meta;
-in
-{
-  flake.modules.nixos.miniflux = { config, ... }: {
+in {
+  flake.modules.nixos.miniflux = {config, ...}: {
     services.miniflux = {
       enable = true;
       config = {
@@ -21,6 +19,6 @@ in
       adminCredentialsFile = config.sops.secrets.miniflux-admin-credentials.path;
     };
 
-    networking.firewall.interfaces."tailscale0".allowedTCPPorts = [ 3000 ];
+    networking.firewall.interfaces."tailscale0".allowedTCPPorts = [3000];
   };
 }

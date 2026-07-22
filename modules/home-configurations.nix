@@ -6,8 +6,12 @@
 #
 # The local account must match the entry's username; add a one-line entry
 # below for a different account name.
-{ inputs, config, lib, ... }:
-let
+{
+  inputs,
+  config,
+  lib,
+  ...
+}: let
   mkHome = username: system:
     inputs.home-manager.lib.homeManagerConfiguration {
       pkgs = inputs.nixpkgs.legacyPackages.${system};
@@ -26,7 +30,7 @@ let
       ];
     };
 
-  systems = [ "x86_64-linux" "aarch64-linux" "x86_64-darwin" "aarch64-darwin" ];
+  systems = ["x86_64-linux" "aarch64-linux" "x86_64-darwin" "aarch64-darwin"];
 
   forAllSystems = username:
     lib.listToAttrs (map
@@ -35,7 +39,6 @@ let
         value = mkHome username system;
       })
       systems);
-in
-{
+in {
   flake.homeConfigurations = forAllSystems "ivy";
 }

@@ -1,5 +1,5 @@
 {
-  flake.modules.homeManager.base = { pkgs, ... }: {
+  flake.modules.homeManager.base = {pkgs, ...}: {
     # Extend freely. Workstation-only tools live in workstation.nix.
     home.packages = with pkgs; [
       ripgrep
@@ -18,7 +18,7 @@
   };
 
   # GUI-only apps: pointless on a headless host like elm.
-  den.aspects.gui.homeManager = { pkgs, ... }: {
-    home.packages = with pkgs; [ discord ];
+  den.aspects.gui.homeManager = {pkgs, ...}: {
+    home.packages = with pkgs; [discord];
   };
 }

@@ -1,16 +1,14 @@
 # TUI mail client, workstation-only like the rest of workstation.nix.
 # Talks to Fastmail directly over IMAP/SMTP — no local mail sync (mbsync)
 # involved, so nothing to keep in step offline.
-{ config, ... }:
-let
+{config, ...}: let
   meta = config.flake.lib.meta;
-in
-{
-  den.aspects.workstation.homeManager = { pkgs, ... }: {
+in {
+  den.aspects.workstation.homeManager = {pkgs, ...}: {
     # chafa renders image parts inline as terminal art (see the `filters`
     # block below) — aerc's own w3m-based html filter ships wrapped inside
     # its nix package already, so it needs no separate package here.
-    home.packages = [ pkgs.chafa ];
+    home.packages = [pkgs.chafa];
 
     accounts.email.accounts.ivy = {
       primary = true;

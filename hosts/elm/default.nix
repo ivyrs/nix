@@ -1,5 +1,9 @@
-{ config, den, inputs, ... }:
 {
+  config,
+  den,
+  inputs,
+  ...
+}: {
   den.aspects.elm = {
     includes = [
       den.batteries.hostname
@@ -22,7 +26,7 @@
         config.flake.modules.nixos.gotosocial
         config.flake.modules.nixos.forgejo
         config.flake.modules.nixos.sops
-        ({ pkgs, ... }: {
+        ({pkgs, ...}: {
           # Bootloader.
           boot.loader.systemd-boot.enable = true;
           boot.loader.efi.canTouchEfiVariables = true;
@@ -32,7 +36,7 @@
           # Define a user account. Don't forget to set a password with 'passwd'.
           users.users.ivy = {
             description = "ivy";
-            packages = [ ];
+            packages = [];
             shell = pkgs.zsh;
           };
 

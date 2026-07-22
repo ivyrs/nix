@@ -2,12 +2,10 @@
 # import-tree skips them: they are plain functions/attrsets imported below,
 # NOT flake-parts modules. (settings.pages is a list, so it can't be merged
 # from several registering modules — hence explicit imports.)
-{ config, ... }:
-let
+{config, ...}: let
   meta = config.flake.lib.meta;
-in
-{
-  flake.modules.nixos.glance = { config, ... }: {
+in {
+  flake.modules.nixos.glance = {config, ...}: {
     services.glance = {
       enable = true;
       settings = {
@@ -33,7 +31,7 @@ in
                   (import ./_clock-weather.nix {
                     cityFile = config.sops.secrets.glance-city.path;
                   })
-                  (import ./_monitor-sites.nix { inherit meta; })
+                  (import ./_monitor-sites.nix {inherit meta;})
                   (import ./_server-stats.nix {
                     inherit meta;
                     tokenFile = config.sops.secrets.glance-agent-token.path;
@@ -47,6 +45,6 @@ in
       };
     };
 
-    networking.firewall.interfaces."tailscale0".allowedTCPPorts = [ 8080 ];
+    networking.firewall.interfaces."tailscale0".allowedTCPPorts = [8080];
   };
 }

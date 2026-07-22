@@ -6,8 +6,8 @@
         mru-spaces = false;
         show-recents = false;
         persistent-apps = [
-          { app = "/Applications/Nix Apps/Ghostty.app"; }
-          { app = "/Applications/Helium.app"; }
+          {app = "/Applications/Nix Apps/Ghostty.app";}
+          {app = "/Applications/Helium.app";}
         ];
       };
       finder = {

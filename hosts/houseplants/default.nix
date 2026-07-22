@@ -1,5 +1,9 @@
-{ config, den, inputs, ... }:
 {
+  config,
+  den,
+  inputs,
+  ...
+}: {
   den.aspects.houseplants = {
     includes = [
       den.batteries.hostname
@@ -14,7 +18,7 @@
         config.flake.modules.nixos.i18n
         config.flake.modules.nixos.tailscale-server
         config.flake.modules.nixos.caddy
-        ({ pkgs, ... }: {
+        ({pkgs, ...}: {
           # Bootloader.
           boot.loader.systemd-boot.enable = true;
           boot.loader.efi.canTouchEfiVariables = true;
@@ -26,7 +30,7 @@
           # Define a user account. Don't forget to set a password with 'passwd'.
           users.users.ivy = {
             description = "ivy";
-            packages = [ ];
+            packages = [];
             shell = pkgs.zsh;
           };
 
@@ -47,8 +51,8 @@
           # houseplants is the public edge — it terminates real internet
           # traffic for Caddy, unlike every other host/service in this repo
           # which only ever opens ports on tailscale0.
-          networking.firewall.allowedTCPPorts = [ 80 443 ];
-          networking.firewall.interfaces."tailscale0".allowedTCPPorts = [ 22 ];
+          networking.firewall.allowedTCPPorts = [80 443];
+          networking.firewall.interfaces."tailscale0".allowedTCPPorts = [22];
 
           # Allows unattended remote deploys (`just deploy houseplants`) to activate over SSH without a password prompt.
           security.sudo.wheelNeedsPassword = false;

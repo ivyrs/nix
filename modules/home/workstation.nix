@@ -2,7 +2,7 @@
   # CLI tools that only make sense on an interactive workstation, not a
   # headless server. Hosts opt in via den.aspects.<host>.provides.to-users
   # (aspen does; elm deliberately doesn't).
-  den.aspects.workstation.homeManager = { pkgs, ... }: {
+  den.aspects.workstation.homeManager = {pkgs, ...}: {
     home.packages = with pkgs; [
       claude-code
       gh

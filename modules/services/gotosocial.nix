@@ -1,55 +1,59 @@
-{ config, inputs, ... }:
-let
-  meta = config.flake.lib.meta;
-in
 {
-  flake.modules.nixos.gotosocial = { config, pkgs, ... }:
-    let
-      package = inputs.nixpkgs.legacyPackages.${pkgs.system}.gotosocial;
+  config,
+  inputs,
+  ...
+}: let
+  meta = config.flake.lib.meta;
+in {
+  flake.modules.nixos.gotosocial = {
+    config,
+    pkgs,
+    ...
+  }: let
+    package = inputs.nixpkgs.legacyPackages.${pkgs.system}.gotosocial;
 
-      themedAssets = pkgs.runCommand "gotosocial-themed-assets" { } ''
-        cp -r ${package}/share/gotosocial/web/assets $out
-        chmod -R u+w $out
-        cp ${./gotosocial-theme.css} $out/themes/theme.css
-      '';
-    in
-    {
-      services.gotosocial = {
-        enable = true;
-        inherit package;
-        environmentFile = config.sops.secrets.gotosocial-env.path;
-        settings = {
-          host = "fedi.ivy.rs";
-          account-domain = "ivy.rs";
+    themedAssets = pkgs.runCommand "gotosocial-themed-assets" {} ''
+      cp -r ${package}/share/gotosocial/web/assets $out
+      chmod -R u+w $out
+      cp ${./gotosocial-theme.css} $out/themes/theme.css
+    '';
+  in {
+    services.gotosocial = {
+      enable = true;
+      inherit package;
+      environmentFile = config.sops.secrets.gotosocial-env.path;
+      settings = {
+        host = "fedi.ivy.rs";
+        account-domain = "ivy.rs";
 
-          landing-page-user = "ivy";
+        landing-page-user = "ivy";
 
-          bind-address = "0.0.0.0";
-          port = 9400;
+        bind-address = "0.0.0.0";
+        port = 9400;
 
-          db-type = "sqlite";
-          db-address = "/var/lib/gotosocial/storage/sqlite.db";
- 
-          storage-backend = "s3";
-          storage-s3-endpoint = "s3.eu-central-003.backblazeb2.com";
-          storage-s3-region = "eu-central-003";
-          storage-s3-use-ssl = true;
-          storage-s3-proxy = true;
-          storage-s3-bucket = "ivy-gotosocial";
+        db-type = "sqlite";
+        db-address = "/var/lib/gotosocial/storage/sqlite.db";
 
-          web-asset-base-dir = "${themedAssets}/";
+        storage-backend = "s3";
+        storage-s3-endpoint = "s3.eu-central-003.backblazeb2.com";
+        storage-s3-region = "eu-central-003";
+        storage-s3-use-ssl = true;
+        storage-s3-proxy = true;
+        storage-s3-bucket = "ivy-gotosocial";
 
-          trusted-proxies = [ "100.64.20.1" ];
+        web-asset-base-dir = "${themedAssets}/";
 
-          letsencrypt-enabled = false;
+        trusted-proxies = ["100.64.20.1"];
 
-          oidc-enabled = true;
-          oidc-idp-name = "houseplantsID";
-          oidc-issuer = meta.oidcIssuer;
-          oidc-client-id = "6aa09792-1602-405a-a7ed-adcdc4b3883c";
-        };
+        letsencrypt-enabled = false;
+
+        oidc-enabled = true;
+        oidc-idp-name = "houseplantsID";
+        oidc-issuer = meta.oidcIssuer;
+        oidc-client-id = "6aa09792-1602-405a-a7ed-adcdc4b3883c";
       };
-
-      networking.firewall.interfaces."tailscale0".allowedTCPPorts = [ 9400 ];
     };
+
+    networking.firewall.interfaces."tailscale0".allowedTCPPorts = [9400];
+  };
 }

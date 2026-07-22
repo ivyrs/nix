@@ -1,9 +1,7 @@
-{ config, ... }:
-let
+{config, ...}: let
   meta = config.flake.lib.meta;
-in
-{
-  flake.modules.nixos.vaultwarden = { config, ... }: {
+in {
+  flake.modules.nixos.vaultwarden = {config, ...}: {
     services.vaultwarden = {
       enable = true;
       dbBackend = "sqlite";
@@ -31,6 +29,6 @@ in
       environmentFile = config.sops.secrets.vaultwarden-env.path;
     };
 
-    networking.firewall.interfaces."tailscale0".allowedTCPPorts = [ config.services.vaultwarden.config.ROCKET_PORT ];
+    networking.firewall.interfaces."tailscale0".allowedTCPPorts = [config.services.vaultwarden.config.ROCKET_PORT];
   };
 }

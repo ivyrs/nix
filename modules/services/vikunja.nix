@@ -1,15 +1,16 @@
-{ config, ... }:
-let
+{config, ...}: let
   meta = config.flake.lib.meta;
-in
-{
-  flake.modules.nixos.vikunja = { config, ... }: {
+in {
+  flake.modules.nixos.vikunja = {config, ...}: {
     services.postgresql = {
       enable = true;
       ensureUsers = [
-        { name = "vikunja"; ensureDBOwnership = true; }
+        {
+          name = "vikunja";
+          ensureDBOwnership = true;
+        }
       ];
-      ensureDatabases = [ "vikunja" ];
+      ensureDatabases = ["vikunja"];
     };
 
     services.vikunja = {
@@ -45,9 +46,9 @@ in
         };
       };
 
-      environmentFiles = [ config.sops.secrets.vikunja-env.path ];
+      environmentFiles = [config.sops.secrets.vikunja-env.path];
     };
 
-    networking.firewall.interfaces."tailscale0".allowedTCPPorts = [ config.services.vikunja.port ];
+    networking.firewall.interfaces."tailscale0".allowedTCPPorts = [config.services.vikunja.port];
   };
 }

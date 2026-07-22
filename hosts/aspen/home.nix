@@ -1,5 +1,8 @@
-{ config, den, ... }:
 {
+  config,
+  den,
+  ...
+}: {
   den.aspects.aspen.provides.to-users = {
     includes = [
       den.aspects.gui

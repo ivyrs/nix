@@ -1,10 +1,8 @@
 # The interactive shell as one concern: zsh itself, the starship prompt,
 # and the fzf/zoxide/direnv integrations hooked into it.
-{ config, ... }:
-let
+{config, ...}: let
   meta = config.flake.lib.meta;
-in
-{
+in {
   flake.modules.homeManager.base = {
     programs.zsh = {
       enable = true;
@@ -12,7 +10,7 @@ in
 
       oh-my-zsh = {
         enable = true;
-        plugins = [ "git" "brew" "eza" ];
+        plugins = ["git" "brew" "eza"];
       };
 
       initContent = ''
@@ -121,7 +119,7 @@ in
     programs.zoxide = {
       enable = true;
       enableZshIntegration = true;
-      options = [ "--cmd cd" ];
+      options = ["--cmd cd"];
     };
 
     programs.direnv = {
