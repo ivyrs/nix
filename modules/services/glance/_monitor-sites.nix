@@ -37,7 +37,7 @@
     {
       title = "navidrome";
       url = "https://music.moose-amberjack.ts.net";
-      icon = "https://cdn.jsdelivr.net/gh/selfhst/icons@main/png/syncthing.png";
+      icon = "https://cdn.jsdelivr.net/gh/selfhst/icons@main/png/navidrome.png";
     }
   ];
 }
