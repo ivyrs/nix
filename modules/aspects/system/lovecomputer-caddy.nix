@@ -1,7 +1,7 @@
 {config, ...}: let
   meta = config.flake.lib.meta;
 in {
-  flake.modules.nixos.lovecomputer-caddy = {
+  den.aspects.lovecomputer-caddy.nixos = {
     services.caddy = {
       enable = true;
       email = meta.email;

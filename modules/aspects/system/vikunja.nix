@@ -1,7 +1,7 @@
 {config, ...}: let
   meta = config.flake.lib.meta;
 in {
-  flake.modules.nixos.vikunja = {config, ...}: {
+  den.aspects.vikunja.nixos = {config, ...}: {
     services.postgresql = {
       enable = true;
       ensureUsers = [

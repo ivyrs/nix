@@ -15,23 +15,23 @@
     includes = [
       den.batteries.hostname
       den.aspects.nix-settings
+      den.aspects.i18n
+      den.aspects.tailscale-server
+      den.aspects.syncthing
+      den.aspects.glance
+      den.aspects.miniflux
+      den.aspects.pocket-id
+      # den.aspects.vikunja # disabled 2026-07-21, pending pocket-id redirect URI fix (see project_forgejo_elm memory)
+      den.aspects.vaultwarden
+      den.aspects.nextcloud
+      den.aspects.gotosocial
+      den.aspects.forgejo
     ];
 
     nixos = {
       imports = [
         ./_hardware-configuration.nix
         inputs.sops-nix.nixosModules.sops
-        config.flake.modules.nixos.i18n
-        config.flake.modules.nixos.tailscale-server
-        config.flake.modules.nixos.syncthing
-        config.flake.modules.nixos.glance
-        config.flake.modules.nixos.miniflux
-        config.flake.modules.nixos.pocket-id
-        # config.flake.modules.nixos.vikunja # disabled 2026-07-21, pending pocket-id redirect URI fix (see project_forgejo_elm memory)
-        config.flake.modules.nixos.vaultwarden
-        config.flake.modules.nixos.nextcloud
-        config.flake.modules.nixos.gotosocial
-        config.flake.modules.nixos.forgejo
         config.flake.modules.nixos.sops
         config.flake.modules.nixos.sops-elm-services
         ({pkgs, ...}: {

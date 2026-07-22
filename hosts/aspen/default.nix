@@ -14,18 +14,18 @@
     includes = [
       den.batteries.hostname
       den.aspects.nix-settings
+      den.aspects.homebrew
+      den.aspects.aerospace
+      den.aspects.system-defaults
+      den.aspects.fonts
+      den.aspects.touchid
     ];
 
     darwin = {
       imports = [
         inputs.sops-nix.darwinModules.sops
         inputs.nix-homebrew.darwinModules.nix-homebrew
-        config.flake.modules.darwin.homebrew
         config.flake.modules.darwin.sops
-        config.flake.modules.darwin.aerospace
-        config.flake.modules.darwin.system-defaults
-        config.flake.modules.darwin.fonts
-        config.flake.modules.darwin.touchid
         ({pkgs, ...}: {
           nixpkgs.hostPlatform = "aarch64-darwin";
 

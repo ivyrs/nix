@@ -10,6 +10,10 @@
     includes = [
       den.batteries.hostname
       den.aspects.nix-settings
+      den.aspects.i18n
+      den.aspects.tailscale-server
+      den.aspects.caddy
+      den.aspects.glance-agent
     ];
 
     nixos = {
@@ -18,10 +22,6 @@
         ./_disko.nix
         inputs.disko.nixosModules.disko
         inputs.sops-nix.nixosModules.sops
-        config.flake.modules.nixos.i18n
-        config.flake.modules.nixos.tailscale-server
-        config.flake.modules.nixos.caddy
-        config.flake.modules.nixos.glance-agent
         config.flake.modules.nixos.sops
         ({pkgs, ...}: {
           # Bootloader.

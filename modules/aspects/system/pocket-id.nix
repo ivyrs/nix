@@ -1,7 +1,7 @@
 {config, ...}: let
   meta = config.flake.lib.meta;
 in {
-  flake.modules.nixos.pocket-id = {config, ...}: {
+  den.aspects.pocket-id.nixos = {config, ...}: {
     services.pocket-id = {
       enable = true;
       settings = {

@@ -4,10 +4,10 @@
   ...
 }: let
   st = config.flake.lib.meta.syncthing;
-  # Each machine lists every device except itself; IDs live in modules/meta.nix.
+  # Each machine lists every device except itself; IDs live in modules/meta/meta.nix.
   deviceSet = names: lib.genAttrs names (name: {id = st.devices.${name};});
 in {
-  flake.modules.nixos.syncthing = {config, ...}: {
+  den.aspects.syncthing.nixos = {config, ...}: {
     networking.firewall.interfaces."tailscale0".allowedTCPPorts = [8384];
     services.syncthing = {
       enable = true;
@@ -43,7 +43,7 @@ in {
     };
   };
 
-  flake.modules.homeManager.syncthing = {config, ...}: {
+  den.aspects.syncthing.homeManager = {config, ...}: {
     services.syncthing = {
       enable = true;
       overrideDevices = true;

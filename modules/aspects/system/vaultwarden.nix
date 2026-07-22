@@ -1,7 +1,7 @@
 {config, ...}: let
   meta = config.flake.lib.meta;
 in {
-  flake.modules.nixos.vaultwarden = {config, ...}: {
+  den.aspects.vaultwarden.nixos = {config, ...}: {
     services.vaultwarden = {
       enable = true;
       dbBackend = "sqlite";

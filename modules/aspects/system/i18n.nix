@@ -1,6 +1,6 @@
 {
   # these are assumed to be always correct. if not, don't use them
-  flake.modules.nixos.i18n = {
+  den.aspects.i18n.nixos = {
     time.timeZone = "Europe/London";
     i18n.defaultLocale = "en_GB.UTF-8";
 

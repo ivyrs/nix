@@ -1,5 +1,5 @@
 {
-  flake.modules.darwin.aerospace = {
+  den.aspects.aerospace.darwin = {
     services.aerospace = {
       enable = true;
 

@@ -3,7 +3,7 @@
 {
   # Devices that just join the tailnet: can use exit nodes and subnet
   # routes advertised by others, doesn't advertise anything itself.
-  flake.modules.nixos.tailscale-client = {
+  den.aspects.tailscale-client.nixos = {
     services.tailscale = {
       enable = true;
       useRoutingFeatures = "client";
@@ -11,7 +11,7 @@
   };
 
   # Devices that advertise routes/exit-node (enables IP forwarding).
-  flake.modules.nixos.tailscale-server = {
+  den.aspects.tailscale-server.nixos = {
     services.tailscale = {
       enable = true;
       useRoutingFeatures = "server";

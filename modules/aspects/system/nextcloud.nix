@@ -1,7 +1,7 @@
 {config, ...}: let
   meta = config.flake.lib.meta;
 in {
-  flake.modules.nixos.nextcloud = {
+  den.aspects.nextcloud.nixos = {
     config,
     pkgs,
     ...

@@ -1,5 +1,5 @@
 {
-  flake.modules.darwin.homebrew = {
+  den.aspects.homebrew.darwin = {
     nix-homebrew = {
       enable = true;
       enableRosetta = true; # also set up the Intel prefix for x86-only casks

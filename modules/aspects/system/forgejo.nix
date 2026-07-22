@@ -1,7 +1,7 @@
 {config, ...}: let
   meta = config.flake.lib.meta;
 in {
-  flake.modules.nixos.forgejo = {
+  den.aspects.forgejo.nixos = {
     config,
     pkgs,
     lib,

@@ -1,16 +1,16 @@
 # Runs the glanceapp/agent companion binary so this host shows up as a
 # "remote" server-stats entry on elm's glance dashboard (see
-# modules/services/glance/_server-stats.nix). Not packaged in nixpkgs, so
-# the derivation lives in modules/packages (underscore-prefixed so
-# import-tree skips it — it's a plain callPackage function, not a
+# modules/aspects/system/glance/_server-stats.nix). Not packaged in
+# nixpkgs, so the derivation lives in modules/packages (underscore-prefixed
+# so import-tree skips it — it's a plain callPackage function, not a
 # flake-parts module).
 {...}: {
-  flake.modules.nixos.glance-agent = {
+  den.aspects.glance-agent.nixos = {
     config,
     pkgs,
     ...
   }: let
-    package = pkgs.callPackage ../packages/_glance-agent.nix {};
+    package = pkgs.callPackage ../../packages/_glance-agent.nix {};
     port = 27973;
   in {
     systemd.services.glance-agent = {

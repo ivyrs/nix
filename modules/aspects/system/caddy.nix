@@ -1,7 +1,7 @@
 {config, ...}: let
   meta = config.flake.lib.meta;
 in {
-  flake.modules.nixos.caddy = {pkgs, ...}: let
+  den.aspects.caddy.nixos = {pkgs, ...}: let
     staticSite = pkgs.runCommand "houseplants-static-site" {} ''
       mkdir -p $out
       cp ${./houseplants-index.html} $out/index.html

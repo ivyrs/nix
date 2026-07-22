@@ -7,12 +7,12 @@
     includes = [
       den.aspects.gui
       den.aspects.workstation
+      den.aspects.syncthing
     ];
 
     homeManager = {
       imports = [
         config.flake.modules.homeManager.base
-        config.flake.modules.homeManager.syncthing
       ];
 
       home.file.".ssh/authorized_keys".text = ''

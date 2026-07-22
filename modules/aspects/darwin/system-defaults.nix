@@ -1,5 +1,5 @@
 {
-  flake.modules.darwin.system-defaults = {
+  den.aspects.system-defaults.darwin = {
     system.defaults = {
       dock = {
         autohide = true;

@@ -5,7 +5,7 @@
 }: let
   meta = config.flake.lib.meta;
 in {
-  flake.modules.nixos.gotosocial = {
+  den.aspects.gotosocial.nixos = {
     config,
     pkgs,
     ...

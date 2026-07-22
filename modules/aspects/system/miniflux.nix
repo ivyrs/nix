@@ -1,7 +1,7 @@
 {config, ...}: let
   meta = config.flake.lib.meta;
 in {
-  flake.modules.nixos.miniflux = {config, ...}: {
+  den.aspects.miniflux.nixos = {config, ...}: {
     services.miniflux = {
       enable = true;
       config = {

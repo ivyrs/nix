@@ -5,7 +5,7 @@
 {config, ...}: let
   meta = config.flake.lib.meta;
 in {
-  flake.modules.nixos.glance = {config, ...}: {
+  den.aspects.glance.nixos = {config, ...}: {
     services.glance = {
       enable = true;
       settings = {
