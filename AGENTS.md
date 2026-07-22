@@ -124,9 +124,6 @@ before wiring it into each host's aspect definition.
   Read it at the **file level** and close over it — inside a nested
   `({ pkgs, ... }: ...)` block, `config` is the OS/HM config, not the flake's
   (same class of gotcha as the module-arg one above).
-- `modules/sops.nix`: the darwin `placeholder` secret is a canary, not dead
-  code — sops-nix's darwin module is a no-op with zero secrets, so it keeps
-  host-key decryption exercised on aspen. Don't delete it.
 
 ## Sanity-checking changes
 
