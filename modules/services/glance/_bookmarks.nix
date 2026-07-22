@@ -33,6 +33,10 @@
           title = "geforce now";
           url = "https://play.geforcenow.com/mall/#/layout/games";
         }
+        {
+          title = "listenbrainz";
+          url = "https://listenbrainz.org/user/ivyt/";
+        }
       ];
     }
   ];

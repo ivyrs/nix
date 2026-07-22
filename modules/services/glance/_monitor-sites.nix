@@ -6,34 +6,39 @@
   title = "Services";
   sites = [
     {
+      title = "nextcloud";
+      url = "https://cloud.${meta.domain}";
+      icon = "https://cdn.jsdelivr.net/gh/selfhst/icons@main/png/nextcloud.png";
+    }
+    {
       title = "syncthing";
       url = "http://elm.${meta.tailnet}:8384";
       icon = "https://cdn.jsdelivr.net/gh/selfhst/icons@main/png/syncthing.png";
     }
-    {
-      title = "RSS";
-      url = "https://rss.${meta.domain}";
-      icon = "https://cdn.jsdelivr.net/gh/selfhst/icons@main/png/miniflux.png";
-    }
-    # {
-    #   title = "hTodo";
-    #   url = "https://todo.${meta.domain}";
-    #   icon = "https://cdn.jsdelivr.net/gh/selfhst/icons@main/png/vikunja.png";
-    # }
     {
       title = "vaultwarden";
       url = "https://vault.${meta.domain}";
       icon = "https://cdn.jsdelivr.net/gh/selfhst/icons@main/png/vaultwarden.png";
     }
     {
-      title = "nextcloud";
-      url = "https://cloud.${meta.domain}";
-      icon = "https://cdn.jsdelivr.net/gh/selfhst/icons@main/png/nextcloud.png";
+      title = "RSS";
+      url = "https://rss.${meta.domain}";
+      icon = "https://cdn.jsdelivr.net/gh/selfhst/icons@main/png/miniflux.png";
     }
     {
       title = "houseplantsID";
       url = meta.oidcIssuer;
-      icon = "/assets/ivyid-logo.png";
+      icon = "/assets/houseplants-logo.png";
+    }
+    {
+      title = "forgejo";
+      url = "https://git.${meta.domain}";
+      icon = "https://cdn.jsdelivr.net/gh/selfhst/icons@main/png/forgejo.png";
+    }
+    {
+      title = "navidrome";
+      url = "https://music.moose-amberjack.ts.net";
+      icon = "https://cdn.jsdelivr.net/gh/selfhst/icons@main/png/syncthing.png";
     }
   ];
 }
