@@ -16,10 +16,11 @@
         config.flake.modules.nixos.glance
         config.flake.modules.nixos.miniflux
         config.flake.modules.nixos.pocket-id
-        config.flake.modules.nixos.vikunja
+        # config.flake.modules.nixos.vikunja # disabled 2026-07-21, pending pocket-id redirect URI fix (see project_forgejo_elm memory)
         config.flake.modules.nixos.vaultwarden
         config.flake.modules.nixos.nextcloud
         config.flake.modules.nixos.gotosocial
+        config.flake.modules.nixos.forgejo
         config.flake.modules.nixos.sops
         ({ pkgs, ... }: {
           # Bootloader.
