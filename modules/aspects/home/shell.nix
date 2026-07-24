@@ -37,6 +37,30 @@ in {
         du = "dust";
         ps = "procs";
         sed = "sd";
+
+        ".." = "cd ..";
+        "..." = "cd ../..";
+        "...." = "cd ../../..";
+        "-" = "cd -";
+
+        c = "clear";
+        mkdir = "mkdir -p";
+        reload = "exec zsh";
+
+        lg = "lazygit";
+
+        # justfile shortcuts (see ./justfile at the flake root)
+        jsw = "just switch";
+        jck = "just check";
+        jfmt = "just fmt";
+        jup = "just update";
+        jdep = "just deploy";
+
+        # nix maintenance
+        nixgc = "nix-collect-garbage -d";
+        nixgens = "nix-env --list-generations -p /nix/var/nix/profiles/system";
+
+        ports = "lsof -i -P -n | grep LISTEN";
       };
     };
 

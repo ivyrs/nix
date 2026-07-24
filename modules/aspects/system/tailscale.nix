@@ -19,5 +19,17 @@
       # bare ports behind the tailnet; this pre-authorises caddy for LE certs.
       permitCertUid = "caddy";
     };
+
+    # useRoutingFeatures = "server" makes the tailscale module set
+    # net.ipv6.conf.all.forwarding = true. Linux's kernel treats that as
+    # "this is a router" and stops autoconfiguring the box's own address via
+    # SLAAC RAs unless accept_ra is explicitly overridden to 2 (accept RAs
+    # even with forwarding on). Without this, lovecomputer/houseplants (whose
+    # public IPv6 comes purely from Hetzner SLAAC) silently end up with only
+    # a link-local address and no default v6 route.
+    boot.kernel.sysctl = {
+      "net.ipv6.conf.all.accept_ra" = 2;
+      "net.ipv6.conf.default.accept_ra" = 2;
+    };
   };
 }

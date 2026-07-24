@@ -29,6 +29,7 @@
         "raycast"
         "shottr"
         "claude"
+        "calibre"
       ];
 
       masApps = {

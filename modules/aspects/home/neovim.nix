@@ -31,7 +31,7 @@
           enable = true;
         };
 
-        vim.notes.obsidian.enable = true;
+        # vim.notes.obsidian.enable = true;
         vim.notes.todo-comments.enable = true;
 
         # use lavender accents
