@@ -2,6 +2,10 @@
   meta = config.flake.lib.meta;
 in {
   den.aspects.git.homeManager = {
+    lib,
+    pkgs,
+    ...
+  }: {
     # Installs delta and sets git's pager + interactive.diffFilter for us.
     programs.delta = {
       enable = true;
@@ -31,8 +35,18 @@ in {
       ];
 
       settings = {
-        user.name = "ivy forever";
-        user.email = meta.email;
+        user =
+          {
+            name = "ivy forever";
+            email = meta.email;
+          }
+          # SSH commit signing via the 1Password app — only installed on
+          # aspen (macOS); the Linux hosts (elm/houseplants/lovecomputer)
+          # are headless servers with no 1Password, so gpgsign here would
+          # break every commit for them.
+          // lib.optionalAttrs pkgs.stdenv.isDarwin {
+            signingkey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICtFawaAWSklr1GGYiBZzGr/ydKSSOatBfGfY72eqKGZ";
+          };
         init.defaultBranch = "main";
         column.ui = "auto";
         color.ui = "auto";
@@ -59,7 +73,14 @@ in {
         };
 
         help.autocorrect = "prompt";
-        commit.verbose = true;
+        commit =
+          {verbose = true;}
+          // lib.optionalAttrs pkgs.stdenv.isDarwin {gpgsign = true;};
+
+        gpg = lib.optionalAttrs pkgs.stdenv.isDarwin {
+          format = "ssh";
+          ssh.program = "/Applications/1Password.app/Contents/MacOS/op-ssh-sign";
+        };
 
         rerere = {
           enabled = true;
