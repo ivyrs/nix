@@ -168,7 +168,6 @@ in {
         color_align.mode = "vertical";
         backend = "macchina";
         args = null;
-        distro = "macos_small";
         pride_month_disable = false;
         custom_ascii_path = null;
         custom_presets = null;
