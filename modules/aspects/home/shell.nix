@@ -20,14 +20,19 @@ in {
       shellAliases = {
         e = "nvim";
 
-        l = "eza";
-        ls = "eza";
-        ll = "eza -l";
+        # base aliases from https://github.com/plttn/fish-eza
+        l = "eza --group --header --group-directories-first";
+        ls = "eza --group --header --group-directories-first";
+        ll = "eza --group --header --group-directories-first --long --git";
+        le = "eza --group --header --group-directories-first --extended --long";
+        lt = "eza --group --header --group-directories-first --tree --level";
+        lc = "eza --group --header --group-directories-first --across";
+        lo = "eza --group --header --group-directories-first --oneline";
+
         la = "eza -la";
         lsa = "eza -la";
-        lt = "eza -T";
         lta = "eza -T -a";
-        tree = "eza -T";
+        tree = "eza --group --header --group-directories-first --tree";
 
         cat = "bat";
         df = "duf";
@@ -149,6 +154,29 @@ in {
     programs.direnv = {
       enable = true;
       enableZshIntegration = true;
+      config.global.hide_env_diff = true;
     };
+
+    programs.hyfetch = {
+      enable = true;
+      settings = {
+        preset = "baker";
+        mode = "rgb";
+        auto_detect_light_dark = true;
+        light_dark = "dark";
+        lightness = 0.65;
+        color_align.mode = "vertical";
+        backend = "macchina";
+        args = null;
+        distro = "macos_small";
+        pride_month_disable = false;
+        custom_ascii_path = null;
+        custom_presets = null;
+        palette_glyph = null;
+        palette_type = null;
+      };
+    };
+
+    programs.macchina.enable = true;
   };
 }

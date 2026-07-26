@@ -8,6 +8,7 @@
 
     home.sessionVariables = {
       EDITOR = "nvim";
+      VISUAL = "nvim";
       # Pin this so `sops` finds the personal key the same way on both
       # macOS and Linux, instead of relying on each OS's default config dir.
       SOPS_AGE_KEY_FILE = "$HOME/.config/sops/age/keys.txt";

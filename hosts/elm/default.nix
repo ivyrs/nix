@@ -8,8 +8,9 @@
 
   # elm stays pinned to nixpkgs-stable / home-manager-stable to match its
   # NixOS release (see README's "Inputs of note").
-  den.hosts.x86_64-linux.elm.instantiate = inputs.nixpkgs-stable.lib.nixosSystem;
-  den.hosts.x86_64-linux.elm.home-manager.module = inputs.home-manager-stable.nixosModules.home-manager;
+  # until nowwwwww :3
+  den.hosts.x86_64-linux.elm.instantiate = inputs.nixpkgs.lib.nixosSystem;
+  den.hosts.x86_64-linux.elm.home-manager.module = inputs.home-manager.nixosModules.home-manager;
 
   den.aspects.elm = {
     includes = [
@@ -21,7 +22,6 @@
       den.aspects.glance
       den.aspects.miniflux
       den.aspects.pocket-id
-      # den.aspects.vikunja # disabled 2026-07-21, pending pocket-id redirect URI fix (see project_forgejo_elm memory)
       den.aspects.vaultwarden
       den.aspects.nextcloud
       den.aspects.gotosocial

@@ -3,7 +3,14 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
-    nixpkgs-stable.url = "github:NixOS/nixpkgs/nixos-26.05";
+    # nixpkgs-stable.url = "github:NixOS/nixpkgs/nixos-26.05";
+
+    # Unmerged fix for Inkscape crashing on startup on aarch64-darwin
+    # (nixpkgs#475236 / nixpkgs PR #520909 — librsvg's gdk-pixbuf SVG loader
+    # installs as .dylib on Darwin but gdk-pixbuf only scans for .so).
+    # Drop this input + the overlay in modules/aspects/darwin/inkscape.nix
+    # once it lands in nixpkgs-unstable.
+    nixpkgs-librsvg-fix.url = "github:kolmodin/nixpkgs/pr-fix-librsvg-on-darwin";
 
     flake-parts.url = "github:hercules-ci/flake-parts";
     flake-parts.inputs.nixpkgs-lib.follows = "nixpkgs";
@@ -18,8 +25,8 @@
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
-    home-manager-stable.url = "github:nix-community/home-manager/release-26.05";
-    home-manager-stable.inputs.nixpkgs.follows = "nixpkgs-stable";
+    # home-manager-stable.url = "github:nix-community/home-manager/release-26.05";
+    # home-manager-stable.inputs.nixpkgs.follows = "nixpkgs-stable";
 
     nix-homebrew.url = "github:zhaofengli/nix-homebrew";
 
