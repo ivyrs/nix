@@ -39,7 +39,7 @@ in {
           }
 
           route {
-            redir /git https://git.lovecomputer.net/ivy
+            redir /git https://git.houseplants.cloud/ivy
           }
         '';
       };
