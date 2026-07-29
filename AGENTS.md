@@ -88,8 +88,10 @@ Implications for edits:
 `aspen` is nix-darwin + home-manager (macOS, personal machine). `elm`,
 `houseplants`, and `lovecomputer` are all plain NixOS, but play different
 roles: `elm` is the home server sitting behind the tailnet (Syncthing,
-glance, miniflux, pocket-id, vaultwarden, Nextcloud, GoToSocial, Forgejo —
-all on bare ports, no public exposure); `houseplants` and `lovecomputer` are
+glance, miniflux, pocket-id, vaultwarden, Nextcloud, GoToSocial, Forgejo,
+multi-scrobbler — all on bare ports with no public exposure, except glance,
+which is exposed as a TLS-terminated Tailscale Service via `tailscale serve`
+rather than a bare port); `houseplants` and `lovecomputer` are
 both Hetzner VPSes with `networking.firewall.allowedTCPPorts = [80 443]`
 open to the real internet — `houseplants` runs Caddy
 (`modules/aspects/system/caddy.nix`) and reverse-proxies each
@@ -155,6 +157,13 @@ before wiring it into each host's aspect definition.
   Read it at the **file level** and close over it — inside a nested
   `({ pkgs, ... }: ...)` block, `config` is the OS/HM config, not the flake's
   (same class of gotcha as the module-arg one above).
+- `modules/aspects/system/glance/default.nix`'s `tailscale-serve-dash`
+  systemd unit shells out to the `tailscale serve` CLI rather than using the
+  declarative `services.tailscale.serve.services` option — as of tailscaled
+  1.98.x that option's JSON config path can only ever produce a plain-HTTP
+  `tcp:<port>` listener, never a TLS-terminated one, no matter the backend
+  URL scheme given. Don't "simplify" this back to the declarative option; it
+  would silently drop glance's TLS cert on `dash.<tailnet>.ts.net`.
 
 ## Sanity-checking changes
 
