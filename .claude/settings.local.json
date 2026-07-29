@@ -25,7 +25,8 @@
       "Read(//etc/profiles/per-user/ivy/bin/**)",
       "WebFetch(domain:docs.claude.com)",
       "Bash(bash /Users/ivy/.claude/statusline-command.sh)",
-      "Bash(just deploy *)"
+      "Bash(just deploy *)",
+      "Bash(nix search *)"
     ]
   }
 }

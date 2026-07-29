@@ -19,6 +19,6 @@
 
   # GUI-only apps: pointless on a headless host like elm.
   den.aspects.gui.homeManager = {pkgs, ...}: {
-    home.packages = with pkgs; [discord];
+    home.packages = with pkgs; [];
   };
 }

@@ -8,6 +8,9 @@
         persistent-apps = [
           {app = "/Applications/Nix Apps/Ghostty.app";}
           {app = "/Applications/Helium.app";}
+          {app = "/Applications/Obsidian.app";}
+          {app = "/Applications/Nix Apps/Vesktop.app";}
+          {app = "/Applications/Feishin.app";}
         ];
       };
       finder = {
