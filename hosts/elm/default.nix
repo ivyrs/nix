@@ -6,9 +6,9 @@
 }: {
   den.hosts.x86_64-linux.elm.users.ivy = {};
 
-  # elm stays pinned to nixpkgs-stable / home-manager-stable to match its
-  # NixOS release (see README's "Inputs of note").
-  # until nowwwwww :3
+  # elm used to pin to nixpkgs-stable/home-manager-stable to match its NixOS
+  # release; now tracks unstable like every other host (see README's "Inputs
+  # of note").
   den.hosts.x86_64-linux.elm.instantiate = inputs.nixpkgs.lib.nixosSystem;
   den.hosts.x86_64-linux.elm.home-manager.module = inputs.home-manager.nixosModules.home-manager;
 
@@ -26,6 +26,7 @@
       den.aspects.nextcloud
       den.aspects.gotosocial
       den.aspects.forgejo
+      den.aspects.multi-scrobbler
     ];
 
     nixos = {
