@@ -4,6 +4,7 @@
       den.aspects.home-manager
       den.aspects.ghostty
       den.aspects.workstation
+      den.aspects.dev-tools
       den.aspects.syncthing
     ];
 

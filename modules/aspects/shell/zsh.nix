@@ -11,7 +11,9 @@
     initContent = ''
       zstyle ':completion:*' menu select
 
-      eval "$(devenv hook zsh)"
+      if command -v devenv >/dev/null 2>&1; then
+        eval "$(devenv hook zsh)"
+      fi
     '';
 
     shellAliases = {

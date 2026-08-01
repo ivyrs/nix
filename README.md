@@ -89,6 +89,7 @@ modules/
     home-manager.nix         # den.aspects.home-manager — bundles core/cli-tools/shell/git/neovim/tmux, included by every host
     ghostty.nix              # den.aspects.ghostty.homeManager (GUI-only, aspen)
     workstation.nix          # den.aspects.workstation.homeManager (workstation-only CLI, aspen)
+    dev-tools.nix            # den.aspects.dev-tools.homeManager (development toolchains and devenv, aspen)
 hosts/
   aspen/
     default.nix              # den.hosts.aarch64-darwin.aspen + den.aspects.aspen.darwin (host-specific darwin config)
