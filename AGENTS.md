@@ -83,10 +83,18 @@ Implications for edits:
 - **Don't** build a manual `imports = [ ./foo.nix ./bar.nix ]` list anywhere
   under `modules/`/`hosts/` — that defeats the point of import-tree.
 
-## Four very different targets
+## Five very different targets
 
-`aspen` is nix-darwin + home-manager (macOS, personal machine). `elm`,
-`houseplants`, and `lovecomputer` are all plain NixOS, but play different
+`aspen` is nix-darwin + home-manager (macOS, personal machine). `alder` is
+NixOS/Asahi on that *same physical Mac*, dual-booted — not a second
+machine. It's a tailnet client only (`tailscale-client`), runs niri
+(`modules/aspects/niri.nix`, the first Linux DE/WM aspect in this repo), and
+mirrors aspen's home-manager environment (`workstation`, `dev-tools`,
+`ghostty`). Its `hosts/alder/_hardware-configuration.nix` is a placeholder
+until the physical Asahi install happens — see the file's own comment and
+the guardrails below.
+
+`elm`, `houseplants`, and `lovecomputer` are all plain NixOS, but play different
 roles: `elm` is the home server sitting behind the tailnet (Syncthing,
 glance, miniflux, pocket-id, vaultwarden, Nextcloud, GoToSocial, Forgejo,
 multi-scrobbler — all on bare ports with no public exposure, except glance,
@@ -116,6 +124,18 @@ before wiring it into each host's aspect definition.
   `hosts/{houseplants,lovecomputer}/{_hardware-configuration,_disko}.nix`
   are generated (by `nixos-generate-config` / `nixos-anywhere`); never
   hand-edit them.
+- `hosts/alder/_hardware-configuration.nix` is a **fake placeholder** (not
+  yet generated — alder's physical Asahi install hasn't happened), unlike
+  the other three: it exists only to keep `nix flake check` green
+  repo-wide. Replace it wholesale with the real `nixos-generate-config`
+  output once the install happens, same never-hand-edit rule applies after
+  that. Also note `hardware.asahi.extractPeripheralFirmware = false;` in
+  `hosts/alder/default.nix` is a temporary stand-in: once installed, point
+  `peripheralFirmwareDirectory` at `firmware.cpio` from the ESP, but keep
+  that file **outside this repo** (e.g. `/etc/nixos/asahi-firmware` on
+  alder) — this repo's Codeberg remote is public, and firmware.cpio is
+  Apple's proprietary binary firmware; committing it would redistribute it
+  to anyone who clones the repo. See that file's comment.
 - `hosts/elm/default.nix`, `hosts/houseplants/default.nix`, and
   `hosts/lovecomputer/default.nix`: `system.stateVersion` has a "don't fuck
   with this" comment on each — leave it alone even during unrelated

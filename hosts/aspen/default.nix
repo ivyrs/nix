@@ -33,6 +33,12 @@
           system.stateVersion = 6;
           system.configurationRevision = inputs.self.rev or inputs.self.dirtyRev or null;
 
+          # aspen is aarch64-darwin and can't natively build aarch64-linux
+          # derivations; this spins up a local linux VM builder so we can
+          # build things like the Asahi installer ISO for alder (and any
+          # future aarch64-linux artifacts) without a remote builder.
+          nix.linux-builder.enable = true;
+
           networking.computerName = "aspen";
           networking.localHostName = "aspen";
 

@@ -10,6 +10,10 @@ Ivy's machine configurations, managed as a single Nix flake.
 | elm         | x86_64-linux (NixOS)                       | Home server behind the tailnet: Syncthing, glance, miniflux, pocket-id, vaultwarden, Nextcloud, GoToSocial, Forgejo, multi-scrobbler (vikunja currently disabled) |
 | houseplants | aarch64-linux (NixOS, Hetzner VPS)         | Public edge: Caddy reverse-proxies each `houseplants.cloud`/`ivy.rs` hostname to the matching service on elm over Tailscale; the only host with ports open to the raw internet |
 | lovecomputer | aarch64-linux (NixOS, Hetzner VPS)        | Second public edge: Caddy serves static sites (`lovecomputer.net`, `ivy.rs`, etc.) |
+| alder       | aarch64-linux (NixOS/Asahi, niri)          | Dual-boots aspen's physical Mac — same hardware, second OS. Tailnet client only, no services, no public exposure. |
+
+alder and aspen are not two machines: they're the same physical hardware,
+dual-booted between macOS (aspen) and NixOS/Asahi (alder).
 
 elm's services mostly sit on bare ports behind the tailnet — one exception is
 glance, which is exposed as a TLS-terminated Tailscale Service
@@ -40,8 +44,8 @@ layers:
   `darwinConfigurations.*` / `nixosConfigurations.*` outputs automatically.
 - **`den.aspects.<name>`** — a feature as a function of context, holding
   configuration for every Nix class it touches at once (`nixos`, `darwin`,
-  `homeManager`). `hosts/aspen/`, `hosts/elm/`, `hosts/houseplants/`, and
-  `hosts/lovecomputer/` each define a host aspect (system config, named to
+  `homeManager`). `hosts/aspen/`, `hosts/elm/`, `hosts/houseplants/`,
+  `hosts/lovecomputer/`, and `hosts/alder/` each define a host aspect (system config, named to
   match the host so Den auto-applies it) and, via
   `provides.to-users.includes`/`provides.to-users.homeManager`, the
   home-manager config delivered to that host's user.
@@ -87,9 +91,10 @@ modules/
     shell/                   # den.aspects.shell.homeManager — zsh + starship prompt + fzf/zoxide/direnv integrations
       default.nix, fetch.nix, integrations.nix, starship.nix, zsh.nix
     home-manager.nix         # den.aspects.home-manager — bundles core/cli-tools/shell/git/neovim/tmux, included by every host
-    ghostty.nix              # den.aspects.ghostty.homeManager (GUI-only, aspen)
-    workstation.nix          # den.aspects.workstation.homeManager (workstation-only CLI, aspen)
-    dev-tools.nix            # den.aspects.dev-tools.homeManager (development toolchains and devenv, aspen)
+    ghostty.nix              # den.aspects.ghostty.homeManager (GUI-only, aspen + alder)
+    workstation.nix          # den.aspects.workstation.homeManager (workstation-only CLI, aspen + alder)
+    dev-tools.nix            # den.aspects.dev-tools.homeManager (development toolchains and devenv, aspen + alder)
+    niri.nix                 # den.aspects.niri.nixos — alder's desktop (niri + greetd/tuigreet)
 hosts/
   aspen/
     default.nix              # den.hosts.aarch64-darwin.aspen + den.aspects.aspen.darwin (host-specific darwin config)
@@ -106,6 +111,10 @@ hosts/
     default.nix              # den.hosts.aarch64-linux.lovecomputer + den.aspects.lovecomputer.nixos (public edge: static sites via lovecomputer-caddy + tailscale-server)
     home.nix                 # den.aspects.lovecomputer.provides.to-users.includes
     _hardware-configuration.nix, _disko.nix  # generated (nixos-anywhere), do not edit
+  alder/
+    default.nix              # den.hosts.aarch64-linux.alder + den.aspects.alder.nixos (NixOS/Asahi, tailscale-client + niri, dual-boots aspen's hardware)
+    home.nix                 # den.aspects.alder.provides.to-users.includes (mirrors aspen: home-manager, ghostty, workstation, dev-tools)
+    _hardware-configuration.nix  # PLACEHOLDER until the physical install happens — see file comment
 ```
 
 Cross-module constants (the `houseplants.cloud` domain, OIDC issuer, SMTP
@@ -136,10 +145,11 @@ password, the aspen SSH pubkey) — Den auto-applies this to every host with an
 Each host's `default.nix` also includes `den.batteries.hostname`, which sets
 `networking.hostName`, and the shared `den.aspects.nix-settings` aspect
 (`modules/aspects/nix-settings.nix`). On the home-manager side,
-aspen's `home.nix` opts into `den.aspects.ghostty` (ghostty config) and
-`den.aspects.workstation` (claude-code, gh, sops tooling) in addition to
-`den.aspects.home-manager` (the base bundle every host gets); headless elm,
-houseplants, and lovecomputer only include `den.aspects.home-manager`.
+aspen's and alder's `home.nix` opt into `den.aspects.ghostty` (ghostty
+config), `den.aspects.workstation` (claude-code, gh, sops tooling), and
+`den.aspects.dev-tools` in addition to `den.aspects.home-manager` (the base
+bundle every host gets); headless elm, houseplants, and lovecomputer only
+include `den.aspects.home-manager`.
 
 ## Usage
 
@@ -150,14 +160,18 @@ just switch
 ```
 
 detects the OS and runs `nh darwin switch` (aspen) or `nh os switch` (elm,
-houseplants, lovecomputer) against `.#$(hostname -s)`.
+houseplants, lovecomputer, alder) against `.#$(hostname -s)`.
 
-To deploy to elm, houseplants, or lovecomputer from aspen (or any machine on
-the tailnet), without SSHing in first:
+To deploy to elm, houseplants, lovecomputer, or alder from another machine on
+the tailnet, without SSHing in first:
 
 ```
-just deploy elm          # or: just deploy houseplants / just deploy lovecomputer
+just deploy elm          # or: just deploy houseplants / just deploy lovecomputer / just deploy alder
 ```
+
+(alder is only reachable this way while actually booted into NixOS — it's
+the same physical hardware as aspen, dual-booted, never running both at once,
+so this can't be run *from* aspen against alder or vice versa.)
 
 builds and activates over SSH via the host's Tailscale name
 (`ivy@<host>.ocelot-perch.ts.net`). Both remote hosts have
@@ -196,13 +210,18 @@ different account, add a one-line entry in `home-configurations.nix`.
   around a librsvg/gdk-pixbuf bug that crashes Inkscape on aarch64-darwin
   (nixpkgs#475236). Drop the input and the overlay once the upstream fix
   (nixpkgs PR #520909) lands in nixpkgs-unstable.
-- `sops-nix` is wired into aspen and elm, for secrets. houseplants and
-  lovecomputer don't need it — both are static Caddy edges with no secrets
-  of their own.
+- `sops-nix` is wired into every host (including houseplants/lovecomputer,
+  despite neither having secrets of their own — every NixOS host needs it
+  regardless, since `modules/users/ivy.nix`'s shared `ivy` aspect decrypts
+  `ivy-password-hash` on all of them).
 - `disko` declares houseplants' and lovecomputer's disk layouts
   (`hosts/houseplants/_disko.nix`, `hosts/lovecomputer/_disko.nix`), used
-  for their original `nixos-anywhere` installs; not used on aspen/elm.
+  for their original `nixos-anywhere` installs; not used on aspen/elm/alder.
 - `nix-homebrew` manages Homebrew casks/brews declaratively on aspen.
+- `nixos-apple-silicon` (`github:nix-community/nixos-apple-silicon`)
+  provides `hardware.asahi.enable` and the Asahi hardware support alder
+  needs; also why aspen has `nix.linux-builder.enable = true` (needed to
+  build aarch64-linux artifacts like the Asahi installer from aarch64-darwin).
 - `den` (`github:denful/den`) provides the `den.hosts`/`den.aspects`/
   `den.batteries` framework described above.
 
