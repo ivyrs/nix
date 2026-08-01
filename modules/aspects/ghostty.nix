@@ -1,9 +1,9 @@
 {
   # Config only — the app itself comes from environment.systemPackages on
   # each host. Ghostty auto-injects zsh shell integration on macOS, so
-  # nothing to enable here. Lives in the `gui` aspect since this is
+  # nothing to enable here. Lives in its own aspect since this is
   # pointless on a headless host.
-  den.aspects.gui.homeManager = {
+  den.aspects.ghostty.homeManager = {
     programs.ghostty = {
       enable = true;
       package = null;

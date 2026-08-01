@@ -1,5 +1,5 @@
 {
-  den.aspects.packages.homeManager = {pkgs, ...}: {
+  den.aspects.cli-tools.homeManager = {pkgs, ...}: {
     # Extend freely. Workstation-only tools live in workstation.nix.
     home.packages = with pkgs; [
       ripgrep
@@ -15,10 +15,5 @@
       just
       nh # `just switch` runs `nh os switch` on every host — keep in base
     ];
-  };
-
-  # GUI-only apps: pointless on a headless host like elm.
-  den.aspects.gui.homeManager = {pkgs, ...}: {
-    home.packages = with pkgs; [];
   };
 }

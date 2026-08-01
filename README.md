@@ -83,11 +83,11 @@ modules/
       default.nix            # registration + page assembly; also exposes glance via `tailscale serve` (see above)
       _*.nix                 # plain widget functions (underscore = skipped by import-tree)
       assets/                # logo + custom css served by glance
-    core.nix, packages.nix, git.nix, neovim.nix, ...
+    core.nix, cli-tools.nix, git.nix, neovim.nix, ...
     shell/                   # den.aspects.shell.homeManager — zsh + starship prompt + fzf/zoxide/direnv integrations
       default.nix, fetch.nix, integrations.nix, starship.nix, zsh.nix
-    home-manager.nix         # den.aspects.home-manager — bundles core/packages/shell/git/neovim/tmux, included by every host
-    ghostty.nix              # den.aspects.gui.homeManager (GUI-only, aspen)
+    home-manager.nix         # den.aspects.home-manager — bundles core/cli-tools/shell/git/neovim/tmux, included by every host
+    ghostty.nix              # den.aspects.ghostty.homeManager (GUI-only, aspen)
     workstation.nix          # den.aspects.workstation.homeManager (workstation-only CLI, aspen)
 hosts/
   aspen/
@@ -135,7 +135,7 @@ password, the aspen SSH pubkey) — Den auto-applies this to every host with an
 Each host's `default.nix` also includes `den.batteries.hostname`, which sets
 `networking.hostName`, and the shared `den.aspects.nix-settings` aspect
 (`modules/aspects/nix-settings.nix`). On the home-manager side,
-aspen's `home.nix` opts into `den.aspects.gui` (ghostty config) and
+aspen's `home.nix` opts into `den.aspects.ghostty` (ghostty config) and
 `den.aspects.workstation` (claude-code, gh, sops tooling) in addition to
 `den.aspects.home-manager` (the base bundle every host gets); headless elm,
 houseplants, and lovecomputer only include `den.aspects.home-manager`.

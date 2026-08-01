@@ -4,7 +4,7 @@
   # den.aspects.home-manager bundling aspect.
   den.aspects.home-manager.includes = [
     den.aspects.core
-    den.aspects.packages
+    den.aspects.cli-tools
     den.aspects.shell
     den.aspects.git
     den.aspects.neovim
