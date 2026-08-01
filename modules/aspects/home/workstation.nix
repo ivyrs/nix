@@ -10,6 +10,14 @@
       sops
       age
       ssh-to-age
+      devenv
+
+      # Default dev toolchains. Rust comes via rustup rather than nixpkgs'
+      # rustc/cargo so `rustup target add wasm32-unknown-unknown` works
+      # in-place; run that once after activation to get wasm support.
+      nodejs
+      rustup
+      go
     ];
   };
 }
