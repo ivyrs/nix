@@ -59,6 +59,8 @@
             settings.PasswordAuthentication = false; # key-only; the declarative password is for local console recovery, not SSH.
           };
 
+          programs.nix-ld.enable = true;
+
           networking.firewall.enable = true;
 
           # Allows unattended remote deploys (`just deploy elm`) to activate over SSH without a password prompt.
