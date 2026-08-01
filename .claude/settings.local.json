@@ -26,7 +26,10 @@
       "WebFetch(domain:docs.claude.com)",
       "Bash(bash /Users/ivy/.claude/statusline-command.sh)",
       "Bash(just deploy *)",
-      "Bash(nix search *)"
+      "Bash(nix search *)",
+      "Bash(find / -path /nix/store -prune -o -type d -iname \"nvf\" -print)",
+      "Read(//nix/store/**)",
+      "Bash(python3 -c ' *)"
     ]
   }
 }
