@@ -1,6 +1,6 @@
 # Runs the glanceapp/agent companion binary so this host shows up as a
 # "remote" server-stats entry on elm's glance dashboard (see
-# modules/aspects/system/glance/_server-stats.nix). Packaged at
+# modules/aspects/glance/_server-stats.nix). Packaged at
 # packages/glance-agent/ (see modules/meta/packages.nix, which also exposes
 # it as flake.packages.<system>.glance-agent).
 {...}: {
@@ -9,7 +9,7 @@
     pkgs,
     ...
   }: let
-    package = pkgs.callPackage ../../../packages/glance-agent/default.nix {};
+    package = pkgs.callPackage ../../packages/glance-agent/default.nix {};
     port = 27973;
   in {
     systemd.services.glance-agent = {

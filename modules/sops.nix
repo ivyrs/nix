@@ -37,7 +37,7 @@
     sops.defaultSopsFile = ../secrets/secrets.yaml;
     sops.age.sshKeyPaths = ["/etc/ssh/ssh_host_ed25519_key"];
 
-    # aerc's IMAP/SMTP password (see modules/aspects/home/aerc.nix); owned by ivy so
+    # aerc's IMAP/SMTP password (see modules/aspects/aerc.nix); owned by ivy so
     # home-manager's passwordCommand can read it without sudo.
     sops.secrets.aerc-fastmail-password.owner = "ivy";
   };

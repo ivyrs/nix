@@ -14,10 +14,10 @@ Ivy's machine configurations, managed as a single Nix flake.
 elm's services mostly sit on bare ports behind the tailnet — one exception is
 glance, which is exposed as a TLS-terminated Tailscale Service
 (`dash.<tailnet>.ts.net`, via `tailscale serve`) rather than a bare port, see
-`modules/aspects/system/glance/default.nix`. houseplants and lovecomputer are
+`modules/aspects/glance/default.nix`. houseplants and lovecomputer are
 the only things that terminate real internet traffic
 (`networking.firewall.allowedTCPPorts = [80 443]`) and proxy in over
-`elm.<tailnet>:<port>` where needed (see `modules/aspects/system/caddy.nix` /
+`elm.<tailnet>:<port>` where needed (see `modules/aspects/caddy.nix` /
 `lovecomputer-caddy.nix`). Every other host only opens ports on
 `tailscale0`.
 
@@ -68,29 +68,28 @@ modules/
     ivy.nix                   # den.aspects.ivy — shared user wiring + the NixOS account (SSH key, password, shell)
   sops.nix                    # flake.modules.nixos.sops / flake.modules.darwin.sops
   aspects/
-    darwin/                   # den.aspects.<name>.darwin, one file per concern
-      aerospace.nix, homebrew.nix, system-defaults.nix, fonts.nix, touchid.nix
-      inkscape.nix             # den.aspects.inkscape — installs inkscape + a librsvg overlay working around a Darwin nixpkgs bug
-    system/                   # den.aspects.<name>.nixos, one file per service/concern
-      i18n.nix, nix-settings.nix
-      tailscale.nix           # den.aspects.tailscale-{client,server}.nixos
-      caddy.nix                # den.aspects.caddy.nixos — the houseplants edge proxy, one virtualHost per public hostname
-      lovecomputer-caddy.nix   # den.aspects.lovecomputer-caddy.nixos — lovecomputer's edge proxy, same shape as caddy.nix
-      miniflux.nix, pocket-id.nix, vikunja.nix, vaultwarden.nix
-      nextcloud.nix, gotosocial.nix, forgejo.nix, glance-agent.nix
-      multi-scrobbler.nix      # den.aspects.multi-scrobbler.nixos — scrobbler, run as an upstream Docker image (oci-containers)
-      syncthing.nix            # den.aspects.syncthing.{nixos,homeManager}
-      glance/                 # den.aspects.glance.nixos, split into widget files
-        default.nix            # registration + page assembly; also exposes glance via `tailscale serve` (see above)
-        _*.nix                 # plain widget functions (underscore = skipped by import-tree)
-        assets/                # logo + custom css served by glance
-    home/                     # den.aspects.<name>.homeManager, split by concern
-      core.nix, packages.nix, git.nix, neovim.nix, ...
-      shell/                   # den.aspects.shell.homeManager — zsh + starship prompt + fzf/zoxide/direnv integrations
-        default.nix, fetch.nix, integrations.nix, starship.nix, zsh.nix
-      home-manager.nix         # den.aspects.home-manager — bundles core/packages/shell/git/neovim/tmux, included by every host
-      ghostty.nix              # den.aspects.gui.homeManager (GUI-only, aspen)
-      workstation.nix          # den.aspects.workstation.homeManager (workstation-only CLI, aspen)
+  aspects/
+    aerospace.nix, homebrew.nix, system-defaults.nix, fonts.nix, touchid.nix
+    inkscape.nix             # den.aspects.inkscape — installs inkscape + a librsvg overlay working around a Darwin nixpkgs bug
+    i18n.nix, nix-settings.nix
+    tailscale.nix            # den.aspects.tailscale-{client,server}.nixos
+    caddy.nix                # den.aspects.caddy.nixos — the houseplants edge proxy, one virtualHost per public hostname
+    lovecomputer-caddy.nix   # den.aspects.lovecomputer-caddy.nixos — lovecomputer's edge proxy, same shape as caddy.nix
+    miniflux.nix, pocket-id.nix, vikunja.nix, vaultwarden.nix
+    nextcloud.nix, gotosocial.nix, forgejo.nix, glance-agent.nix
+    multi-scrobbler.nix      # den.aspects.multi-scrobbler.nixos — scrobbler, run as an upstream Docker image (oci-containers)
+    syncthing.nix            # den.aspects.syncthing.{nixos,homeManager}
+    glance/                  # den.aspects.glance.nixos, split into widget files
+      default.nix            # registration + page assembly; also exposes glance via `tailscale serve` (see above)
+      _*.nix                 # plain widget functions (underscore = skipped by import-tree)
+      assets/                # logo + custom css served by glance
+    core.nix, cli-tools.nix, git.nix, neovim.nix, ...
+    shell/                   # den.aspects.shell.homeManager — zsh + starship prompt + fzf/zoxide/direnv integrations
+      default.nix, fetch.nix, integrations.nix, starship.nix, zsh.nix
+    home-manager.nix         # den.aspects.home-manager — bundles core/cli-tools/shell/git/neovim/tmux, included by every host
+    ghostty.nix              # den.aspects.ghostty.homeManager (GUI-only, aspen)
+    workstation.nix          # den.aspects.workstation.homeManager (workstation-only CLI, aspen)
+    dev-tools.nix            # den.aspects.dev-tools.homeManager (development toolchains and devenv, aspen)
 hosts/
   aspen/
     default.nix              # den.hosts.aarch64-darwin.aspen + den.aspects.aspen.darwin (host-specific darwin config)
@@ -136,8 +135,8 @@ password, the aspen SSH pubkey) — Den auto-applies this to every host with an
 
 Each host's `default.nix` also includes `den.batteries.hostname`, which sets
 `networking.hostName`, and the shared `den.aspects.nix-settings` aspect
-(`modules/aspects/system/nix-settings.nix`). On the home-manager side,
-aspen's `home.nix` opts into `den.aspects.gui` (ghostty config) and
+(`modules/aspects/nix-settings.nix`). On the home-manager side,
+aspen's `home.nix` opts into `den.aspects.ghostty` (ghostty config) and
 `den.aspects.workstation` (claude-code, gh, sops tooling) in addition to
 `den.aspects.home-manager` (the base bundle every host gets); headless elm,
 houseplants, and lovecomputer only include `den.aspects.home-manager`.
@@ -193,7 +192,7 @@ different account, add a one-line entry in `home-configurations.nix`.
   that's been dropped in favor of unstable everywhere; the input is still
   present in `flake.nix`, commented out, in case it's needed again.
 - `nixpkgs-librsvg-fix` is a temporary fork pulled in for one overlaid
-  package (`librsvg`, via `modules/aspects/darwin/inkscape.nix`), working
+  package (`librsvg`, via `modules/aspects/inkscape.nix`), working
   around a librsvg/gdk-pixbuf bug that crashes Inkscape on aarch64-darwin
   (nixpkgs#475236). Drop the input and the overlay once the upstream fix
   (nixpkgs PR #520909) lands in nixpkgs-unstable.
@@ -222,7 +221,7 @@ sops secrets/secrets.yaml
 ```
 
 This requires a personal age private key at `~/.config/sops/age/keys.txt`
-(path pinned via `SOPS_AGE_KEY_FILE` in `modules/aspects/home/core.nix`)
+(path pinned via `SOPS_AGE_KEY_FILE` in `modules/aspects/core.nix`)
 whose public key is listed in `.sops.yaml` as `admin_ivy`. That private key
 lives only on your own machine(s) — back it up somewhere durable, since
 losing it (without still having a host that can decrypt) means

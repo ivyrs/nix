@@ -51,9 +51,9 @@ Implications for edits:
 - **Adding a reusable feature**: create a new file under `modules/aspects/`
   (or `modules/hosts/`, `modules/users/`), give it a
   `den.aspects.<name>.<class>` attribute (or `.includes` to compose other
-  aspects), picked up automatically by `import-tree`. Directory placement
-  (`aspects/darwin/`, `aspects/system/`, `aspects/home/`) is a human
-  convention only — Nix doesn't care where the file lives, only its content.
+  aspects), picked up automatically by `import-tree`. Aspects are organized
+  by feature under `modules/aspects/` rather than target-class directories,
+  since a single aspect should configure all targets for that feature.
 - **Using an aspect inside a host**: reference it by name in the host's
   `den.aspects.<hostname>.includes` list (for `nixos`/`darwin`-class
   aspects) or `provides.to-users.includes` (for `homeManager`-class
@@ -94,16 +94,16 @@ which is exposed as a TLS-terminated Tailscale Service via `tailscale serve`
 rather than a bare port); `houseplants` and `lovecomputer` are
 both Hetzner VPSes with `networking.firewall.allowedTCPPorts = [80 443]`
 open to the real internet — `houseplants` runs Caddy
-(`modules/aspects/system/caddy.nix`) and reverse-proxies each
+(`modules/aspects/caddy.nix`) and reverse-proxies each
 `houseplants.cloud`/`ivy.rs` hostname to the matching port on
 `elm.<tailnet>`; `lovecomputer` runs a second Caddy edge
-(`modules/aspects/system/lovecomputer-caddy.nix`) serving mostly static
+(`modules/aspects/lovecomputer-caddy.nix`) serving mostly static
 sites, plus one reverse-proxy to elm's pocket-id. Every other host only
 opens ports on `tailscale0`.
 
 Adding a new elm service that needs public exposure means two edits: the
 service itself on elm, and a new `virtualHosts."..."` block in
-`modules/aspects/system/caddy.nix` pointing at its port.
+`modules/aspects/caddy.nix` pointing at its port.
 
 A module meant for one host will generally not evaluate on another (e.g.
 `system.defaults` is darwin-only, `boot.loader` is NixOS-only). When adding
@@ -134,7 +134,7 @@ before wiring it into each host's aspect definition.
 - Comments flagged `verify this` / `confirm this` mark values the user
   hasn't independently confirmed against the real machine — flag rather than
   silently trust when reasoning about them.
-- `modules/aspects/darwin/homebrew.nix`: `cleanup = "zap"` means anything not
+- `modules/aspects/homebrew.nix`: `cleanup = "zap"` means anything not
   listed in `brews`/`casks` gets uninstalled on activation — adding a cask
   means adding it here, not installing it out-of-band.
 - `secrets/secrets.yaml` is sops-encrypted and safe to commit as-is — never
@@ -144,7 +144,7 @@ before wiring it into each host's aspect definition.
   (or `secrets/`) is invisible to `nix eval`/`nix build` until it's at least
   `git add`ed, even uncommitted — a "no matching creation rules found" or
   "attribute ... missing" error after adding a new file usually means this.
-- `modules/aspects/system/glance/_*.nix` are underscore-prefixed **on
+- `modules/aspects/glance/_*.nix` are underscore-prefixed **on
   purpose**: import-tree skips them, and they are plain functions/attrsets
   imported explicitly by `glance/default.nix`, not flake-parts modules.
   Conversely, any non-underscored `.nix` file under `modules/`/`hosts/` WILL
@@ -157,7 +157,7 @@ before wiring it into each host's aspect definition.
   Read it at the **file level** and close over it — inside a nested
   `({ pkgs, ... }: ...)` block, `config` is the OS/HM config, not the flake's
   (same class of gotcha as the module-arg one above).
-- `modules/aspects/system/glance/default.nix`'s `tailscale-serve-dash`
+- `modules/aspects/glance/default.nix`'s `tailscale-serve-dash`
   systemd unit shells out to the `tailscale serve` CLI rather than using the
   declarative `services.tailscale.serve.services` option — as of tailscaled
   1.98.x that option's JSON config path can only ever produce a plain-HTTP
