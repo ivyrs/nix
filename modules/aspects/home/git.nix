@@ -101,9 +101,6 @@ in {
           worktreePruneExpire = "now";
         };
 
-        # Always use SSH for GitHub.
-        url."ssh://git@github.com/".insteadOf = "https://github.com/";
-
         alias = {
           # Maintenance
           prune = "fetch --prune";

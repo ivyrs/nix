@@ -10,6 +10,8 @@
 
     initContent = ''
       zstyle ':completion:*' menu select
+
+      eval "$(devenv hook zsh)"
     '';
 
     shellAliases = {
