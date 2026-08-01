@@ -8,5 +8,9 @@
       rustup
       go
     ];
+
+    programs.zsh.initContent = ''
+      eval "$(devenv hook zsh)"
+    '';
   };
 }
