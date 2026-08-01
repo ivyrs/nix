@@ -15,8 +15,32 @@
         vim.telescope.enable = true;
         vim.statusline.lualine.enable = true;
 
+        # completion popup + snippets while typing
+        vim.autocomplete.blink-cmp.enable = true;
+        vim.autopairs.nvim-autopairs.enable = true;
+        vim.comments.comment-nvim.enable = true;
+
+        # git status in the gutter + a full git UI
+        vim.git.gitsigns.enable = true;
+
+        # keybind cheatsheet popup, indent guides, lsp progress spinner
+        vim.binds.whichKey.enable = true;
+        vim.visuals.indent-blankline.enable = true;
+        vim.visuals.fidget-nvim.enable = true;
+
         vim.languages = {
           astro.enable = true;
+          rust.enable = true;
+          java.enable = true;
+          typescript.enable = true;
+          elixir.enable = true;
+          clang.enable = true;
+          html.enable = true;
+          css.enable = true;
+          go.enable = true;
+          # covers .mdx too - nvf maps that extension to the markdown
+          # filetype (treesitter, marksman LSP, formatting, diagnostics)
+          markdown.enable = true;
         };
 
         vim.theme = {
@@ -30,6 +54,17 @@
           # good file manager
           enable = true;
         };
+
+        # oil.nvim convention: `-` opens the parent directory of the
+        # current buffer, mirroring vim-vinegar
+        vim.keymaps = [
+          {
+            key = "-";
+            mode = "n";
+            action = "<CMD>Oil<CR>";
+            desc = "Open parent directory (oil.nvim)";
+          }
+        ];
 
         # vim.notes.obsidian.enable = true;
         vim.notes.todo-comments.enable = true;
