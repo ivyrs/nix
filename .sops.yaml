@@ -4,6 +4,7 @@ keys:
   - &host_elm age13td2yjnfrcxydg4c2tk43muxxdsgzxmsyns0ygv892vp0p9grveqcvuut3
   - &host_houseplants age18k38qf03syeg5zsyunzz0llgn9jx9x5r9etlzwkytdst2v9f3g3q0605au
   - &host_lovecomputer age1ftp8f6adpzes6ud9lpju4f4jnmxlka0qdqgmhh4gtekc9f2kepss3jnw0w
+  - &host_alder age130fxnc93w6kndvmymhj5vu0ztzl7s478rdk7ksvswmslr646tcmqgl5kff
 
 creation_rules:
   - path_regex: secrets/.*\.yaml$
@@ -14,3 +15,4 @@ creation_rules:
           - *host_elm
           - *host_houseplants
           - *host_lovecomputer
+          - *host_alder
