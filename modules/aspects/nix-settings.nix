@@ -28,6 +28,11 @@
       nix.gc.dates = "Sun 03:00";
       nix.gc.options = "--delete-older-than 30d";
       nix.optimise.automatic = true;
+
+      nix.settings = {
+        extra-substituters = [ "https://noctalia.cachix.org" ];
+        extra-trusted-public-keys = [ "noctalia.cachix.org-1:pCOR47nnMEo5thcxNDtzWpOxNFQsBRglJzxWPp3dkU4=" ];
+      };
     };
   };
 }

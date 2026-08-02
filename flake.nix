@@ -31,6 +31,8 @@
 
     nvf.url = "github:notashelf/nvf";
     nvf.inputs.nixpkgs.follows = "nixpkgs";
+
+    noctalia.url = "github:noctalia-dev/noctalia";
   };
 
   outputs = inputs:

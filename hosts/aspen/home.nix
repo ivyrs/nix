@@ -5,7 +5,7 @@
       den.aspects.ghostty
       den.aspects.workstation
       den.aspects.dev-tools
-      den.aspects.syncthing
+      den.aspects.syncthing-client
     ];
 
     homeManager = {

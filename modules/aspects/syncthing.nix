@@ -43,7 +43,13 @@ in {
     };
   };
 
-  den.aspects.syncthing.homeManager = {config, ...}: {
+  # Separate aspect (not den.aspects.syncthing.homeManager) so NixOS desktops
+  # like alder can pull in just the per-user client via provides.to-users,
+  # without also pulling in the system-wide daemon above — an aspect's nixos
+  # class applies host-wide regardless of which include path pulled it in, so
+  # sharing one aspect name would make alder try (and fail, lacking elm's
+  # syncthing-gui-password sops secret) to run the daemon too.
+  den.aspects.syncthing-client.homeManager = {config, ...}: {
     services.syncthing = {
       enable = true;
       overrideDevices = true;

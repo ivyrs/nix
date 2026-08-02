@@ -13,6 +13,7 @@
       den.aspects.i18n
       den.aspects.tailscale-client
       den.aspects.niri
+      den.aspects.noctalia
     ];
 
     nixos = {
@@ -42,8 +43,8 @@
           # OEM partition). The module's own path-probing default doesn't
           # evaluate reliably from a flake built on another machine (e.g. aspen)
           # either way, so this still needs to be set explicitly.
-          hardware.asahi.extractPeripheralFirmware = false;
-
+          hardware.asahi.extractPeripheralFirmware = true;
+	  hardware.asahi.peripheralFirmwareDirectory = /etc/nixos/asahi-firmware;
           # Asahi's U-Boot/m1n1 stack manages EFI vars, not Linux.
           boot.loader.systemd-boot.enable = true;
           boot.loader.efi.canTouchEfiVariables = false;
@@ -64,6 +65,13 @@
             curl
             just
             git
+            ghostty
+            vesktop
+            obsidian
+            bitwarden-desktop
+            calibre
+            keymapp
+            firefox
           ];
 
           services.openssh = {

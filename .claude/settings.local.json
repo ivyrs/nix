@@ -29,7 +29,10 @@
       "Bash(nix search *)",
       "Bash(find / -path /nix/store -prune -o -type d -iname \"nvf\" -print)",
       "Read(//nix/store/**)",
-      "Bash(python3 -c ' *)"
+      "Bash(python3 -c ' *)",
+      "WebFetch(domain:docs.noctalia.dev)",
+      "Bash(xargs -I{} sh -c 'echo \"=== {} ===\"; grep -n \"inputs\\\\.\" {}')",
+      "Bash(curl *)"
     ]
   }
 }
