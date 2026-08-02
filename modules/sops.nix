@@ -12,6 +12,7 @@
     # den.aspects.glance-agent uses it as the server, so it's
     # declared here rather than in sops-elm-services below.
     sops.secrets.glance-agent-token = {};
+    sops.secrets.aerc-fastmail-password.owner = "ivy";
   };
 
   # elm-only: secrets for services that only run there (forgejo/nextcloud

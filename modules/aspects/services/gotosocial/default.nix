@@ -15,7 +15,7 @@ in {
     themedAssets = pkgs.runCommand "gotosocial-themed-assets" {} ''
       cp -r ${package}/share/gotosocial/web/assets $out
       chmod -R u+w $out
-      cp ${./gotosocial-theme.css} $out/themes/theme.css
+      cp ${./theme.css} $out/themes/theme.css
     '';
   in {
     services.gotosocial = {

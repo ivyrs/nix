@@ -19,7 +19,6 @@
       den.aspects.system-defaults
       den.aspects.fonts
       den.aspects.touchid
-      den.aspects.inkscape
     ];
 
     darwin = {

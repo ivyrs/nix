@@ -14,6 +14,7 @@
       den.aspects.tailscale-client
       den.aspects.niri
       den.aspects.noctalia
+      den.aspects.gaming
     ];
 
     nixos = {
@@ -68,7 +69,6 @@
             ghostty
             vesktop
             obsidian
-            bitwarden-desktop
             calibre
             keymapp
             firefox

@@ -32,7 +32,13 @@
       "Bash(python3 -c ' *)",
       "WebFetch(domain:docs.noctalia.dev)",
       "Bash(xargs -I{} sh -c 'echo \"=== {} ===\"; grep -n \"inputs\\\\.\" {}')",
-      "Bash(curl *)"
+      "Bash(curl *)",
+      "Read(//home/ivy/.distrobox/steam/**)",
+      "Bash(timeout 590 docker build . --tag steam:latest)",
+      "Bash(nix run *)",
+      "Bash(nix shell *)",
+      "Bash(timeout 30 distrobox enter steam -- bash -c 'STEAM_RUNTIME_HEAVY_DEBUG=1 steam 2>&1')",
+      "Bash(distrobox enter *)"
     ]
   }
 }
