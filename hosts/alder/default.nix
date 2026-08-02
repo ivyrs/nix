@@ -15,6 +15,7 @@
       den.aspects.niri
       den.aspects.noctalia
       den.aspects.gaming
+      den.aspects.onepassword
     ];
 
     nixos = {

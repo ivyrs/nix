@@ -7,5 +7,6 @@
     den.aspects.niri
     den.aspects.noctalia
     den.aspects.syncthing-client
+    den.aspects.onepassword
   ];
 }
