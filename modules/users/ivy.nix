@@ -16,13 +16,18 @@
     # without being listed in any host's `includes`.
     nixos = {
       pkgs,
+      lib,
       config,
       ...
     }: {
       users.users.ivy = {
         description = "ivy";
         shell = pkgs.zsh;
-        hashedPasswordFile = config.sops.secrets.ivy-password-hash.path;
+        # mkDefault so hosts where someone actually types this at a physical
+        # console/greetd login (alder) can override with something easier to
+        # type than the shared random password every other (headless,
+        # SSH-key-only) host uses.
+        hashedPasswordFile = lib.mkDefault config.sops.secrets.ivy-password-hash.path;
         openssh.authorizedKeys.keys = [
           "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICtFawaAWSklr1GGYiBZzGr/ydKSSOatBfGfY72eqKGZ aspen"
         ];

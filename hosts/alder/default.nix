@@ -21,7 +21,12 @@
         inputs.nixos-apple-silicon.nixosModules.default
         inputs.sops-nix.nixosModules.sops
         config.flake.modules.nixos.sops
-        ({pkgs, ...}: {
+        ({
+          pkgs,
+          lib,
+          config,
+          ...
+        }: {
           hardware.asahi.enable = true;
 
           # Peripheral firmware (WiFi/webcam/etc.) ships as vendorfw/firmware.cpio
@@ -46,9 +51,14 @@
           networking.networkmanager.enable = true;
           networking.networkmanager.wifi.backend = "iwd";
 
-          # Password + SSH key + shell are declarative via the shared
-          # den.aspects.ivy.nixos (modules/users/ivy.nix); see AGENTS.md/memory
-          # for retrieving the password.
+          # SSH key + shell are declarative via the shared den.aspects.ivy.nixos
+          # (modules/users/ivy.nix); see AGENTS.md/memory for retrieving them.
+          # Password is overridden below: unlike the other NixOS hosts (SSH-key-only,
+          # password is console-recovery-only), alder's greetd login means someone
+          # actually types this at a physical keyboard, so it gets its own
+          # easier-to-type secret instead of the shared random one.
+          sops.secrets.ivy-password-hash-alder = {};
+          users.users.ivy.hashedPasswordFile = lib.mkForce config.sops.secrets.ivy-password-hash-alder.path;
 
           environment.systemPackages = with pkgs; [
             curl
