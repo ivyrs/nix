@@ -14,7 +14,6 @@
       den.aspects.tailscale-client
       den.aspects.niri
       den.aspects.noctalia
-      den.aspects.gaming
       den.aspects.onepassword
       den.aspects.fonts
     ];
