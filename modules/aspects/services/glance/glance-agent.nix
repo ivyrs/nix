@@ -9,7 +9,7 @@
     pkgs,
     ...
   }: let
-    package = pkgs.callPackage ../../packages/glance-agent/default.nix {};
+    package = pkgs.callPackage ../../../../packages/glance-agent/default.nix {};
     port = 27973;
   in {
     systemd.services.glance-agent = {
