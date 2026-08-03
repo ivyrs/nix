@@ -9,21 +9,19 @@ Ivy's machine configurations, managed as a single Nix flake.
 | aspen       | aarch64-darwin (nix-darwin + home-manager) | Personal macOS machine |
 | elm         | x86_64-linux (NixOS)                       | Home server behind the tailnet: Syncthing, glance, miniflux, pocket-id, vaultwarden, Nextcloud, GoToSocial, Forgejo, multi-scrobbler (vikunja currently disabled) |
 | houseplants | aarch64-linux (NixOS, Hetzner VPS)         | Public edge: Caddy reverse-proxies each `houseplants.cloud`/`ivy.rs` hostname to the matching service on elm over Tailscale; the only host with ports open to the raw internet |
-| lovecomputer | aarch64-linux (NixOS, Hetzner VPS)        | Second public edge: Caddy serves static sites (`lovecomputer.net`, `ivy.rs`, etc.) |
 | alder       | aarch64-linux (NixOS/Asahi, niri)          | Dual-boots aspen's physical Mac — same hardware, second OS. Tailnet client only, no services, no public exposure. |
 
-alder and aspen are not two machines: they're the same physical hardware,
-dual-booted between macOS (aspen) and NixOS/Asahi (alder).
+elm's services sit on bare ports behind the tailnet, except glance — exposed
+as a TLS-terminated Tailscale Service (`dash.<tailnet>.ts.net` via `tailscale
+serve`, see `modules/aspects/glance/default.nix`). houseplants is the only
+host in this flake that terminates real internet traffic
+(`networking.firewall.allowedTCPPorts = [80 443]`), proxying to
+`elm.<tailnet>:<port>` where needed (`modules/aspects/caddy.nix`); every
+other host only opens ports on `tailscale0`.
 
-elm's services mostly sit on bare ports behind the tailnet — one exception is
-glance, which is exposed as a TLS-terminated Tailscale Service
-(`dash.<tailnet>.ts.net`, via `tailscale serve`) rather than a bare port, see
-`modules/aspects/glance/default.nix`. houseplants and lovecomputer are
-the only things that terminate real internet traffic
-(`networking.firewall.allowedTCPPorts = [80 443]`) and proxy in over
-`elm.<tailnet>:<port>` where needed (see `modules/aspects/caddy.nix` /
-`lovecomputer-caddy.nix`). Every other host only opens ports on
-`tailscale0`.
+(lovecomputer, a second public edge serving static sites, used to live here
+too — it's been split out into its own flake at `lc-nix`, since its only
+ties to this repo were the shared aspects it duplicated.)
 
 ## Layout
 
@@ -44,8 +42,8 @@ layers:
   `darwinConfigurations.*` / `nixosConfigurations.*` outputs automatically.
 - **`den.aspects.<name>`** — a feature as a function of context, holding
   configuration for every Nix class it touches at once (`nixos`, `darwin`,
-  `homeManager`). `hosts/aspen/`, `hosts/elm/`, `hosts/houseplants/`,
-  `hosts/lovecomputer/`, and `hosts/alder/` each define a host aspect (system config, named to
+  `homeManager`). `hosts/aspen/`, `hosts/elm/`, `hosts/houseplants/`, and
+  `hosts/alder/` each define a host aspect (system config, named to
   match the host so Den auto-applies it) and, via
   `provides.to-users.includes`/`provides.to-users.homeManager`, the
   home-manager config delivered to that host's user.
@@ -78,7 +76,6 @@ modules/
     i18n.nix, nix-settings.nix
     tailscale.nix            # den.aspects.tailscale-{client,server}.nixos
     caddy.nix                # den.aspects.caddy.nixos — the houseplants edge proxy, one virtualHost per public hostname
-    lovecomputer-caddy.nix   # den.aspects.lovecomputer-caddy.nixos — lovecomputer's edge proxy, same shape as caddy.nix
     miniflux.nix, pocket-id.nix, vikunja.nix, vaultwarden.nix
     nextcloud.nix, gotosocial.nix, forgejo.nix, glance-agent.nix
     multi-scrobbler.nix      # den.aspects.multi-scrobbler.nixos — scrobbler, run as an upstream Docker image (oci-containers)
@@ -106,10 +103,6 @@ hosts/
   houseplants/
     default.nix              # den.hosts.aarch64-linux.houseplants + den.aspects.houseplants.nixos (public edge: caddy + tailscale-server)
     home.nix                 # den.aspects.houseplants.provides.to-users.includes
-    _hardware-configuration.nix, _disko.nix  # generated (nixos-anywhere), do not edit
-  lovecomputer/
-    default.nix              # den.hosts.aarch64-linux.lovecomputer + den.aspects.lovecomputer.nixos (public edge: static sites via lovecomputer-caddy + tailscale-server)
-    home.nix                 # den.aspects.lovecomputer.provides.to-users.includes
     _hardware-configuration.nix, _disko.nix  # generated (nixos-anywhere), do not edit
   alder/
     default.nix              # den.hosts.aarch64-linux.alder + den.aspects.alder.nixos (NixOS/Asahi, tailscale-client + niri, dual-boots aspen's hardware)
@@ -139,8 +132,8 @@ Each host's `default.nix` also includes `den.batteries.hostname`
 (`networking.hostName`) and the shared `den.aspects.nix-settings` aspect.
 On the home-manager side, aspen's and alder's `home.nix` add
 `den.aspects.ghostty`, `den.aspects.workstation`, and `den.aspects.dev-tools`
-on top of the `den.aspects.home-manager` base bundle; headless elm,
-houseplants, and lovecomputer only get the base bundle.
+on top of the `den.aspects.home-manager` base bundle; headless elm and
+houseplants only get the base bundle.
 
 ## Usage
 
@@ -151,13 +144,13 @@ just switch
 ```
 
 detects the OS and runs `nh darwin switch` (aspen) or `nh os switch` (elm,
-houseplants, lovecomputer, alder) against `.#$(hostname -s)`.
+houseplants, alder) against `.#$(hostname -s)`.
 
-To deploy to elm, houseplants, lovecomputer, or alder from another machine on
+To deploy to elm, houseplants, or alder from another machine on
 the tailnet, without SSHing in first:
 
 ```
-just deploy elm          # or: just deploy houseplants / just deploy lovecomputer / just deploy alder
+just deploy elm          # or: just deploy houseplants / just deploy alder
 ```
 
 (alder is only reachable this way while actually booted into NixOS — it's
@@ -201,13 +194,12 @@ different account, add a one-line entry in `home-configurations.nix`.
   around a librsvg/gdk-pixbuf bug that crashes Inkscape on aarch64-darwin
   (nixpkgs#475236). Drop the input and the overlay once the upstream fix
   (nixpkgs PR #520909) lands in nixpkgs-unstable.
-- `sops-nix` is wired into every host (including houseplants/lovecomputer,
-  despite neither having secrets of their own — every NixOS host needs it
-  regardless, since `modules/users/ivy.nix`'s shared `ivy` aspect decrypts
+- `sops-nix` is wired into every host (including houseplants, despite
+  having no secrets of its own — every NixOS host needs it regardless,
+  since `modules/users/ivy.nix`'s shared `ivy` aspect decrypts
   `ivy-password-hash` on all of them).
-- `disko` declares houseplants' and lovecomputer's disk layouts
-  (`hosts/houseplants/_disko.nix`, `hosts/lovecomputer/_disko.nix`), used
-  for their original `nixos-anywhere` installs; not used on aspen/elm/alder.
+- `disko` declares houseplants' disk layout (`hosts/houseplants/_disko.nix`),
+  used for its original `nixos-anywhere` install; not used on aspen/elm/alder.
 - `nix-homebrew` manages Homebrew casks/brews declaratively on aspen.
 - `nixos-apple-silicon` (`github:nix-community/nixos-apple-silicon`)
   provides `hardware.asahi.enable` and the Asahi hardware support alder

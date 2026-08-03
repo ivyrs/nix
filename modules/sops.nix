@@ -16,7 +16,7 @@
   };
 
   # elm-only: secrets for services that only run there (forgejo/nextcloud
-  # owners don't exist as users on houseplants/lovecomputer).
+  # owners don't exist as users on houseplants).
   flake.modules.nixos.sops-elm-services = {
     sops.secrets.glance-city = {};
     sops.secrets.syncthing-gui-password.owner = "syncthing";

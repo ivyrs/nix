@@ -9,11 +9,11 @@
       den.batteries.primary-user
     ];
 
-    # Shared across every NixOS host (elm/houseplants/lovecomputer): the
-    # login shell, declarative password, and the aspen SSH pubkey used for
-    # unattended remote deploys. Den auto-applies this aspect to every host
-    # with an `ivy` user since it's name-matched, so this fires on all three
-    # without being listed in any host's `includes`.
+    # Shared across every NixOS host (elm/houseplants): the login shell,
+    # declarative password, and the aspen SSH pubkey used for unattended
+    # remote deploys. Den auto-applies this aspect to every host with an
+    # `ivy` user since it's name-matched, so this fires on both without
+    # being listed in any host's `includes`.
     nixos = {
       pkgs,
       lib,

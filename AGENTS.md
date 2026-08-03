@@ -58,7 +58,7 @@ before wiring it into each host's aspect definition.
 ## Guardrails already left in the code — read before touching
 
 - `hosts/elm/_hardware-configuration.nix` and
-  `hosts/{houseplants,lovecomputer}/{_hardware-configuration,_disko}.nix`
+  `hosts/houseplants/{_hardware-configuration,_disko}.nix`
   are generated (by `nixos-generate-config` / `nixos-anywhere`); never
   hand-edit them.
 - `hosts/alder/_hardware-configuration.nix` is now the **real**
@@ -70,10 +70,9 @@ before wiring it into each host's aspect definition.
   proprietary `firmware.cpio`) lives only on alder itself, **outside this
   repo**: this repo's Codeberg remote is public, and committing that file
   would redistribute Apple's firmware to anyone who clones it.
-- `hosts/elm/default.nix`, `hosts/houseplants/default.nix`, and
-  `hosts/lovecomputer/default.nix`: `system.stateVersion` has a "don't fuck
-  with this" comment on each — leave it alone even during unrelated
-  refactors.
+- `hosts/elm/default.nix` and `hosts/houseplants/default.nix`:
+  `system.stateVersion` has a "don't fuck with this" comment on each —
+  leave it alone even during unrelated refactors.
 - `modules/hosts/declarations.nix`: `den.default.homeManager.home.stateVersion`
   is "set once, don't bump casually" — same rule, applies to every host
   (hoisted here since it was identical everywhere).
@@ -128,9 +127,9 @@ nix flake check
 ```
 
 and, if you have access to the target machine, a real rebuild — `just switch`
-from the host itself, or `just deploy elm`/`just deploy houseplants`/
-`just deploy lovecomputer` from another machine on the tailnet (works fine
-unattended/non-interactively; see the README's Usage section). `nix flake
+from the host itself, or `just deploy elm`/`just deploy houseplants` from
+another machine on the tailnet (works fine unattended/non-interactively; see
+the README's Usage section). `nix flake
 check` alone won't catch every activation-time issue (e.g. Homebrew/darwin-only
 assertions on aspen). `darwin-rebuild build --flake .#aspen` / `nixos-rebuild
 build --flake .#<host>` (build without activating) is a good middle ground

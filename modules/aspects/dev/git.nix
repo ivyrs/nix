@@ -41,9 +41,9 @@ in {
             email = meta.email;
           }
           # SSH commit signing via the 1Password app — only installed on
-          # aspen (macOS); the Linux hosts (elm/houseplants/lovecomputer)
-          # are headless servers with no 1Password, so gpgsign here would
-          # break every commit for them.
+          # aspen (macOS); the Linux hosts (elm/houseplants) are headless
+          # servers with no 1Password, so gpgsign here would break every
+          # commit for them.
           // lib.optionalAttrs pkgs.stdenv.isDarwin {
             signingkey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICtFawaAWSklr1GGYiBZzGr/ydKSSOatBfGfY72eqKGZ";
           };
