@@ -1,5 +1,13 @@
-{self, lib, ... }: {
-  den.aspects.gaming.nixos = {pkgs, lib, ...}:
+{
+  self,
+  lib,
+  ...
+}: {
+  den.aspects.gaming.nixos = {
+    pkgs,
+    lib,
+    ...
+  }:
     lib.mkMerge [
       (lib.mkIf pkgs.stdenv.hostPlatform.isx86_64 {
         programs.steam = {
