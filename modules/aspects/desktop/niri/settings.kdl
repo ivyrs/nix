@@ -1,0 +1,37 @@
+input {
+    keyboard {
+        xkb {
+            layout "gb"
+            variant "mac"
+            // options "grp:win_space_toggle,compose:ralt,ctrl:nocaps"
+        }
+        numlock
+    }
+
+    touchpad { 
+        dwt
+    }
+
+    mouse {
+        accel-speed 0.5
+    }
+
+    trackpoint {
+        off
+    }
+}
+
+// Displays
+output "eDP-1" {
+    // off
+    mode "2880x1800@60"
+    scale 1.5
+    transform "normal"
+    position x=0 y=0
+}
+
+hotkey-overlay {
+    skip-at-startup
+}
+
+prefer-no-csd

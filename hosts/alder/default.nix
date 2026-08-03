@@ -16,6 +16,7 @@
       den.aspects.noctalia
       den.aspects.gaming
       den.aspects.onepassword
+      den.aspects.fonts
     ];
 
     nixos = {
@@ -73,6 +74,7 @@
             calibre
             keymapp
             firefox
+            feishin
           ];
 
           services.openssh = {

@@ -1,6 +1,12 @@
 {
-  den.aspects.fonts.darwin = {pkgs, ...}: {
-    # Fonts installed here are visible to GUI apps like Ghostty.
-    fonts.packages = with pkgs; [ibm-plex aporetic];
+  den.aspects.fonts = {
+    darwin = {pkgs, ...}: {
+      # Fonts installed here are visible to GUI apps like Ghostty.
+      fonts.packages = with pkgs; [ibm-plex aporetic];
+    };
+
+    nixos = {pkgs, ...}: {
+      fonts.packages = with pkgs; [ibm-plex aporetic];
+    };
   };
 }
