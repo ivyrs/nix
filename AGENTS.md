@@ -61,18 +61,15 @@ before wiring it into each host's aspect definition.
   `hosts/{houseplants,lovecomputer}/{_hardware-configuration,_disko}.nix`
   are generated (by `nixos-generate-config` / `nixos-anywhere`); never
   hand-edit them.
-- `hosts/alder/_hardware-configuration.nix` is a **fake placeholder** (not
-  yet generated — alder's physical Asahi install hasn't happened), unlike
-  the other three: it exists only to keep `nix flake check` green
-  repo-wide. Replace it wholesale with the real `nixos-generate-config`
-  output once the install happens, same never-hand-edit rule applies after
-  that. Also note `hardware.asahi.extractPeripheralFirmware = false;` in
-  `hosts/alder/default.nix` is a temporary stand-in: once installed, point
-  `peripheralFirmwareDirectory` at `firmware.cpio` from the ESP, but keep
-  that file **outside this repo** (e.g. `/etc/nixos/asahi-firmware` on
-  alder) — this repo's Codeberg remote is public, and firmware.cpio is
-  Apple's proprietary binary firmware; committing it would redistribute it
-  to anyone who clones the repo. See that file's comment.
+- `hosts/alder/_hardware-configuration.nix` is now the **real**
+  `nixos-generate-config` output from alder's physical Asahi install (no
+  longer a placeholder) — the same never-hand-edit rule as elm/houseplants'
+  hardware configs applies. `hardware.asahi.extractPeripheralFirmware = true`
+  in `hosts/alder/default.nix` with `peripheralFirmwareDirectory =
+  /etc/nixos/asahi-firmware` — that directory (containing Apple's
+  proprietary `firmware.cpio`) lives only on alder itself, **outside this
+  repo**: this repo's Codeberg remote is public, and committing that file
+  would redistribute Apple's firmware to anyone who clones it.
 - `hosts/elm/default.nix`, `hosts/houseplants/default.nix`, and
   `hosts/lovecomputer/default.nix`: `system.stateVersion` has a "don't fuck
   with this" comment on each — leave it alone even during unrelated

@@ -1,5 +1,16 @@
-{self, inputs, den, ...}: {
-  den.aspects.niri.nixos = {pkgs, lib, ...}: {
+{
+  self,
+  inputs,
+  den,
+  ...
+}: {
+  den.aspects.niri.nixos = {
+    pkgs,
+    lib,
+    ...
+  }: {
+    imports = [inputs.noctalia-greeter.nixosModules.default];
+
     programs.niri.enable = true;
 
     # niri (25.08+) automatically spawns xwayland-satellite on demand when an
@@ -16,25 +27,27 @@
     services.udev.packages = [pkgs.brightnessctl];
     users.users.ivy.extraGroups = ["video"];
 
-    services.greetd = {
+    # Noctalia's own greeter, styled to match the desktop session (replaces
+    # tuigreet). See https://docs.noctalia.dev/v5/greeter/
+    programs.noctalia-greeter = {
       enable = true;
-      settings.default_session.command = "${pkgs.tuigreet}/bin/tuigreet --cmd niri-session";
+      settings.session.default = "niri";
     };
 
-      xdg.portal = {
-    enable = true;
-    extraPortals = [pkgs.xdg-desktop-portal-gnome pkgs.xdg-desktop-portal-gtk];
-    config = {
-      common = {
-        default = ["gtk"];
+    xdg.portal = {
+      enable = true;
+      extraPortals = [pkgs.xdg-desktop-portal-gnome pkgs.xdg-desktop-portal-gtk];
+      config = {
+        common = {
+          default = ["gtk"];
         };
         niri = {
           default = lib.mkForce ["gtk"];
           "org.freedesktop.impl.portal.ScreenCast" = ["gnome"];
           "org.freedesktop.impl.portal.Screenshot" = ["gnome"];
         };
+      };
     };
-  };
   };
 
   den.aspects.niri.homeManager = {

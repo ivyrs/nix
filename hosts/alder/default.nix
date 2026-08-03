@@ -34,20 +34,19 @@
           hardware.asahi.enable = true;
 
           # Peripheral firmware (WiFi/webcam/etc.) ships as vendorfw/firmware.cpio
-          # on the ESP, put there by the Asahi installer — it doesn't exist until
-          # the physical install happens. Disabled for now; once installed, point
-          # peripheralFirmwareDirectory at a path *outside* this repo (e.g.
-          # /etc/nixos/asahi-firmware on alder itself) — this repo's Codeberg
-          # remote is public, and firmware.cpio is Apple's proprietary binary
-          # firmware extracted from this machine's own macOS install; committing
-          # it here would redistribute it to anyone who clones the repo, unlike
-          # the extraction itself which is local-only and standard practice (same
+          # on the ESP, put there by the Asahi installer. peripheralFirmwareDirectory
+          # points at a path *outside* this repo (/etc/nixos/asahi-firmware on
+          # alder itself) — this repo's Codeberg remote is public, and
+          # firmware.cpio is Apple's proprietary binary firmware extracted from
+          # this machine's own macOS install; committing it here would
+          # redistribute it to anyone who clones the repo, unlike the
+          # extraction itself which is local-only and standard practice (same
           # category as Linux distros pulling WiFi/RAID firmware off a Windows
           # OEM partition). The module's own path-probing default doesn't
           # evaluate reliably from a flake built on another machine (e.g. aspen)
           # either way, so this still needs to be set explicitly.
           hardware.asahi.extractPeripheralFirmware = true;
-	  hardware.asahi.peripheralFirmwareDirectory = /etc/nixos/asahi-firmware;
+          hardware.asahi.peripheralFirmwareDirectory = /etc/nixos/asahi-firmware;
           # Asahi's U-Boot/m1n1 stack manages EFI vars, not Linux.
           boot.loader.systemd-boot.enable = true;
           boot.loader.efi.canTouchEfiVariables = false;

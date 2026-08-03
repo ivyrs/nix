@@ -24,11 +24,11 @@ in {
           address = "0.0.0.0:8384";
           user = "ivy";
         };
-        devices = deviceSet ["aspen" "maple" "birch"];
+        devices = deviceSet ["aspen" "alder" "maple" "birch"];
         folders."obsidian" = {
           id = st.obsidianFolderId;
           path = "/var/lib/syncthing/obsidian";
-          devices = ["aspen" "maple" "birch"];
+          devices = ["aspen" "alder" "maple" "birch"];
           ignorePerms = true;
           versioning = {
             type = "staggered";
