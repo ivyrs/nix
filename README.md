@@ -19,10 +19,6 @@ host in this flake that terminates real internet traffic
 `elm.<tailnet>:<port>` where needed (`modules/aspects/caddy.nix`); every
 other host only opens ports on `tailscale0`.
 
-(lovecomputer, a second public edge serving static sites, used to live here
-too — it's been split out into its own flake at `lc-nix`, since its only
-ties to this repo were the shared aspects it duplicated.)
-
 ## Layout
 
 This flake is built on [Den](https://github.com/denful/den), an
