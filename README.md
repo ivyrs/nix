@@ -121,35 +121,26 @@ Cross-module constants (the `houseplants.cloud` domain, OIDC issuer, SMTP
 account, syncthing device IDs) live in `modules/meta/meta.nix` under
 `flake.lib.meta` — change them there, not in the consuming service files.
 
-Plain reusable modules under `modules/sops.nix` are unchanged from before Den
-— still named-registered under `flake.modules.<class>.<name>` and pulled
-into a host's aspect via `config.flake.modules.<class>.<name>` in its
-`imports`. Everything else that used to be a plain `flake.modules.<class>`
-registration (darwin/home/service concerns) is now a real
-`den.aspects.<name>` — see the layout above.
+`modules/sops.nix` is the one holdout still using the plain
+`flake.modules.<class>.<name>` form (pulled into a host's aspect via
+`config.flake.modules.<class>.<name>` in its `imports`); everything else has
+been converted to `den.aspects.<name>`.
 
 ### Batteries
 
-`modules/users/ivy.nix` uses two of Den's built-in `den.batteries.*` on the
-shared `ivy` user aspect:
+`modules/users/ivy.nix` puts two of Den's built-in `den.batteries.*` on the
+shared `ivy` user aspect — `define-user` (sets `users.users.ivy` and
+home-manager's `home.username`/`home.homeDirectory`) and `primary-user`
+(`wheel`/`networkmanager` groups on NixOS, `system.primaryUser` on Darwin) —
+plus a NixOS-only `den.aspects.ivy.nixos` block (shell, declarative password,
+the aspen SSH pubkey) that Den auto-applies to every host with an `ivy` user.
 
-- `den.batteries.define-user` — sets `users.users.ivy` (name/home) and
-  home-manager's `home.username`/`home.homeDirectory`, on both platforms.
-- `den.batteries.primary-user` — `wheel`/`networkmanager` groups on NixOS,
-  `system.primaryUser` on Darwin.
-
-It also holds the NixOS-only `den.aspects.ivy.nixos` block (shell, declarative
-password, the aspen SSH pubkey) — Den auto-applies this to every host with an
-`ivy` user, so it's not listed in any host's `includes`.
-
-Each host's `default.nix` also includes `den.batteries.hostname`, which sets
-`networking.hostName`, and the shared `den.aspects.nix-settings` aspect
-(`modules/aspects/nix-settings.nix`). On the home-manager side,
-aspen's and alder's `home.nix` opt into `den.aspects.ghostty` (ghostty
-config), `den.aspects.workstation` (claude-code, gh, sops tooling), and
-`den.aspects.dev-tools` in addition to `den.aspects.home-manager` (the base
-bundle every host gets); headless elm, houseplants, and lovecomputer only
-include `den.aspects.home-manager`.
+Each host's `default.nix` also includes `den.batteries.hostname`
+(`networking.hostName`) and the shared `den.aspects.nix-settings` aspect.
+On the home-manager side, aspen's and alder's `home.nix` add
+`den.aspects.ghostty`, `den.aspects.workstation`, and `den.aspects.dev-tools`
+on top of the `den.aspects.home-manager` base bundle; headless elm,
+houseplants, and lovecomputer only get the base bundle.
 
 ## Usage
 

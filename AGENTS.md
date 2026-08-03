@@ -1,53 +1,12 @@
 # AGENTS.md
 
-Guidance for AI agents working in this repo. See `README.md` first for the
-overall layout.
+Guidance for AI agents working in this repo. Read `README.md` first — it's
+the source of truth for the flake's layout, Den mechanics (`den.hosts`,
+`den.aspects`, batteries), and each host's role. This file only adds editing
+implications, gotchas, and guardrails that README doesn't cover.
 
-## Den — how this flake is wired
+## Editing implications
 
-This flake is built on [Den](https://github.com/denful/den) (`inputs.den`,
-imported via `modules/hosts/declarations.nix`). Every `.nix` file under
-`modules/` and `hosts/` is auto-imported by `import-tree` (wired in
-`flake.nix`), and files register themselves one of two ways:
-
-- **Plain reusable modules** — `flake.modules.<class>.<name>`, e.g.:
-
-  ```nix
-  { flake.modules.nixos.sops = { ... }; }
-  ```
-
-  `modules/sops.nix` is the only thing using this form; everything
-  else (darwin/service/home-manager concerns) has been converted to the
-  form below.
-
-- **`den.aspects.<name>`** — a feature as a function of context
-  (`{ host, user }`), holding config for every Nix class it touches at once
-  (`nixos`, `darwin`, `homeManager`). `<class>` is one of `nixos`, `darwin`,
-  `homeManager`; an aspect can define one, several, or (via `includes`)
-  compose other aspects together. This is how almost everything under
-  `modules/aspects/` registers.
-
-  - **`den.hosts.<system>.<name>`** (declared per-host, in each
-    `hosts/<host>/default.nix`) declares each machine and its users. Den
-    turns these into real `darwinConfigurations.*` / `nixosConfigurations.*`
-    outputs — there is no hand-written `modules/configurations.nix`
-    assembling them.
-  - Each host's `default.nix` (`hosts/aspen/`, `hosts/elm/`,
-    `hosts/houseplants/`, `hosts/lovecomputer/`) defines that host's own
-    `den.aspects.<hostname>` (name-matched to the host, so Den auto-applies
-    it) with a `darwin`/`nixos` block and an `includes` list of the aspects
-    it wants (services, hardware, etc). Each host's `home.nix` defines its
-    `provides.to-users.includes`/`provides.to-users.homeManager` (delivered
-    to every user on the host — currently just `ivy`).
-  - `modules/users/ivy.nix` defines the shared `ivy` user aspect
-    (name-matched to the `ivy` user declared on every host), wiring
-    `den.batteries.define-user` + `den.batteries.primary-user` (OS user
-    creation, primary-user groups/`system.primaryUser`) **and** the NixOS
-    account itself (shell, declarative password hash, the aspen SSH pubkey)
-    — genuinely cross-host content that used to be duplicated verbatim in
-    elm/houseplants/lovecomputer's `default.nix`.
-
-Implications for edits:
 - **Adding a reusable feature**: create a new file under `modules/aspects/`
   (or `modules/hosts/`, `modules/users/`), give it a
   `den.aspects.<name>.<class>` attribute (or `.includes` to compose other
@@ -83,31 +42,9 @@ Implications for edits:
 - **Don't** build a manual `imports = [ ./foo.nix ./bar.nix ]` list anywhere
   under `modules/`/`hosts/` — that defeats the point of import-tree.
 
-## Five very different targets
+## Host-specific edits
 
-`aspen` is nix-darwin + home-manager (macOS, personal machine). `alder` is
-NixOS/Asahi on that *same physical Mac*, dual-booted — not a second
-machine. It's a tailnet client only (`tailscale-client`), runs niri
-(`modules/aspects/niri.nix`, the first Linux DE/WM aspect in this repo), and
-mirrors aspen's home-manager environment (`workstation`, `dev-tools`,
-`ghostty`). Its `hosts/alder/_hardware-configuration.nix` is a placeholder
-until the physical Asahi install happens — see the file's own comment and
-the guardrails below.
-
-`elm`, `houseplants`, and `lovecomputer` are all plain NixOS, but play different
-roles: `elm` is the home server sitting behind the tailnet (Syncthing,
-glance, miniflux, pocket-id, vaultwarden, Nextcloud, GoToSocial, Forgejo,
-multi-scrobbler — all on bare ports with no public exposure, except glance,
-which is exposed as a TLS-terminated Tailscale Service via `tailscale serve`
-rather than a bare port); `houseplants` and `lovecomputer` are
-both Hetzner VPSes with `networking.firewall.allowedTCPPorts = [80 443]`
-open to the real internet — `houseplants` runs Caddy
-(`modules/aspects/caddy.nix`) and reverse-proxies each
-`houseplants.cloud`/`ivy.rs` hostname to the matching port on
-`elm.<tailnet>`; `lovecomputer` runs a second Caddy edge
-(`modules/aspects/lovecomputer-caddy.nix`) serving mostly static
-sites, plus one reverse-proxy to elm's pocket-id. Every other host only
-opens ports on `tailscale0`.
+See README's Machines table for each host's role.
 
 Adding a new elm service that needs public exposure means two edits: the
 service itself on elm, and a new `virtualHosts."..."` block in
