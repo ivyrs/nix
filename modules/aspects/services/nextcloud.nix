@@ -106,6 +106,27 @@ in {
       };
     };
 
+    # With only the one houseplants OIDC provider registered above,
+    # allow_multiple_user_backends=0 makes Nextcloud's login page redirect
+    # straight to it instead of showing the local username/password form.
+    # This doesn't remove local passwords — WebDAV, CalDAV/CardDAV, sync
+    # clients, and occ still authenticate locally — and `?direct=1` on the
+    # login URL always still reaches the classic form (Nextcloud's own
+    # documented escape hatch, kept deliberately so a pocket-id outage can't
+    # lock out recovery). `occ config:app:set` is idempotent.
+    systemd.services.nextcloud-oidc-only-login = {
+      description = "Make houseplants OIDC the default Nextcloud login, skipping the local form";
+      after = ["nextcloud-setup.service" "nextcloud-oidc-provider.service"];
+      wantedBy = ["multi-user.target"];
+      serviceConfig = {
+        Type = "oneshot";
+        User = "nextcloud";
+        # See the comment on nextcloud-oidc-provider above.
+        LoadCredential = "mail_smtppassword:${config.sops.secrets.nextcloud-smtp-password.path}";
+        ExecStart = "${config.services.nextcloud.occ}/bin/nextcloud-occ config:app:set user_oidc allow_multiple_user_backends --value=0 --type=integer";
+      };
+    };
+
     # AppAPI/ExApps: HaRP is the recommended deploy daemon for NC32+ (Docker
     # Socket Proxy is deprecated, removal in NC35 — see app_api's AGENTS.md).
     # Only the HaRP container touches the Docker socket; php-fpm only talks
