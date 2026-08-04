@@ -123,7 +123,13 @@ in {
         User = "nextcloud";
         # See the comment on nextcloud-oidc-provider above.
         LoadCredential = "mail_smtppassword:${config.sops.secrets.nextcloud-smtp-password.path}";
-        ExecStart = "${config.services.nextcloud.occ}/bin/nextcloud-occ config:app:set user_oidc allow_multiple_user_backends --value=0 --type=integer";
+        # Must be --type=string: user_oidc's own SettingsService always
+        # stores this key as a string, and setting it as any other type
+        # here throws AppConfigTypeConflictException on every subsequent
+        # read (silently caught by user_oidc and treated as "allowed",
+        # which defeats the whole point — confirmed by hand on elm after
+        # --type=integer produced exactly that silent failure).
+        ExecStart = "${config.services.nextcloud.occ}/bin/nextcloud-occ config:app:set user_oidc allow_multiple_user_backends --value=0 --type=string";
       };
     };
 
