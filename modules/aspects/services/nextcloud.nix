@@ -8,6 +8,7 @@ in {
   }: {
     services.nextcloud = {
       enable = true;
+      package = pkgs.nextcloud33;
       hostName = "cloud.${meta.domain}";
 
       database.createLocally = true;
