@@ -1,19 +1,17 @@
 {den, ...}: {
   den.aspects.ivy = {
-    # define-user/primary-user are parametric on { host, user } so they
-    # resolve per-platform: OS user + home.username/homeDirectory
-    # everywhere, wheel/networkmanager on NixOS, system.primaryUser on
-    # Darwin.
+    # define-user/primary-user are parametric on { host, user }: OS user +
+    # home.username/homeDirectory everywhere, wheel/networkmanager on NixOS,
+    # system.primaryUser on Darwin.
     includes = [
       den.batteries.define-user
       den.batteries.primary-user
     ];
 
-    # Shared across every NixOS host (elm/houseplants): the login shell,
-    # declarative password, and the aspen SSH pubkey used for unattended
-    # remote deploys. Den auto-applies this aspect to every host with an
-    # `ivy` user since it's name-matched, so this fires on both without
-    # being listed in any host's `includes`.
+    # Login shell, declarative password, and the aspen SSH pubkey for
+    # unattended remote deploys. Den auto-applies this to every host with an
+    # `ivy` user (name-matched), so it fires on elm/houseplants without
+    # being listed in either host's `includes`.
     nixos = {
       pkgs,
       lib,
@@ -23,10 +21,9 @@
       users.users.ivy = {
         description = "ivy";
         shell = pkgs.zsh;
-        # mkDefault so hosts where someone actually types this at a physical
-        # console/greetd login (alder) can override with something easier to
-        # type than the shared random password every other (headless,
-        # SSH-key-only) host uses.
+        # mkDefault so hosts with a physical console/greetd login (alder)
+        # can override with an easier-to-type password than the shared
+        # random one every other (headless, SSH-key-only) host uses.
         hashedPasswordFile = lib.mkDefault config.sops.secrets.ivy-password-hash.path;
         openssh.authorizedKeys.keys = [
           "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICtFawaAWSklr1GGYiBZzGr/ydKSSOatBfGfY72eqKGZ aspen"

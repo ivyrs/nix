@@ -53,7 +53,5 @@ in {
         oidc-client-id = "6aa09792-1602-405a-a7ed-adcdc4b3883c";
       };
     };
-
-    networking.firewall.interfaces."tailscale0".allowedTCPPorts = [9400];
   };
 }

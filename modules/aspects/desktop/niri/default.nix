@@ -13,17 +13,17 @@
 
     programs.niri.enable = true;
 
-    # niri (25.08+) automatically spawns xwayland-satellite on demand when an
-    # X11 client connects and exports $DISPLAY — no KDL config needed, it
-    # just needs the binary on PATH. Without this, X11-only apps (e.g. Steam,
-    # which still uses an X11 bootstrapper UI) fail with "Could not open
-    # connection to X".
-    environment.systemPackages = [pkgs.xwayland-satellite pkgs.brightnessctl];
+    # niri (25.08+) auto-spawns xwayland-satellite on demand when an X11
+    # client connects — no KDL config needed, just the binary on PATH.
+    # Without it, X11-only apps (e.g. Steam's X11 bootstrapper UI) fail with
+    # "Could not open connection to X". playerctl backs the XF86Audio*
+    # media-key binds in binds.kdl (MPRIS control) — same PATH reasoning.
+    environment.systemPackages = [pkgs.xwayland-satellite pkgs.brightnessctl pkgs.playerctl];
 
-    # brightnessctl's own udev rules chgrp/chmod /sys/class/backlight/*/brightness
-    # to group "video" (g+w) so the XF86MonBrightnessUp/Down binds in config.kdl
-    # can run it unprivileged. Without this the rules package is never
-    # installed, so the sysfs node stays root-owned and the binds fail silently.
+    # brightnessctl's udev rules chgrp/chmod /sys/class/backlight/*/brightness
+    # to group "video" so config.kdl's XF86MonBrightnessUp/Down binds can run
+    # it unprivileged. Without this the sysfs node stays root-owned and the
+    # binds fail silently.
     services.udev.packages = [pkgs.brightnessctl];
     users.users.ivy.extraGroups = ["video"];
 

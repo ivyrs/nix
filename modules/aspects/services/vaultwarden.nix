@@ -28,7 +28,5 @@ in {
       # ADMIN_TOKEN, SSO_CLIENT_SECRET, SMTP_PASSWORD live here since services.vaultwarden.config values end up plaintext in the nix store.
       environmentFile = config.sops.secrets.vaultwarden-env.path;
     };
-
-    networking.firewall.interfaces."tailscale0".allowedTCPPorts = [config.services.vaultwarden.config.ROCKET_PORT];
   };
 }

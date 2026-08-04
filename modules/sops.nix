@@ -23,7 +23,6 @@
     sops.secrets.syncthing-gui-password.owner = "syncthing";
     sops.secrets.miniflux-admin-credentials = {};
     sops.secrets.pocket-id-encryption-key = {};
-    sops.secrets.vikunja-env = {};
     sops.secrets.vaultwarden-env = {};
     sops.secrets.nextcloud-admin-password.owner = "nextcloud";
     sops.secrets.nextcloud-oidc-client-secret.owner = "nextcloud";

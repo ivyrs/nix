@@ -44,16 +44,15 @@
 
           services.openssh = {
             enable = true;
-            openFirewall = false; # SSH is tailnet-only; see allowedTCPPorts below.
+            openFirewall = false; # SSH is tailnet-only, reachable via Tailscale's own ts-input chain regardless of NixOS's firewall.
             settings.PasswordAuthentication = false; # key-only; the declarative password is for console/VNC recovery, not SSH.
           };
 
           networking.firewall.enable = true;
           # houseplants is the public edge — it terminates real internet
           # traffic for Caddy, unlike every other host/service in this repo
-          # which only ever opens ports on tailscale0.
+          # which only ever sits behind the tailnet.
           networking.firewall.allowedTCPPorts = [80 443];
-          networking.firewall.interfaces."tailscale0".allowedTCPPorts = [22];
 
           # Allows unattended remote deploys (`just deploy houseplants`) to activate over SSH without a password prompt.
           security.sudo.wheelNeedsPassword = false;

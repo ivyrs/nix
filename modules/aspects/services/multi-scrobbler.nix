@@ -1,11 +1,8 @@
 {...}: {
   den.aspects.multi-scrobbler.nixos = {...}: {
-    # Upstream (github.com/FoxxMD/multi-scrobbler) is a Node/TS app with a
-    # heavy native-dependency surface (mdns/dbus/avahi bindings) plus a
-    # patch-package postinstall step and a separate Vite frontend build —
-    # packaging it as a from-scratch buildNpmPackage derivation would be a
-    # large, fragile undertaking for little benefit over running the image
-    # upstream actually builds/tests.
+    # Upstream (github.com/FoxxMD/multi-scrobbler) has a heavy native-dep
+    # surface (mdns/dbus/avahi, patch-package, a Vite build) — a from-scratch
+    # buildNpmPackage would be fragile for little benefit over their own image.
     virtualisation.docker.enable = true;
     virtualisation.oci-containers.backend = "docker";
     virtualisation.oci-containers.containers.multi-scrobbler = {
@@ -21,7 +18,5 @@
       };
     };
     systemd.tmpfiles.rules = ["d /var/lib/multi-scrobbler/config 0700 root root -"];
-
-    networking.firewall.interfaces."tailscale0".allowedTCPPorts = [9078];
   };
 }

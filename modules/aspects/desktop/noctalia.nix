@@ -14,31 +14,43 @@
     };
   };
 
-  den.aspects.noctalia.homeManager = {lib, ...}: {
+  den.aspects.noctalia.homeManager = {
+    lib,
+    pkgs,
+    ...
+  }: {
     imports = [inputs.noctalia.homeModules.default];
 
-    # lazygit's home-manager module only symlinks ~/.config/lazygit/config.yml
-    # when its settings are non-empty (see git.nix); forcing this to {} here
-    # keeps that file a plain mutable dotfile so noctalia's lazygit template
-    # can write its theme into it at runtime instead of hitting a read-only
-    # nix-store symlink. This does mean the os.editPreset/git.pagers/gui
-    # defaults from git.nix don't apply on noctalia hosts — re-add them by
-    # hand in the now-mutable config.yml if you want them back.
+    # Forcing empty settings keeps config.yml a mutable dotfile (home-manager
+    # only symlinks it when non-empty, see git.nix) so noctalia's lazygit
+    # template can write its theme at runtime instead of hitting a read-only
+    # nix-store symlink. Means git.nix's os.editPreset/pagers/gui defaults
+    # don't apply here — re-add by hand in config.yml if wanted.
     programs.lazygit.settings = lib.mkForce {};
 
     # See ghostty.nix: only noctalia hosts actually render a "noctalia"
     # ghostty theme file, so only they should reference it.
     programs.ghostty.settings.theme = lib.mkForce "noctalia";
 
+    # "dark-ansi" makes Claude Code render via the terminal's own 16-color
+    # ANSI palette instead of its "dark" preset's fixed hex colors, so it
+    # follows ghostty's dynamically-generated "noctalia" theme too. Merged
+    # with jq (not a static home.file) since settings.json also holds
+    # permissions/MCP config we don't own.
+    home.activation.claudeCodeNoctaliaTheme = lib.hm.dag.entryAfter ["writeBoundary"] ''
+      settingsFile="$HOME/.claude/settings.json"
+      mkdir -p "$(dirname "$settingsFile")"
+      [ -f "$settingsFile" ] || echo '{}' > "$settingsFile"
+      ${lib.getExe pkgs.jq} '.theme = "dark-ansi"' "$settingsFile" > "$settingsFile.tmp"
+      mv "$settingsFile.tmp" "$settingsFile"
+    '';
+
     programs.noctalia = {
       enable = true;
       systemd.enable = true;
-      # noctalia merges this in as a *background default* under whatever's
-      # already in the live ~/.local/state/noctalia/settings.toml (that file
-      # always wins key-for-key) — so this seeds a fresh install with today's
-      # tuned setup without ever fighting further tweaks made through
-      # noctalia's own settings UI. See noctalia-settings.toml for the file
-      # itself and the reasoning in more depth.
+      # Merges as a background default under the live settings.toml (which
+      # always wins key-for-key), so this seeds a fresh install without
+      # fighting tweaks made through noctalia's own settings UI.
       settings = ./noctalia-settings.toml;
     };
   };

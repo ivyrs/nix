@@ -18,7 +18,5 @@ in {
       # since services.miniflux.config values end up plaintext in the systemd unit in /nix/store.
       adminCredentialsFile = config.sops.secrets.miniflux-admin-credentials.path;
     };
-
-    networking.firewall.interfaces."tailscale0".allowedTCPPorts = [3000];
   };
 }

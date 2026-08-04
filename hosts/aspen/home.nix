@@ -7,6 +7,7 @@
       den.aspects.dev-tools
       den.aspects.syncthing-client
       den.aspects.onepassword
+      den.aspects.music
     ];
 
     homeManager = {

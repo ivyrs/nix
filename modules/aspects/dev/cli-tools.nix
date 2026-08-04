@@ -14,6 +14,13 @@
       sd
       just
       nh # `just switch` runs `nh os switch` on every host — keep in base
+      ripgrep-all
+      tokei
+      yazi
+      hyperfine
+      xh
+      mprocs
+      kondo
     ];
   };
 }

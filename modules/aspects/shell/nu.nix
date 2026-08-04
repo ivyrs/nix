@@ -1,16 +1,12 @@
+# nushell, available alongside zsh (zsh.nix) as an opt-in shell — not the
+# login shell, which stays zsh (see modules/users/ivy.nix). Aliases mirror
+# zsh.nix's where they translate directly; a few are left out because nu
+# covers them natively (`cd ..`/`cd -`, `mkdir` always makes parent dirs).
 {
-  den.aspects.zsh.homeManager.programs.zsh = {
+  den.aspects.nu.homeManager.programs.nushell = {
     enable = true;
-    enableCompletion = true;
 
-    oh-my-zsh = {
-      enable = true;
-      plugins = ["git" "brew" "eza"];
-    };
-
-    initContent = ''
-      zstyle ':completion:*' menu select
-    '';
+    settings.show_banner = false;
 
     shellAliases = {
       e = "nvim";
@@ -38,14 +34,8 @@
       ps = "procs";
       sed = "sd";
 
-      ".." = "cd ..";
-      "..." = "cd ../..";
-      "...." = "cd ../../..";
-      "-" = "cd -";
-
       c = "clear";
-      mkdir = "mkdir -p";
-      reload = "exec zsh";
+      reload = "exec nu";
 
       lg = "lazygit";
 
@@ -61,7 +51,7 @@
       nixgc = "nix-collect-garbage -d";
       nixgens = "nix-env --list-generations -p /nix/var/nix/profiles/system";
 
-      ports = "lsof -i -P -n | grep LISTEN";
+      ports = "lsof -i -P -n | rg LISTEN";
     };
   };
 }

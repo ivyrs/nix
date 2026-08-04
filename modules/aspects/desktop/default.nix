@@ -17,19 +17,14 @@
     ];
   };
 
-  # GUI apps for a Linux desktop session (currently just alder). Kept nixos-only
-  # rather than folded into the homeManager block above: several of these
-  # (e.g. nokkvi) are packaged Linux-only in nixpkgs, and this aspect's
-  # homeManager side is also included by aspen (darwin) — putting them there
-  # would break aspen's build.
+  # GUI apps for a Linux desktop session (currently just alder). Kept
+  # nixos-only rather than in the homeManager block above: some (e.g.
+  # nokkvi) are Linux-only packages, and that block is also included by
+  # aspen (darwin) — putting them there would break aspen's build.
   den.aspects.desktop.nixos = {pkgs, ...}: {
     environment.systemPackages = with pkgs; [
-      obsidian
-      calibre
       keymapp
       firefox
-      feishin
-      (pkgs.callPackage ../../../packages/nokkvi/default.nix {})
     ];
   };
 }

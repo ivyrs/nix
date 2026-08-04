@@ -17,9 +17,10 @@
       den.aspects.homebrew
       den.aspects.aerospace
       den.aspects.system-defaults
-      den.aspects.fonts
+      den.aspects.theme
       den.aspects.touchid
       den.aspects.onepassword
+      den.aspects.productivity
     ];
 
     darwin = {

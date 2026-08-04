@@ -7,6 +7,9 @@
       nodejs
       rustup
       go
+      bacon
+      cargo-info
+      rusty-man
     ];
 
     programs.zsh.initContent = ''

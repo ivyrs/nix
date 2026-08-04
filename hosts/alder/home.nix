@@ -9,5 +9,6 @@
     den.aspects.syncthing-client
     den.aspects.onepassword
     den.aspects.theme
+    den.aspects.music
   ];
 }

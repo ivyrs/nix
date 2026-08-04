@@ -4,6 +4,7 @@ in {
   den.aspects.starship.homeManager.programs.starship = {
     enable = true;
     enableZshIntegration = true;
+    enableNushellIntegration = true;
     settings = {
       format = " $username$hostname$directory$character";
       right_format = "$all";

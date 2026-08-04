@@ -36,21 +36,13 @@ in {
 
         ui.styleset-name = "catppuccin-mocha";
 
-        # Filters pipe a part's bytes through a command and render its
-        # stdout right in the message pane — no external app, no new
-        # window. This is what `:view`/Enter uses, and is the terminal-native
-        # way to read mail here.
-        #
-        # aerc ships a bundled aerc.conf with its own [filters] (and
-        # [openers]/[ui]/etc) defaults, but that's only ever used as a
-        # one-time template copied in if `~/.config/aerc/aerc.conf` (here,
-        # ~/Library/Preferences/aerc/aerc.conf) doesn't exist yet — once a
-        # real file is there, aerc loads *only* that file, with no fallback
-        # merge of the bundled section for anything left out. Since
-        # `extraConfig` here means home-manager always writes a real
-        # aerc.conf, every default we still want has to be repeated
-        # explicitly. These mirror aerc's shipped defaults verbatim, plus
-        # our own image/* entry using chafa instead of GUI Preview.
+        # Filters pipe a part's bytes through a command and render its stdout
+        # in the message pane (what `:view`/Enter uses). aerc's bundled
+        # aerc.conf only seeds these as a one-time template if no real config
+        # file exists yet; since `extraConfig` here means home-manager always
+        # writes one, every default has to be repeated explicitly. These
+        # mirror aerc's shipped defaults, plus our own image/* using chafa
+        # instead of GUI Preview.
         filters = {
           "text/plain" = "colorize";
           "text/calendar" = "calendar";
@@ -61,16 +53,11 @@ in {
           "image/*" = "chafa -f symbols";
         };
 
-        # `:open` (the `o`/`O` binds) is a different action from viewing: it
-        # saves the part to a temp file and hands it to an external command,
-        # whose output aerc never displays — so an interactive terminal
-        # program run this way would produce no visible effect. A real GUI
-        # app is the only thing that works here, and `-a <App>` is needed
-        # over plain `open <tmpfile>`: Go's mime package resolves text/html
-        # to the alphabetically-first known extension, ".ehtml", and
-        # image/jpeg to ".jfif" — neither has a registered handler on macOS,
-        # so `open` exits 1. `-a <App>` opens by app instead of by
-        # extension, sidestepping that.
+        # `:open` saves the part to a temp file and hands it to an external
+        # command with no visible output, so only a real GUI app works. Plain
+        # `open <tmpfile>` fails: Go's mime package resolves text/html to
+        # ".ehtml" and image/jpeg to ".jfif", neither registered on macOS.
+        # `-a <App>` opens by app instead of by extension, sidestepping that.
         openers = {
           "text/html" = "open -a Safari";
           "image/jpeg" = "open -a Preview";

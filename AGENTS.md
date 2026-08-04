@@ -92,14 +92,14 @@ before wiring it into each host's aspect definition.
 - `modules/hosts/declarations.nix`: `den.default.homeManager.home.stateVersion`
   is "set once, don't bump casually" — same rule, applies to every host
   (hoisted here since it was identical everywhere).
-- `networking.firewall.interfaces."tailscale0".allowedTCPPorts` entries on
-  elm (glance, vaultwarden, nextcloud, miniflux, etc.) are effectively
-  no-ops: Tailscale's own iptables `ts-input` chain accepts all traffic on
-  `tailscale0` before NixOS's `networking.firewall` is ever evaluated, so
-  every port on elm is already reachable tailnet-wide regardless of these
-  lists. Don't treat them as real access control, and don't "fix" a security
-  concern by adding one — real per-service restriction needs a Tailscale ACL
-  in the admin console, not a NixOS firewall change.
+- Service aspects deliberately don't declare
+  `networking.firewall.interfaces."tailscale0".allowedTCPPorts`: Tailscale's
+  own iptables `ts-input` chain accepts all traffic on `tailscale0` before
+  NixOS's `networking.firewall` is ever evaluated, so any such entry would be
+  a no-op — every port on a tailscale-server host is already reachable
+  tailnet-wide regardless. Don't add one back as a "fix" for a security
+  concern — real per-service restriction needs a Tailscale ACL in the admin
+  console, not a NixOS firewall change.
 - Comments flagged `verify this` / `confirm this` mark values the user
   hasn't independently confirmed against the real machine — flag rather than
   silently trust when reasoning about them.

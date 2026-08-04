@@ -10,7 +10,5 @@ in {
       };
       credentials.ENCRYPTION_KEY = config.sops.secrets.pocket-id-encryption-key.path;
     };
-
-    networking.firewall.interfaces."tailscale0".allowedTCPPorts = [1411];
   };
 }

@@ -20,7 +20,6 @@
       ];
 
       casks = [
-        "obsidian" # notes
         "bitwarden" # Vaultwarden client
         "tailscale-app" # menu-bar GUI (formula `tailscale` is CLI-only)
         "keymapp" # ZSA Moonlander flasher
@@ -29,7 +28,6 @@
         "raycast"
         "shottr"
         "claude"
-        "calibre"
       ];
 
       masApps = {

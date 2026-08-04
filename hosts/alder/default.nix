@@ -16,6 +16,8 @@
       den.aspects.noctalia
       den.aspects.onepassword
       den.aspects.desktop
+      den.aspects.music
+      den.aspects.productivity
     ];
 
     nixos = {
@@ -32,18 +34,13 @@
         }: {
           hardware.asahi.enable = true;
 
-          # Peripheral firmware (WiFi/webcam/etc.) ships as vendorfw/firmware.cpio
-          # on the ESP, put there by the Asahi installer. peripheralFirmwareDirectory
-          # points at a path *outside* this repo (/etc/nixos/asahi-firmware on
-          # alder itself) — this repo's Codeberg remote is public, and
-          # firmware.cpio is Apple's proprietary binary firmware extracted from
-          # this machine's own macOS install; committing it here would
-          # redistribute it to anyone who clones the repo, unlike the
-          # extraction itself which is local-only and standard practice (same
-          # category as Linux distros pulling WiFi/RAID firmware off a Windows
-          # OEM partition). The module's own path-probing default doesn't
-          # evaluate reliably from a flake built on another machine (e.g. aspen)
-          # either way, so this still needs to be set explicitly.
+          # peripheralFirmwareDirectory points outside this repo: firmware.cpio
+          # is Apple's proprietary firmware (extraction itself is standard
+          # practice, same as Linux distros pulling WiFi/RAID firmware off a
+          # Windows OEM partition), and this repo's Codeberg remote is public —
+          # committing it would redistribute it. Also needs setting explicitly
+          # since the module's path-probing default doesn't evaluate reliably
+          # from a flake built on another machine (e.g. aspen).
           hardware.asahi.extractPeripheralFirmware = true;
           hardware.asahi.peripheralFirmwareDirectory = /etc/nixos/asahi-firmware;
           # Asahi's U-Boot/m1n1 stack manages EFI vars, not Linux.
@@ -53,12 +50,10 @@
           networking.networkmanager.enable = true;
           networking.networkmanager.wifi.backend = "iwd";
 
-          # SSH key + shell are declarative via the shared den.aspects.ivy.nixos
-          # (modules/users/ivy.nix); see AGENTS.md/memory for retrieving them.
-          # Password is overridden below: unlike the other NixOS hosts (SSH-key-only,
-          # password is console-recovery-only), alder's greetd login means someone
-          # actually types this at a physical keyboard, so it gets its own
-          # easier-to-type secret instead of the shared random one.
+          # SSH key + shell come from den.aspects.ivy.nixos (modules/users/ivy.nix);
+          # see AGENTS.md/memory to retrieve them. Password overridden below:
+          # alder's greetd login is typed at a physical keyboard, so it gets an
+          # easier-to-type secret instead of the shared random per-host one.
           sops.secrets.ivy-password-hash-alder = {};
           users.users.ivy.hashedPasswordFile = lib.mkForce config.sops.secrets.ivy-password-hash-alder.path;
 

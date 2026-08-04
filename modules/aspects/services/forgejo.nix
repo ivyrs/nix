@@ -79,11 +79,6 @@ in {
       };
     };
 
-    networking.firewall.interfaces."tailscale0".allowedTCPPorts = [
-      config.services.forgejo.settings.server.HTTP_PORT
-      2222
-    ];
-
     # forgejo-secrets.service reads services.forgejo.secrets.* directly as the
     # unprivileged forgejo user (unlike forgejo.service itself, which uses
     # systemd's LoadCredential). Its ReadWritePaths puts it in a private mount

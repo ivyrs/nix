@@ -18,43 +18,37 @@ in {
       };
 
       extraApps = {inherit (config.services.nextcloud.package.packages.apps) user_oidc;};
-      # Declaring extraApps makes the module disable the App Store by
-      # default (appstoreEnable defaults to null, which renders as
-      # `appstoreenabled => false` in config.php whenever extraApps is
-      # non-empty) — silently taking down both the regular app store and
-      # AppAPI's ExApp store with it. Force it back on; user_oidc stays
-      # nix-managed regardless since it's only ever installed via extraApps.
+      # extraApps being non-empty makes the module default appstoreEnable to
+      # null (renders as false), silently disabling both the App Store and
+      # AppAPI's ExApp store. Force it back on; user_oidc stays nix-managed
+      # regardless since it's only ever installed via extraApps.
       appstoreEnable = true;
 
-      # Recommended by Nextcloud's admin overview: run background jobs at a
-      # low-usage hour (UTC) instead of no window at all, and bump the
-      # opcache interned-strings buffer past its default (module warned it
-      # was nearly full).
+      # Background jobs at a low-usage UTC hour, and opcache's
+      # interned-strings buffer bumped past default (module warned it was
+      # nearly full) — both per Nextcloud's admin overview.
       settings = {
         maintenance_window_start = 1;
         default_phone_region = "GB"; # elm's timezone is Europe/London
 
-        # nextcloud is the only nginx vhost on elm (no local reverse proxy —
-        # see tailscale.nix's permitCertUid TODO), which makes it nginx's
-        # default server for any Host header — add the tailnet name and the
-        # old public hostname too so Nextcloud's own untrusted-domain check
-        # doesn't reject them.
+        # nextcloud is elm's only nginx vhost (no local reverse proxy — see
+        # tailscale.nix's permitCertUid TODO), making it nginx's default
+        # server for any Host header — add the tailnet name and old public
+        # hostname too so Nextcloud's untrusted-domain check doesn't reject them.
         trusted_domains = ["nc.${meta.domain}" "elm.${meta.tailnet}"];
 
-        # Public HTTPS is terminated by a Caddy instance on a separate VPS,
-        # which reaches elm over the tailnet and forwards plain HTTP to
-        # nginx here. Without trusting its tailnet IP, Nextcloud can't tell
-        # the original request was HTTPS (breaks user_oidc, which refuses to
-        # run the OIDC flow unless it thinks the connection is HTTPS).
+        # Public HTTPS terminates at a Caddy instance on a separate VPS,
+        # which forwards plain HTTP to nginx here over the tailnet. Without
+        # trusting its IP, Nextcloud can't tell the request was HTTPS
+        # (breaks user_oidc, which requires HTTPS for the OIDC flow).
         trusted_proxies = ["100.64.20.1"];
 
         mail_smtpmode = "smtp";
         mail_smtpauth = true;
         mail_smtphost = meta.smtp.host;
         mail_smtpport = meta.smtp.port;
-        # Nextcloud's mail_smtpsecure only accepts "" or "ssl" (implicit
-        # TLS); leaving it "" is correct for STARTTLS on the submission
-        # port (587), which is what Fastmail uses here.
+        # mail_smtpsecure only accepts "" or "ssl" (implicit TLS); "" is
+        # correct for STARTTLS on submission port 587 (Fastmail here).
         mail_smtpname = meta.smtp.username;
         mail_from_address = "cloud";
         mail_domain = meta.domain;
@@ -64,15 +58,12 @@ in {
       phpOptions."opcache.interned_strings_buffer" = "16";
     };
 
-    # Registers houseplantsID (pocket-id) as a login provider for the
-    # user_oidc app above. `occ user_oidc:provider` upserts by identifier,
-    # so this is idempotent and safe to re-run on every deploy.
-    #
-    # unique-uid=0 + mapping-uid=preferred_username make OIDC login resolve
-    # to the existing local "ivy" account (pocket-id's username for this
-    # account, confirmed via its sqlite db) instead of user_oidc's default
-    # behaviour of provisioning a separate hashed-uid account per provider —
-    # first login already did that once; the duplicate got deleted by hand.
+    # Registers houseplantsID (pocket-id) as a login provider for user_oidc.
+    # `occ user_oidc:provider` upserts by identifier, safe to re-run on every
+    # deploy. unique-uid=0 + mapping-uid=preferred_username make OIDC login
+    # resolve to the existing local "ivy" account (confirmed via pocket-id's
+    # sqlite db) instead of provisioning a separate hashed-uid account —
+    # first login already did that once; the duplicate was deleted by hand.
     systemd.services.nextcloud-oidc-provider = {
       description = "Register houseplantsID as a Nextcloud OIDC provider";
       after = ["nextcloud-setup.service"];
@@ -80,12 +71,11 @@ in {
       serviceConfig = {
         Type = "oneshot";
         User = "nextcloud";
-        # Without a pre-populated $CREDENTIALS_DIRECTORY, the occ wrapper
-        # tries to self-elevate via `systemd-run --uid=nextcloud` to load
-        # services.nextcloud.secrets.* (needed since mail_smtppassword was
-        # added below) — which fails outside an interactive/root session.
-        # Declaring the same LoadCredential nextcloud-setup.service uses
-        # avoids that path entirely.
+        # Without a pre-populated $CREDENTIALS_DIRECTORY, occ tries to
+        # self-elevate via `systemd-run --uid=nextcloud` to load
+        # services.nextcloud.secrets.* (needed since mail_smtppassword),
+        # which fails outside an interactive/root session. Declaring the
+        # same LoadCredential nextcloud-setup.service uses avoids that.
         LoadCredential = "mail_smtppassword:${config.sops.secrets.nextcloud-smtp-password.path}";
         ExecStart = pkgs.writeShellScript "nextcloud-oidc-provider-setup" ''
           ${config.services.nextcloud.occ}/bin/nextcloud-occ user_oidc:provider houseplants \
@@ -115,16 +105,13 @@ in {
       };
     };
 
-    # AppAPI / External Apps (ExApps): HaRP is the current recommended deploy
-    # daemon for NC32+ (the older Docker Socket Proxy is deprecated, slated
-    # for removal in NC35 — see github.com/nextcloud/app_api's AGENTS.md).
-    # Only the HaRP container touches the Docker socket; Nextcloud/php-fpm
-    # only ever talks to HaRP's HTTP API over the shared key below.
-    #
-    # Nextcloud itself isn't containerized here, so HaRP runs with
-    # --network=host (the app_api docs' explicit adaptation for a bare-metal
-    # Nextcloud) so "localhost" from inside the container reaches nginx and
-    # HaRP's own FRP port directly, no Docker network/port-publish needed.
+    # AppAPI/ExApps: HaRP is the recommended deploy daemon for NC32+ (Docker
+    # Socket Proxy is deprecated, removal in NC35 — see app_api's AGENTS.md).
+    # Only the HaRP container touches the Docker socket; php-fpm only talks
+    # to HaRP's HTTP API over the shared key below. Nextcloud isn't
+    # containerized here, so HaRP runs with --network=host (app_api docs'
+    # bare-metal adaptation) so "localhost" in-container reaches nginx and
+    # HaRP's FRP port directly, no Docker network/port-publish needed.
     virtualisation.docker.enable = true;
     virtualisation.oci-containers.backend = "docker";
     virtualisation.oci-containers.containers.appapi-harp = {
@@ -140,13 +127,12 @@ in {
     };
     systemd.tmpfiles.rules = ["d /var/lib/appapi-harp/certs 0700 root root -"];
 
-    # Required, not just for browser/WebSocket access: ExApp lifecycle calls
-    # (e.g. the heartbeat check during deploy) hit `nextcloud_url` + "/exapps/…"
+    # Required for more than browser/WebSocket access: ExApp lifecycle calls
+    # (e.g. deploy's heartbeat check) hit `nextcloud_url` + "/exapps/…"
     # expecting it to reach HaRP. Without this, every ExApp install fails
-    # ("Error starting install of ExApp" / heartbeat 404s), confirmed via
-    # `occ app_api:app:register --test-deploy-mode`. `nextcloud_url` above
-    # points straight at elm's own nginx (not the external VPS Caddy), so
-    # this belongs here rather than on that VPS.
+    # ("Error starting install of ExApp" / heartbeat 404s — confirmed via
+    # `occ app_api:app:register --test-deploy-mode`). `nextcloud_url` points
+    # at elm's own nginx, not the external VPS Caddy, so this lives here.
     services.nginx.virtualHosts.${config.services.nextcloud.hostName}.locations."/exapps/" = {
       proxyPass = "http://127.0.0.1:8780";
       proxyWebsockets = true;
@@ -157,11 +143,10 @@ in {
       '';
     };
 
-    # Registers HaRP as AppAPI's default deploy daemon and makes sure app_api
-    # itself is enabled. `daemon:register` is a no-op if a daemon named
-    # "harp1" already exists, so this is safe to re-run every deploy. `--net`
-    # is omitted since its default ("host") already matches the container
-    # above.
+    # Registers HaRP as AppAPI's default deploy daemon and enables app_api.
+    # `daemon:register` no-ops if "harp1" already exists, safe to re-run
+    # every deploy. `--net` omitted since its default ("host") already
+    # matches the container above.
     systemd.services.nextcloud-appapi-harp-register = {
       description = "Register HaRP as Nextcloud's AppAPI deploy daemon";
       after = ["nextcloud-setup.service" "docker-appapi-harp.service"];
@@ -186,17 +171,12 @@ in {
       };
     };
 
-    # app_api hardcodes `proc_open('php console.php ...')` (AppAPIService::runOccCommandInternal)
-    # with no config override, relying on a bare `php` resolving via php-fpm's
-    # own PATH — which NixOS's nextcloud module never provides (only the
-    # `nextcloud-occ` wrapper, which references its php-with-extensions build
-    # by full store path). Without this, Test Deploy and ExApp installs fail
-    # with "Error starting install of ExApp" (stderr: "php: command not found").
-    # Referencing the pool's own phpPackage (not a fresh `pkgs.php`) keeps the
-    # exact same extension set occ/php-fpm already use.
+    # app_api hardcodes `proc_open('php console.php ...')`
+    # (AppAPIService::runOccCommandInternal), relying on a bare `php` on
+    # PATH — which the nextcloud module never provides (only the
+    # full-store-path `nextcloud-occ` wrapper). Without this, ExApp installs
+    # fail with "php: command not found". Using the pool's own phpPackage
+    # (not a fresh `pkgs.php`) keeps the same extension set occ/php-fpm use.
     environment.systemPackages = [config.services.phpfpm.pools.nextcloud.phpPackage];
-
-    # services.nextcloud pulls in services.nginx (mkDefault true) to front php-fpm.
-    networking.firewall.interfaces."tailscale0".allowedTCPPorts = [80];
   };
 }

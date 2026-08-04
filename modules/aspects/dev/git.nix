@@ -136,12 +136,10 @@ in {
 
     programs.lazygit = {
       enable = true;
-      # mkDefault: home-manager's lazygit module only manages (symlinks)
-      # ~/.config/lazygit/config.yml when settings is non-empty. Hosts with
-      # noctalia force this back to {} (see noctalia.nix) so that file stays
-      # a plain mutable dotfile noctalia's lazygit template can write its
-      # theme into — a home-manager-owned symlink would make that write
-      # fail (permission denied against the nix store).
+      # mkDefault: home-manager only symlinks config.yml when settings is
+      # non-empty. noctalia hosts force this back to {} (see noctalia.nix)
+      # so the file stays mutable for noctalia's own theme template to
+      # write into — a nix-store symlink there would fail that write.
       settings = lib.mkDefault {
         os.editPreset = "nvim";
 

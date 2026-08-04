@@ -3,6 +3,7 @@
     programs.fzf = {
       enable = true;
       enableZshIntegration = true;
+      enableNushellIntegration = true;
       defaultOptions = [
         "--style=minimal"
         "--info=inline-right"
@@ -18,12 +19,14 @@
     programs.zoxide = {
       enable = true;
       enableZshIntegration = true;
+      enableNushellIntegration = true;
       options = ["--cmd cd"];
     };
 
     programs.direnv = {
       enable = true;
       enableZshIntegration = true;
+      enableNushellIntegration = true;
       config.global.hide_env_diff = true;
     };
   };

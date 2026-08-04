@@ -45,17 +45,13 @@ in {
       };
     };
 
-    # Exposed on the tailnet as a Tailscale Service (svc:dash ->
-    # dash.<tailnet>.ts.net) rather than a bare host:port. This has to be
-    # done via the `tailscale serve` CLI's --https flag, not the declarative
+    # Exposed as a Tailscale Service (svc:dash -> dash.<tailnet>.ts.net) via
+    # the `tailscale serve` CLI's --https flag, not the declarative
     # services.tailscale.serve.services option: as of tailscaled 1.98.x, the
-    # JSON config-file path (`serve set-config`) can only ever produce a
-    # plain-HTTP tcp:<port> listener (no TLS termination/cert), regardless of
-    # the backend URL scheme you give it — only the CLI's --https flag sets
-    # the bit that makes tailscaled terminate TLS and provision a cert for
-    # dash.<tailnet>.ts.net. Config also doesn't survive a tailscaled
-    # restart, so this re-asserts on every tailscaled start rather than just
-    # once at boot.
+    # JSON config path can only ever produce a plain-HTTP tcp:<port>
+    # listener, whatever backend scheme you give it — only --https makes
+    # tailscaled terminate TLS and provision the cert. Config also doesn't
+    # survive a tailscaled restart, so this re-asserts on every start.
     systemd.services.tailscale-serve-dash = {
       description = "Advertise glance as the dash Tailscale Service";
       after = ["tailscaled.service" "glance.service"];
