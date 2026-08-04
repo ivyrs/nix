@@ -37,3 +37,8 @@ layout {
         color "#0007"
     }
 }
+
+layer-rule {
+    match namespace="^noctalia-backdrop"
+    place-within-backdrop true
+}

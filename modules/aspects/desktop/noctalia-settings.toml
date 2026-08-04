@@ -1,0 +1,314 @@
+## This file mirrors ~/.local/state/noctalia/settings.toml as tuned live
+## through noctalia's own settings UI. It's merged in in the *background*
+## via ~/.config/noctalia/config.toml (see noctalia.nix) — the live state
+## file, when present, always wins key-for-key, so this never fights or
+## clobbers further tweaks made through the GUI. It exists so a fresh
+## install (no state file yet) starts from this exact setup instead of
+## noctalia's defaults, and so this setup is versioned/recoverable.
+##
+## `config_version` is deliberately omitted — that field belongs to the live
+## state file's own migration tracking, not to this background-default file.
+
+[audio]
+enable_sounds = true
+
+[backdrop]
+enabled = true
+
+[bar.default]
+background_opacity = 0.4999999888241291
+center = [ "clock", "group:g2" ]
+concave_edge_corners = false
+end = [ "tray", "notifications", "network", "volume", "battery" ]
+font_weight = 400
+margin_ends = 0
+padding = 16
+position = "bottom"
+radius = 0
+shadow = false
+start = [ "group:g1" ]
+widget_spacing = 10
+
+    [[bar.default.capsule_group]]
+    accordion = false
+    accordion_direction = "end"
+    border = ""
+    enabled = true
+    fill = "surface"
+    id = "g1"
+    members = [ "active_window", "workspaces" ]
+    opacity = 0.0
+    padding = 6.0
+
+    [[bar.default.capsule_group]]
+    accordion = false
+    accordion_direction = "end"
+    enabled = true
+    fill = "surface_variant"
+    id = "g2"
+    members = [ "cat", "media" ]
+    opacity = 0.0
+    padding = 6.0
+
+[calendar]
+enabled = true
+
+    [calendar.account.houseplants_cal]
+    credential_source = "file"
+    name = "Houseplants"
+    password_file = "/run/secrets/ivy-nextcloud-app-password"
+    provider = "custom"
+    server_url = "https://nc.houseplants.cloud/remote.php/dav"
+    type = "caldav"
+    username = "ivy"
+
+[control_center]
+hidden_tabs = [ "audio", "monitor", "weather" ]
+show_shortcut_labels = false
+sidebar_section = "none"
+
+    [control_center.calendar]
+    show_week_numbers = true
+
+    [[control_center.shortcuts]]
+    type = "caffeine"
+
+    [[control_center.shortcuts]]
+    type = "nightlight"
+
+    [[control_center.shortcuts]]
+    type = "notification"
+
+    [[control_center.shortcuts]]
+    type = "weather"
+
+[desktop_widgets]
+enabled = false
+
+[idle]
+behavior_order = [ "lock", "screen-off", "lock-and-suspend" ]
+
+    [idle.behavior.lock]
+    action = "lock"
+    enabled = true
+    timeout = 600.0
+
+    [idle.behavior.lock-and-suspend]
+    action = "lock_and_suspend"
+    enabled = true
+    timeout = 900.0
+
+    [idle.behavior.screen-off]
+    action = "screen_off"
+    enabled = true
+    timeout = 660.0
+
+[location]
+auto_locate = true
+
+[lockscreen]
+fingerprint = false
+
+[lockscreen_widgets]
+schema_version = 2
+widget_order = [ "lockscreen-login-box@eDP-1" ]
+
+    [lockscreen_widgets.grid]
+    cell_size = 16
+    major_interval = 4
+    visible = true
+
+    [lockscreen_widgets.widget."lockscreen-login-box@eDP-1"]
+    box_height = 196.0
+    box_width = 810.0
+    cx = 960.0
+    cy = 1018.0
+    output = "eDP-1"
+    rotation = 0.0
+    type = "login_box"
+
+        [lockscreen_widgets.widget."lockscreen-login-box@eDP-1".settings]
+        background_color = "surface_variant"
+        background_opacity = 0.88
+        background_radius = 12.0
+        center_password_text = false
+        input_opacity = 1.0
+        input_radius = 6.0
+        layout = "regular"
+        show_caps_lock = true
+        show_keyboard_layout = true
+        show_login_button = true
+        show_media = true
+        show_session_buttons = true
+        show_unlock_hint = true
+        show_weather = true
+
+[nightlight]
+enabled = true
+
+[notification]
+filter_order = [ "filter" ]
+history_retention_hours = 1
+
+    [notification.filter.filter]
+    allow_permanent = false
+    enabled = true
+    match = "claude"
+    play_sound = true
+    save_history = false
+    show_toast = true
+
+[osd]
+background_opacity = 0.4999999888241291
+border = false
+position_vertical = "top_right"
+
+[plugins]
+enabled = [ "noctalia/bongocat", "nightwatch75/file-search", "noctalia/wallhaven" ]
+
+[shell]
+app_icon_color = "primary"
+external_ip_enabled = true
+font_family = "Aporetic Sans"
+# Not present in the live settings.toml this file mirrors (never toggled
+# off, so never persisted) — kept explicit here since without it, apps
+# launched through noctalia get killed whenever its systemd service restarts.
+launch_apps_as_systemd_services = true
+password_style = "random"
+polkit_agent = true
+screen_time_enabled = true
+telemetry_enabled = true
+
+    [shell.launcher]
+    categories = false
+    compact = true
+
+    [shell.panel]
+    shadow = false
+    transparency_mode = "soft"
+
+    [shell.screenshot]
+    directory = "/home/ivy/media/screenshots"
+
+    [shell.session]
+    show_shortcuts = false
+
+        [[shell.session.actions]]
+        action = "lock"
+        countdown_seconds = 0.0
+        enabled = false
+        shortcut = "1"
+        variant = "default"
+
+        [[shell.session.actions]]
+        action = "logout"
+        countdown_seconds = 0.0
+        enabled = true
+        label = "logout"
+        shortcut = "1"
+        variant = "default"
+
+        [[shell.session.actions]]
+        action = "lock_and_suspend"
+        countdown_seconds = 0.0
+        enabled = false
+        shortcut = "3"
+        variant = "default"
+
+        [[shell.session.actions]]
+        action = "reboot"
+        countdown_seconds = 0.0
+        enabled = true
+        label = "reboot"
+        shortcut = "2"
+        variant = "default"
+
+        [[shell.session.actions]]
+        action = "shutdown"
+        countdown_seconds = 0.0
+        enabled = true
+        label = "shutdown"
+        shortcut = "3"
+        variant = "destructive"
+
+[theme]
+builtin = "Ayu"
+community_palette = "Catppuccin Mocha Sapphire"
+mode = "dark"
+source = "wallpaper"
+wallpaper_scheme = "m3-fruit-salad"
+
+    [theme.templates]
+    builtin_ids = [ "btop", "gtk3", "gtk4", "ghostty", "kcolorscheme", "niri", "qt" ]
+    community_ids = [ "opencode", "pi-agent", "feishin", "pywalfox-beta4", "discord", "obsidian", "bat", "lazygit", "yazi" ]
+
+[wallpaper]
+directory = "/home/ivy/media/images/wallpapers"
+transition_on_startup = true
+
+    [wallpaper.automation]
+    enabled = true
+
+    [wallpaper.default]
+    path = "/home/ivy/media/images/wallpapers/oc_the_blackboard.png"
+
+    [wallpaper.last]
+    path = "/home/ivy/media/images/wallpapers/oc_the_blackboard.png"
+
+    [wallpaper.monitors.eDP-1]
+    path = "/home/ivy/media/images/wallpapers/oc_the_blackboard.png"
+
+    [[wallpaper.favorite]]
+    palette_source = "wallpaper"
+    path = "/home/ivy/media/images/wallpapers/oc_the_blackboard.png"
+    theme_mode = "dark"
+    wallpaper_scheme = "m3-fruit-salad"
+
+    [[wallpaper.favorite]]
+    builtin_palette = "Ayu"
+    palette_source = "builtin"
+    path = "/home/ivy/media/images/wallpapers/wallhaven-5gwvz5.jpg"
+    theme_mode = "dark"
+
+    [[wallpaper.favorite]]
+    palette_source = "wallpaper"
+    path = "/home/ivy/media/images/wallpapers/wallhaven-e76pew.png"
+    theme_mode = "dark"
+    wallpaper_scheme = "m3-fruit-salad"
+
+    [[wallpaper.favorite]]
+    palette_source = "wallpaper"
+    path = "/home/ivy/media/images/wallpapers/painting-lighthouse-02-1440p.jpg"
+    theme_mode = "light"
+    wallpaper_scheme = "m3-fruit-salad"
+
+[widget.active_window]
+display = "text_only"
+max_length = 500
+min_length = 0
+
+[widget.battery]
+hide_when_full = true
+
+[widget.cat]
+audio_spectrum = true
+scale = 1.1000000000000001
+tappy_mode = true
+type = "noctalia/bongocat:cat"
+
+[widget.media]
+hide_when_no_media = true
+max_length = 500
+
+[widget.network]
+show_vpn_label = true
+
+[widget.notifications]
+hide_when_no_unread = true
+
+[widget.tray]
+drawer = true
+
+[widget.workspaces]
+hide_when_empty = true
+show_labels = false

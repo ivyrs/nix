@@ -1,6 +1,6 @@
 {
   den.aspects.cli-tools.homeManager = {pkgs, ...}: {
-    # Extend freely. Workstation-only tools live in workstation.nix.
+    # Extend freely. Workstation-only tools live in desktop/default.nix.
     home.packages = with pkgs; [
       ripgrep
       fd

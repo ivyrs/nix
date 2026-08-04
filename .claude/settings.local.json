@@ -38,7 +38,9 @@
       "Bash(nix run *)",
       "Bash(nix shell *)",
       "Bash(timeout 30 distrobox enter steam -- bash -c 'STEAM_RUNTIME_HEAVY_DEBUG=1 steam 2>&1')",
-      "Bash(distrobox enter *)"
+      "Bash(distrobox enter *)",
+      "Bash(ssh-keygen -t *)",
+      "Read(//home/ivy/.ssh/**)"
     ]
   }
 }

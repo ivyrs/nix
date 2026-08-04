@@ -3,9 +3,10 @@
     includes = [
       den.aspects.home-manager
       den.aspects.ghostty
-      den.aspects.workstation
+      den.aspects.desktop
       den.aspects.dev-tools
       den.aspects.syncthing-client
+      den.aspects.onepassword
     ];
 
     homeManager = {

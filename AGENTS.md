@@ -13,6 +13,13 @@ implications, gotchas, and guardrails that README doesn't cover.
   aspects), picked up automatically by `import-tree`. Aspects are organized
   by feature under `modules/aspects/` rather than target-class directories,
   since a single aspect should configure all targets for that feature.
+  `modules/aspects/` is further split into subdirectories by feature domain
+  (`core/`, `desktop/`, `dev/`, `services/`, `shell/`) — that grouping is
+  purely for human navigation and has no effect on the `den.aspects.<name>`
+  namespace or on `import-tree`, which recurses regardless of depth. It's
+  also normal for one aspect to be contributed to from more than one file —
+  e.g. `den.aspects.desktop.homeManager` gets packages from both
+  `desktop/default.nix` and `desktop/aerc/default.nix`; Den merges them.
 - **Using an aspect inside a host**: reference it by name in the host's
   `den.aspects.<hostname>.includes` list (for `nixos`/`darwin`-class
   aspects) or `provides.to-users.includes` (for `homeManager`-class
@@ -69,7 +76,16 @@ before wiring it into each host's aspect definition.
   /etc/nixos/asahi-firmware` — that directory (containing Apple's
   proprietary `firmware.cpio`) lives only on alder itself, **outside this
   repo**: this repo's Codeberg remote is public, and committing that file
-  would redistribute Apple's firmware to anyone who clones it.
+  would redistribute Apple's firmware to anyone who clones it. Because that
+  path is outside the flake tree, `nixos-apple-silicon`'s peripheral-firmware
+  module (which string-interpolates it into a derivation's `buildCommand`)
+  always needs `--impure` to evaluate — on any machine, including alder
+  itself, regardless of whether the directory exists there. This is
+  permanent/by-design, not a bug to fix away (the upstream module's own docs
+  say as much); `nix flake check` won't catch it since it doesn't force
+  `config.system.build.toplevel` that deeply, but `just switch`/`just deploy
+  alder` already pass `--impure` automatically so you don't need to
+  remember it.
 - `hosts/elm/default.nix` and `hosts/houseplants/default.nix`:
   `system.stateVersion` has a "don't fuck with this" comment on each —
   leave it alone even during unrelated refactors.
@@ -87,9 +103,9 @@ before wiring it into each host's aspect definition.
 - Comments flagged `verify this` / `confirm this` mark values the user
   hasn't independently confirmed against the real machine — flag rather than
   silently trust when reasoning about them.
-- `modules/aspects/homebrew.nix`: `cleanup = "zap"` means anything not
-  listed in `brews`/`casks` gets uninstalled on activation — adding a cask
-  means adding it here, not installing it out-of-band.
+- `modules/aspects/desktop/mac/homebrew.nix`: `cleanup = "zap"` means
+  anything not listed in `brews`/`casks` gets uninstalled on activation —
+  adding a cask means adding it here, not installing it out-of-band.
 - `secrets/secrets.yaml` is sops-encrypted and safe to commit as-is — never
   write a decrypted value into it directly or into any other tracked file.
   Edit it with `sops secrets/secrets.yaml`; see the README's Secrets section.
@@ -97,26 +113,38 @@ before wiring it into each host's aspect definition.
   (or `secrets/`) is invisible to `nix eval`/`nix build` until it's at least
   `git add`ed, even uncommitted — a "no matching creation rules found" or
   "attribute ... missing" error after adding a new file usually means this.
-- `modules/aspects/glance/_*.nix` are underscore-prefixed **on
+- `modules/aspects/services/glance/_*.nix` are underscore-prefixed **on
   purpose**: import-tree skips them, and they are plain functions/attrsets
   imported explicitly by `glance/default.nix`, not flake-parts modules.
   Conversely, any non-underscored `.nix` file under `modules/`/`hosts/` WILL
   be auto-imported as a flake-parts module and must register via
   `flake.modules.*`/`den.aspects.*` — don't drop a helper file there without
   the underscore. `packages/` is outside `import-tree`'s scan paths
-  entirely, so files there (e.g. `packages/glance-agent/default.nix`) don't
-  need the underscore convention.
+  entirely, so files there (e.g. `packages/glance-agent/default.nix`,
+  `packages/nokkvi/default.nix`) don't need the underscore convention.
 - Shared constants come from `config.flake.lib.meta` (`modules/meta/meta.nix`).
   Read it at the **file level** and close over it — inside a nested
   `({ pkgs, ... }: ...)` block, `config` is the OS/HM config, not the flake's
   (same class of gotcha as the module-arg one above).
-- `modules/aspects/glance/default.nix`'s `tailscale-serve-dash`
+- `modules/aspects/services/glance/default.nix`'s `tailscale-serve-dash`
   systemd unit shells out to the `tailscale serve` CLI rather than using the
   declarative `services.tailscale.serve.services` option — as of tailscaled
   1.98.x that option's JSON config path can only ever produce a plain-HTTP
   `tcp:<port>` listener, never a TLS-terminated one, no matter the backend
   URL scheme given. Don't "simplify" this back to the declarative option; it
   would silently drop glance's TLS cert on `dash.<tailnet>.ts.net`.
+- Ghostty's theme and lazygit's config file are coupled across three files
+  for noctalia hosts (alder currently; not aspen, which has no noctalia):
+  `desktop/ghostty.nix` sets `programs.ghostty.settings.theme` with
+  `lib.mkDefault "Catppuccin Mocha"`, `dev/git.nix` sets
+  `programs.lazygit.settings` with `lib.mkDefault {...}`, and
+  `desktop/noctalia.nix` force-overrides both (`lib.mkForce "noctalia"` /
+  `lib.mkForce {}`) so noctalia's own templating can write its generated
+  theme into ghostty's `noctalia` theme file and into
+  `~/.config/lazygit/config.yml` at runtime — a home-manager-owned symlink
+  there (from a non-empty `lazygit.settings`) would make that write fail
+  with a permission error against the nix store. If you touch any one of
+  these three files, check the other two still make sense together.
 
 ## Sanity-checking changes
 

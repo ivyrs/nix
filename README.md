@@ -54,6 +54,7 @@ secrets/
   secrets.yaml              # encrypted secrets, safe to commit
 packages/
   glance-agent/              # custom package, exposed via modules/meta/packages.nix
+  nokkvi/                    # Navidrome client (Rust/Iced), same custom-package pattern as glance-agent
 modules/
   meta/
     meta.nix                 # flake.lib.meta — shared constants (domain, tailnet, OIDC, SMTP, syncthing IDs)
@@ -65,29 +66,55 @@ modules/
   users/
     ivy.nix                   # den.aspects.ivy — shared user wiring + the NixOS account (SSH key, password, shell)
   sops.nix                    # flake.modules.nixos.sops / flake.modules.darwin.sops
-  aspects/
-  aspects/
-    aerospace.nix, homebrew.nix, system-defaults.nix, fonts.nix, touchid.nix
-    inkscape.nix             # den.aspects.inkscape — installs inkscape + a librsvg overlay working around a Darwin nixpkgs bug
-    i18n.nix, nix-settings.nix
-    tailscale.nix            # den.aspects.tailscale-{client,server}.nixos
-    caddy.nix                # den.aspects.caddy.nixos — the houseplants edge proxy, one virtualHost per public hostname
-    miniflux.nix, pocket-id.nix, vikunja.nix, vaultwarden.nix
-    nextcloud.nix, gotosocial.nix, forgejo.nix, glance-agent.nix
-    multi-scrobbler.nix      # den.aspects.multi-scrobbler.nixos — scrobbler, run as an upstream Docker image (oci-containers)
-    syncthing.nix            # den.aspects.syncthing.{nixos,homeManager}
-    glance/                  # den.aspects.glance.nixos, split into widget files
-      default.nix            # registration + page assembly; also exposes glance via `tailscale serve` (see above)
-      _*.nix                 # plain widget functions (underscore = skipped by import-tree)
-      assets/                # logo + custom css served by glance
-    core.nix, cli-tools.nix, git.nix, neovim.nix, ...
-    shell/                   # den.aspects.shell.homeManager — zsh + starship prompt + fzf/zoxide/direnv integrations
+  aspects/                    # grouped into subdirectories by feature domain (core/desktop/dev/services/shell) —
+                               # purely for human navigation; import-tree picks up any .nix file regardless of
+                               # directory depth, so the grouping has no effect on the den.aspects.<name> namespace
+    core/
+      core.nix                 # den.aspects.core.homeManager — base env vars (EDITOR, SOPS_AGE_KEY_FILE), session path
+      home-manager.nix          # den.aspects.home-manager — bundles core/cli-tools/shell/git/neovim/tmux, included by every host
+      i18n.nix                  # den.aspects.i18n.nixos — timezone/locale/keymap
+      nix-settings.nix          # den.aspects.nix-settings — Lix pin, GC/optimise, unfree, noctalia cachix substituter
+      tailscale.nix             # den.aspects.tailscale-{client,server}.nixos
+    desktop/
+      fonts.nix                 # den.aspects.fonts — ibm-plex + aporetic, darwin & nixos
+      ghostty.nix               # den.aspects.ghostty.homeManager (GUI-only, aspen + alder)
+      noctalia.nix              # den.aspects.noctalia.homeManager — alder's desktop shell; also force-swaps the
+                                 # ghostty/lazygit theme wiring described below
+      noctalia-settings.toml    # seed settings merged as a background default under the live settings.toml, never fights hand-tuning
+      onepassword.nix           # den.aspects.onepassword — 1Password GUI/CLI + SSH agent
+      theme.nix                 # den.aspects.theme — GTK/QT theming (adw-gtk3, qt6ct), includes den.aspects.fonts; linux desktop only
+      default.nix               # den.aspects.desktop.homeManager (workstation-only CLI, aspen + alder) and
+                                 # den.aspects.desktop.nixos (Linux GUI apps — feishin, vesktop, obsidian, etc; alder only)
+      aerc/                     # TUI mail client; contributes more packages into den.aspects.desktop.homeManager
+        default.nix, aerc-catppuccin-mocha.conf
+      mac/
+        aerospace.nix, homebrew.nix, system-defaults.nix, touchid.nix   # darwin-only, aspen
+      niri/
+        default.nix             # den.aspects.niri — alder's desktop (niri + noctalia-greeter)
+        config.kdl               # top-level: `include`s the three files below, plus window-rules
+        binds.kdl, settings.kdl, ux.kdl  # keybinds / input+output+hotkey-overlay / layout+layer-rules
+    dev/
+      cli-tools.nix             # den.aspects.cli-tools.homeManager — base CLI toolbelt (ripgrep, fd, jq, nh, ...)
+      dev-tools.nix             # den.aspects.dev-tools.homeManager — devenv + language runtimes (aspen + alder)
+      git.nix, neovim.nix
+      tmux/
+        default.nix, tmux.conf
+    services/
+      caddy/
+        caddy.nix               # den.aspects.caddy.nixos — the houseplants edge proxy, one virtualHost per public hostname
+        houseplants-index.html
+      forgejo.nix, miniflux.nix, nextcloud.nix, pocket-id.nix, syncthing.nix, vaultwarden.nix
+      multi-scrobbler.nix      # den.aspects.multi-scrobbler.nixos — scrobbler, run as an upstream Docker image (oci-containers)
+      vikunja.nix              # currently disabled (not in any host's includes)
+      glance/                  # den.aspects.glance.nixos, split into widget files
+        default.nix            # registration + page assembly; also exposes glance via `tailscale serve` (see below)
+        glance-agent.nix       # den.aspects.glance-agent.nixos — companion binary reporting stats back to elm's dashboard
+        _*.nix                 # plain widget functions (underscore = skipped by import-tree)
+        assets/                # logo + custom css served by glance
+      gotosocial/
+        default.nix, theme.css
+    shell/                     # den.aspects.shell — zsh + starship prompt + fzf/zoxide/direnv integrations
       default.nix, fetch.nix, integrations.nix, starship.nix, zsh.nix
-    home-manager.nix         # den.aspects.home-manager — bundles core/cli-tools/shell/git/neovim/tmux, included by every host
-    ghostty.nix              # den.aspects.ghostty.homeManager (GUI-only, aspen + alder)
-    workstation.nix          # den.aspects.workstation.homeManager (workstation-only CLI, aspen + alder)
-    dev-tools.nix            # den.aspects.dev-tools.homeManager (development toolchains and devenv, aspen + alder)
-    niri.nix                 # den.aspects.niri.nixos — alder's desktop (niri + greetd/tuigreet)
 hosts/
   aspen/
     default.nix              # den.hosts.aarch64-darwin.aspen + den.aspects.aspen.darwin (host-specific darwin config)
@@ -102,7 +129,8 @@ hosts/
     _hardware-configuration.nix, _disko.nix  # generated (nixos-anywhere), do not edit
   alder/
     default.nix              # den.hosts.aarch64-linux.alder + den.aspects.alder.nixos (NixOS/Asahi, tailscale-client + niri, dual-boots aspen's hardware)
-    home.nix                 # den.aspects.alder.provides.to-users.includes (mirrors aspen: home-manager, ghostty, workstation, dev-tools)
+    home.nix                 # den.aspects.alder.provides.to-users.includes (mirrors aspen: home-manager, ghostty, desktop,
+                              # dev-tools, syncthing-client, onepassword, plus niri/noctalia/theme for its desktop session)
     _hardware-configuration.nix  # generated by nixos-generate-config, do not edit
 ```
 
@@ -126,9 +154,14 @@ the aspen SSH pubkey) that Den auto-applies to every host with an `ivy` user.
 
 Each host's `default.nix` also includes `den.batteries.hostname`
 (`networking.hostName`) and the shared `den.aspects.nix-settings` aspect.
-On the home-manager side, aspen's and alder's `home.nix` add
-`den.aspects.ghostty`, `den.aspects.workstation`, and `den.aspects.dev-tools`
-on top of the `den.aspects.home-manager` base bundle; headless elm and
+On the home-manager side, aspen's and alder's `home.nix` both add
+`den.aspects.ghostty`, `den.aspects.desktop`, `den.aspects.dev-tools`,
+and `den.aspects.syncthing-client` on top of the `den.aspects.home-manager`
+base bundle; alder additionally layers `den.aspects.niri`,
+`den.aspects.noctalia`, `den.aspects.onepassword`, and `den.aspects.theme`
+for its desktop session (`den.aspects.theme` itself pulls in
+`den.aspects.fonts` via `includes` — aspen gets fonts directly instead,
+since aspen has no `theme` aspect to include it for). Headless elm and
 houseplants only get the base bundle.
 
 ## Usage
@@ -183,13 +216,14 @@ different account, add a one-line entry in `home-configurations.nix`.
 
 - `nixpkgs` (unstable) backs every host, including elm — elm used to pin to
   a separate `nixpkgs-stable` input (26.05) to match its NixOS release, but
-  that's been dropped in favor of unstable everywhere; the input is still
-  present in `flake.nix`, commented out, in case it's needed again.
-- `nixpkgs-librsvg-fix` is a temporary fork pulled in for one overlaid
-  package (`librsvg`, via `modules/aspects/inkscape.nix`), working
-  around a librsvg/gdk-pixbuf bug that crashes Inkscape on aarch64-darwin
-  (nixpkgs#475236). Drop the input and the overlay once the upstream fix
-  (nixpkgs PR #520909) lands in nixpkgs-unstable.
+  that's been dropped in favor of unstable everywhere, and the input has
+  since been removed from `flake.nix` entirely (no longer even present
+  commented out).
+- `noctalia` / `noctalia-greeter` provide alder's desktop shell
+  (`den.aspects.noctalia`) and its login greeter
+  (`den.aspects.niri`'s `programs.noctalia-greeter`); `nix-settings.nix`
+  adds `noctalia.cachix.org` as an extra substituter on every NixOS host so
+  these don't need a local build.
 - `sops-nix` is wired into every host (including houseplants, despite
   having no secrets of its own — every NixOS host needs it regardless,
   since `modules/users/ivy.nix`'s shared `ivy` aspect decrypts

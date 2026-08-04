@@ -19,6 +19,7 @@
       den.aspects.system-defaults
       den.aspects.fonts
       den.aspects.touchid
+      den.aspects.onepassword
     ];
 
     darwin = {
@@ -41,16 +42,9 @@
           networking.computerName = "aspen";
           networking.localHostName = "aspen";
 
-          # Ghostty ships as the official signed build here; nixpkgs can't build it
-          # from source on macOS yet.
           environment.systemPackages = with pkgs; [
             vim
             git
-            ghostty-bin
-            vesktop
-            ice-bar
-            _1password-gui
-            _1password-cli
           ];
 
           programs.zsh.enable = true;

@@ -15,7 +15,7 @@
       den.aspects.niri
       den.aspects.noctalia
       den.aspects.onepassword
-      den.aspects.fonts
+      den.aspects.desktop
     ];
 
     nixos = {
@@ -66,13 +66,6 @@
             curl
             just
             git
-            ghostty
-            vesktop
-            obsidian
-            calibre
-            keymapp
-            firefox
-            feishin
           ];
 
           services.openssh = {

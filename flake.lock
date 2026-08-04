@@ -229,22 +229,6 @@
         "type": "github"
       }
     },
-    "nixpkgs-librsvg-fix": {
-      "locked": {
-        "lastModified": 1779561013,
-        "narHash": "sha256-m+5Cv11YBP8pogFc2i9mFn6b/jdYLiWvc1rf7luPzHw=",
-        "owner": "kolmodin",
-        "repo": "nixpkgs",
-        "rev": "8712fba8b817ce32f25a07a0e3d9b2010517d4d1",
-        "type": "github"
-      },
-      "original": {
-        "owner": "kolmodin",
-        "ref": "pr-fix-librsvg-on-darwin",
-        "repo": "nixpkgs",
-        "type": "github"
-      }
-    },
     "nixpkgs_2": {
       "locked": {
         "lastModified": 1785571196,
@@ -329,7 +313,6 @@
         "nix-homebrew": "nix-homebrew",
         "nixos-apple-silicon": "nixos-apple-silicon",
         "nixpkgs": "nixpkgs",
-        "nixpkgs-librsvg-fix": "nixpkgs-librsvg-fix",
         "noctalia": "noctalia",
         "noctalia-greeter": "noctalia-greeter",
         "nvf": "nvf",
