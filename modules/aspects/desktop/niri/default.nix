@@ -27,6 +27,11 @@
     services.udev.packages = [pkgs.brightnessctl];
     users.users.ivy.extraGroups = ["video"];
 
+    # udisks2 is the DBus service that home-manager's services.udiskie
+    # (below) actually talks to for mounting; without this enabled here,
+    # udiskie's mount requests fail even though the tray daemon starts fine.
+    services.udisks2.enable = true;
+
     # Noctalia's own greeter, styled to match the desktop session (replaces
     # tuigreet). See https://docs.noctalia.dev/v5/greeter/
     programs.noctalia-greeter = {
@@ -55,5 +60,8 @@
     xdg.configFile."niri/ux.kdl".source = ./ux.kdl;
     xdg.configFile."niri/binds.kdl".source = ./binds.kdl;
     xdg.configFile."niri/settings.kdl".source = ./settings.kdl;
+
+    # Removable-media automounter with a tray icon for mount/unmount/eject.
+    services.udiskie.enable = true;
   };
 }
