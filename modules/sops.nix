@@ -14,6 +14,9 @@
     sops.secrets.glance-agent-token = {};
     sops.secrets.aerc-fastmail-password.owner = "ivy";
     sops.secrets.ivy-nextcloud-app-password.owner = "ivy";
+    sops.secrets.icloud-username.owner = "ivy";
+    sops.secrets.icloud-password.owner = "ivy";
+    sops.secrets.gmail-app-password.owner = "ivy";
   };
 
   # elm-only: secrets for services that only run there (forgejo/nextcloud
@@ -42,5 +45,8 @@
     # home-manager's passwordCommand can read it without sudo.
     sops.secrets.aerc-fastmail-password.owner = "ivy";
     sops.secrets.ivy-nextcloud-app-password.owner = "ivy";
+    sops.secrets.icloud-username.owner = "ivy";
+    sops.secrets.icloud-password.owner = "ivy";
+    sops.secrets.gmail-app-password.owner = "ivy";
   };
 }
