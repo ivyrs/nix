@@ -1,7 +1,5 @@
 {inputs, ...}: {
   den.aspects.neovim.homeManager = {
-    # nvf's HM module ships the programs.nvf options themselves, so it lives
-    # here with its config rather than in each host's home.nix.
     imports = [inputs.nvf.homeManagerModules.default];
 
     programs.nvf = {
@@ -31,16 +29,12 @@
         vim.languages = {
           astro.enable = true;
           rust.enable = true;
-          java.enable = true;
           typescript.enable = true;
-          elixir.enable = true;
           clang.enable = true;
           html.enable = true;
           css.enable = true;
           go.enable = true;
-          # covers .mdx too - nvf maps that extension to the markdown
-          # filetype (treesitter, marksman LSP, formatting, diagnostics)
-          markdown.enable = true;
+          markdown.enable = true; # also mdx
         };
 
         vim.theme = {
@@ -50,10 +44,7 @@
           transparent = true;
         };
 
-        vim.utility.oil-nvim = {
-          # good file manager
-          enable = true;
-        };
+        vim.utility.oil-nvim.enable = true;
 
         # oil.nvim convention: `-` opens the parent directory of the
         # current buffer, mirroring vim-vinegar
@@ -66,7 +57,6 @@
           }
         ];
 
-        # vim.notes.obsidian.enable = true;
         vim.notes.todo-comments.enable = true;
 
         # use lavender accents
