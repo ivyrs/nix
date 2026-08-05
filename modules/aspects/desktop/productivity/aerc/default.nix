@@ -18,8 +18,8 @@ in {
       # Matches meta.smtp's port 587 (STARTTLS) instead of the flavor's
       # implicit-TLS 465 default.
       smtp.tls.useStartTls = true;
-      # Fastmail app password, decrypted by sops-nix to /run/secrets on aspen
-      # (see modules/sops.nix).
+      # Fastmail app password, decrypted by sops-nix to /run/secrets (see
+      # modules/sops.nix).
       passwordCommand = "cat /run/secrets/aerc-fastmail-password";
 
       aerc.enable = true;
@@ -33,6 +33,7 @@ in {
         # credentials are written there since passwordCommand is used
         # instead of a literal password — so this is safe to set.
         general.unsafe-accounts-conf = true;
+        general.mouse-enabled = true;
 
         ui.styleset-name = "catppuccin-mocha";
 
