@@ -133,18 +133,26 @@ before wiring it into each host's aspect definition.
   `tcp:<port>` listener, never a TLS-terminated one, no matter the backend
   URL scheme given. Don't "simplify" this back to the declarative option; it
   would silently drop glance's TLS cert on `dash.<tailnet>.ts.net`.
-- Ghostty's theme and lazygit's config file are coupled across three files
-  for noctalia hosts (alder currently; not aspen, which has no noctalia):
-  `desktop/ghostty.nix` sets `programs.ghostty.settings.theme` with
-  `lib.mkDefault "Catppuccin Mocha"`, `dev/git.nix` sets
-  `programs.lazygit.settings` with `lib.mkDefault {...}`, and
-  `desktop/noctalia.nix` force-overrides both (`lib.mkForce "noctalia"` /
-  `lib.mkForce {}`) so noctalia's own templating can write its generated
-  theme into ghostty's `noctalia` theme file and into
-  `~/.config/lazygit/config.yml` at runtime — a home-manager-owned symlink
-  there (from a non-empty `lazygit.settings`) would make that write fail
-  with a permission error against the nix store. If you touch any one of
-  these three files, check the other two still make sense together.
+- Ghostty's theme, lazygit's config file, and zathura's theme are coupled
+  across four files for noctalia hosts (alder currently; not aspen, which
+  has no noctalia): `desktop/ghostty.nix` sets
+  `programs.ghostty.settings.theme` with `lib.mkDefault "Catppuccin Mocha"`,
+  `dev/git.nix` sets `programs.lazygit.settings` with `lib.mkDefault {...}`,
+  `desktop/zathura.nix` sets `programs.zathura.options` with
+  `lib.mkDefault {...}`, and `desktop/noctalia.nix` force-overrides all
+  three (`lib.mkForce "noctalia"` / `lib.mkForce {}` / `lib.mkForce {}` +
+  `extraConfig = "include noctaliarc"`) so noctalia's own templating can
+  supply its generated theme at runtime. Ghostty and lazygit need the
+  home-manager-owned file forced empty because noctalia *writes into that
+  exact path* (`~/.config/lazygit/config.yml`, ghostty's `noctalia` theme
+  file) — a non-empty home-manager symlink there would make that write fail
+  with a permission error against the nix store. Zathura is different:
+  noctalia writes its generated theme to a sibling file
+  (`~/.config/zathura/noctaliarc`), never touching the home-manager-managed
+  `zathurarc`, so `zathurarc` just needs an `include noctaliarc` line (via
+  `extraConfig`) with `options` forced empty so the static Catppuccin `set`
+  lines don't get written after the include and clobber it. If you touch
+  any one of these four files, check the others still make sense together.
 
 ## Sanity-checking changes
 

@@ -32,6 +32,15 @@
     # ghostty theme file, so only they should reference it.
     programs.ghostty.settings.theme = lib.mkForce "noctalia";
 
+    # See zathura.nix: noctalia writes its generated theme independently to
+    # ~/.config/zathura/noctaliarc (a sibling file, not the home-manager-
+    # managed zathurarc itself, so no read-only-symlink clash like
+    # ghostty/lazygit have). `include` pulls it in; options must be forced
+    # empty or zathura.nix's static Catppuccin `set` lines would be written
+    # after the include and win.
+    programs.zathura.options = lib.mkForce {};
+    programs.zathura.extraConfig = "include noctaliarc";
+
     # "dark-ansi" makes Claude Code render via the terminal's own 16-color
     # ANSI palette instead of its "dark" preset's fixed hex colors, so it
     # follows ghostty's dynamically-generated "noctalia" theme too. Merged
