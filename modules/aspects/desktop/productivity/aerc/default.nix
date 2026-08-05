@@ -1,29 +1,14 @@
 # TUI mail client, workstation-only like the rest of desktop/default.nix.
 # Talks to Fastmail directly over IMAP/SMTP — no local mail sync (mbsync)
-# involved, so nothing to keep in step offline.
-{config, ...}: let
-  meta = config.flake.lib.meta;
-in {
+# involved, so nothing to keep in step offline. Account definitions
+# (address, credentials) live in ../email.nix; this file is just the
+# client's own UI/filter config.
+{
   den.aspects.desktop.homeManager = {pkgs, ...}: {
     # chafa renders image parts inline as terminal art (see the `filters`
     # block below) — aerc's own w3m-based html filter ships wrapped inside
     # its nix package already, so it needs no separate package here.
     home.packages = [pkgs.chafa];
-
-    accounts.email.accounts.ivy = {
-      primary = true;
-      address = meta.email;
-      realName = "ivy forever";
-      flavor = "fastmail.com";
-      # Matches meta.smtp's port 587 (STARTTLS) instead of the flavor's
-      # implicit-TLS 465 default.
-      smtp.tls.useStartTls = true;
-      # Fastmail app password, decrypted by sops-nix to /run/secrets (see
-      # modules/sops.nix).
-      passwordCommand = "cat /run/secrets/aerc-fastmail-password";
-
-      aerc.enable = true;
-    };
 
     programs.aerc = {
       enable = true;
