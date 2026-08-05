@@ -14,6 +14,8 @@
       ssh-to-age
       # Cross-platform GUI app, shared by every desktop host (aspen + alder).
       vesktop
+      # Terminal markdown renderer.
+      glow
     ];
   };
 
@@ -23,8 +25,15 @@
   # aspen (darwin) — putting them there would break aspen's build.
   den.aspects.desktop.nixos = {pkgs, ...}: {
     environment.systemPackages = with pkgs; [
-      keymapp
+      # nixpkgs' `keymapp` GUI is x86_64-only upstream (ZSA doesn't ship an
+      # aarch64 Linux build) despite meta.platforms claiming aarch64-linux
+      # support — it's a genuine packaging bug, not something fixable from
+      # here, and fails with "Exec format error" on alder (Apple Silicon).
+      # `zapp` is ZSA's CLI flasher and builds natively for aarch64-linux.
+      zapp
       firefox
+      mpv
+      imv
     ];
   };
 }
