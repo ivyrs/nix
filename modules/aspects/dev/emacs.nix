@@ -52,9 +52,9 @@
         (scroll-bar-mode -1)
         
         ;; Font configuration
-        (set-face-attribute 'default nil :font "Aporetic Sans (mono)" :height 110)
-        (set-face-attribute 'fixed-pitch nil :font "Aporetic Sans (mono)")
-        (set-face-attribute 'variable-pitch nil :font "Aporetic Sans (mono)")
+        (set-face-attribute 'default nil :font "Aporetic Sans" :height 110)
+        (set-face-attribute 'fixed-pitch nil :font "Aporetic Sans Mono")
+        (set-face-attribute 'variable-pitch nil :font "Aporetic Sans")
         
         ;; Enable line numbers
         (global-display-line-numbers-mode 1)
@@ -118,13 +118,19 @@
                      (run-with-timer 0.5 nil #'reload-noctalia-theme))))))))
         
         ;; Dashboard - clean minimal splash screen
-        (use-package nerd-icons)
+        (use-package nerd-icons
+          :config
+          ;; Ensure nerd-icons is loaded (fonts should be installed via nix)
+          (require 'nerd-icons))
         
         (use-package dashboard
           :after nerd-icons
           :config
           (setq dashboard-banner-logo-title nil)
-          (setq dashboard-startup-banner nil) ;; No logo
+          ;; Custom ASCII art banner
+          ;; Options: 'official, 'logo, 1-3 (built-in ASCII), or path to file
+          ;; e.g. "~/.config/emacs/banner.txt" or (expand-file-name "banner.txt" user-emacs-directory)
+          (setq dashboard-startup-banner 'official) ;; Built-in text banner
           (setq dashboard-center-content t)
           (setq dashboard-show-shortcuts nil)
           (setq dashboard-items '((recents  . 5)
