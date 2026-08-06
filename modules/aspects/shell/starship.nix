@@ -13,9 +13,9 @@ in {
 
       # character colors removed - let noctalia's starship template handle theming
       character = {
-        success_symbol = "[>]";
-        error_symbol = "[>]";
-        vimcmd_symbol = "[<]";
+        success_symbol = ">";
+        error_symbol = ">";
+        vimcmd_symbol = "<";
       };
 
       git_branch = {

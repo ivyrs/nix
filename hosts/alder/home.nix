@@ -5,6 +5,7 @@
       den.aspects.ghostty
       den.aspects.desktop
       den.aspects.dev-tools
+      den.aspects.emacs
       den.aspects.niri
       den.aspects.noctalia
       den.aspects.syncthing-client

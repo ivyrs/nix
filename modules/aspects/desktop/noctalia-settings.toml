@@ -251,7 +251,7 @@ source = "builtin"
 wallpaper_scheme = "m3-fruit-salad"
 
     [theme.templates]
-    builtin_ids = [ "btop", "gtk3", "gtk4", "ghostty", "kcolorscheme", "niri", "qt", "starship" ]
+    builtin_ids = [ "btop", "gtk3", "gtk4", "ghostty", "kcolorscheme", "niri", "qt", "starship", "emacs" ]
     community_ids = [ "opencode", "pi-agent", "feishin", "pywalfox-beta4", "discord", "obsidian", "zathura", "bat", "lazygit", "yazi", "neovim", "fastfetch" ]
 
 [wallpaper]
