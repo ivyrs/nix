@@ -9,5 +9,6 @@
     den.aspects.git
     den.aspects.neovim
     den.aspects.tmux
+    den.aspects.yazi
   ];
 }

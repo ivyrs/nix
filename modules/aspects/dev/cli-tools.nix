@@ -16,7 +16,7 @@
       nh # `just switch` runs `nh os switch` on every host — keep in base
       ripgrep-all
       tokei
-      yazi
+      # yazi moved to den.aspects.yazi (programs.yazi configuration)
       hyperfine
       xh
       mprocs
