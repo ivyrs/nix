@@ -9,17 +9,18 @@ in {
       format = " $username$hostname$directory$character";
       right_format = "$all";
 
-      directory.style = "bright-white";
+      # directory.style removed - let noctalia's starship template handle theming
 
+      # character colors removed - let noctalia's starship template handle theming
       character = {
-        success_symbol = "[>](purple)";
-        error_symbol = "[>](red)";
-        vimcmd_symbol = "[<](green)";
+        success_symbol = "[>]";
+        error_symbol = "[>]";
+        vimcmd_symbol = "[<]";
       };
 
       git_branch = {
         format = "[$branch]($style)";
-        style = "bright-black";
+        # style removed - let noctalia handle theming
       };
 
       git_status = {
@@ -36,23 +37,24 @@ in {
 
       git_state = {
         format = ''\([$state( $progress_current/$progress_total)]($style)\) '';
-        style = "bright-black";
+        # style removed - let noctalia handle theming
       };
 
       cmd_duration = {
         format = "[$duration]($style) ";
-        style = "yellow";
+        # style removed - let noctalia handle theming
       };
 
       username = {
-        style_user = "purple";
+        # style_user removed - let noctalia handle theming
         format = "[$user]($style)[@](white)";
         disabled = false;
       };
 
       hostname = {
         ssh_symbol = " ssh";
-        format = "[$hostname](purple)[$ssh_symbol](bold blue) ";
+        # format colors removed - let noctalia handle theming
+        format = "[$hostname]($style)[$ssh_symbol](bold blue) ";
         trim_at = ".";
         aliases = {
           "aspen.${meta.tailnet}" = "aspen";

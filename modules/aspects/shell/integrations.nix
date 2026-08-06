@@ -1,10 +1,15 @@
 {
   den.aspects.shell-integrations.homeManager = {
+    lib,
+    ...
+  }: {
     programs.fzf = {
       enable = true;
       enableZshIntegration = true;
       enableNushellIntegration = true;
-      defaultOptions = [
+      # mkDefault: hosts without noctalia keep these Catppuccin colors.
+      # Hosts with noctalia get this replaced by user template (see noctalia.nix)
+      defaultOptions = lib.mkDefault [
         "--style=minimal"
         "--info=inline-right"
         "--highlight-line"

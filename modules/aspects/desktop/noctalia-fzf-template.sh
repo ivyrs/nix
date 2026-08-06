@@ -1,0 +1,3 @@
+# Generated noctalia theme for fzf
+# Sets FZF_DEFAULT_OPTS with noctalia colors
+export FZF_DEFAULT_OPTS="--style=minimal --info=inline-right --highlight-line --no-separator --color=fg:{{colors.on_surface}},bg:{{colors.surface}},hl:{{colors.primary}},fg+:{{colors.on_surface}},bg+:{{colors.surface_variant}} --color=hl+:{{colors.primary}},info:{{colors.secondary}},prompt:{{colors.secondary}},pointer:{{colors.on_primary_container}} --color=marker:{{colors.on_secondary_container}},spinner:{{colors.tertiary}},header:{{colors.primary}},border:{{colors.outline}} --color=gutter:{{colors.surface_variant}}"

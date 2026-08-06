@@ -46,8 +46,32 @@
     # using noctalia's user template system.
     programs.aerc.extraConfig.ui.styleset-name = lib.mkForce "noctalia";
 
-    # Provide the aerc template file for noctalia's user template system
+    # See integrations.nix: force fzf to minimal options, then source the
+    # noctalia-generated color configuration
+    programs.fzf.defaultOptions = lib.mkForce [
+      "--style=minimal"
+      "--info=inline-right" 
+      "--highlight-line"
+      "--no-separator"
+    ];
+    
+    # Source noctalia fzf colors via shell initialization
+    home.sessionVariablesExtra = ''
+      [ -f "$HOME/.config/fzf/noctalia-colors.sh" ] && source "$HOME/.config/fzf/noctalia-colors.sh"
+    '';
+
+    # See tmux/default.nix: override tmux config to source noctalia theme
+    programs.tmux.extraConfig = lib.mkForce ''
+      ${builtins.readFile ../dev/tmux/tmux.conf}
+      
+      # Source noctalia-generated theme (will override hardcoded colors above)
+      source-file -q ~/.config/tmux/noctalia-theme.conf
+    '';
+
+    # Provide template files for noctalia's user template system
     home.file.".config/noctalia/templates/aerc.conf".source = ./noctalia-aerc-template.conf;
+    home.file.".config/noctalia/templates/fzf.sh".source = ./noctalia-fzf-template.sh;
+    home.file.".config/noctalia/templates/tmux.conf".source = ./noctalia-tmux-template.conf;
 
     # "dark-ansi" makes Claude Code render via the terminal's own 16-color
     # ANSI palette instead of its "dark" preset's fixed hex colors, so it
@@ -71,10 +95,19 @@
       settings = lib.mkMerge [
         (builtins.fromTOML (builtins.readFile ./noctalia-settings.toml))
         {
-          # Add aerc user template to enable noctalia theming
+          # Add user templates to enable noctalia theming for apps without
+          # community templates
           theme.templates.user.aerc = {
             input_path = "$XDG_CONFIG_HOME/noctalia/templates/aerc.conf";
             output_path = "$XDG_CONFIG_HOME/aerc/stylesets/noctalia";
+          };
+          theme.templates.user.fzf = {
+            input_path = "$XDG_CONFIG_HOME/noctalia/templates/fzf.sh";
+            output_path = "$XDG_CONFIG_HOME/fzf/noctalia-colors.sh";
+          };
+          theme.templates.user.tmux = {
+            input_path = "$XDG_CONFIG_HOME/noctalia/templates/tmux.conf";
+            output_path = "$XDG_CONFIG_HOME/tmux/noctalia-theme.conf";
           };
         }
       ];
