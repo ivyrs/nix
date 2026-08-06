@@ -54,6 +54,16 @@ widget_spacing = 10
 enabled = true
 
     [calendar.account.houseplants_cal]
+    calendars = [
+        "personal",
+        "02B695BE-0A2A-49F7-9123-57102E1B9213",
+        "routines",
+        "316EC6A0-39CC-4207-BF20-F5AAFF41919E",
+        "love-computer",
+        "96E8D86B-8B89-4819-93A8-A766D22E99C1",
+        "018ED70D-2567-4A5F-919B-76FCD0328BD1",
+        "contact_birthdays"
+    ]
     credential_source = "file"
     name = "Houseplants"
     password_file = "/run/secrets/ivy-nextcloud-app-password"
@@ -63,7 +73,7 @@ enabled = true
     username = "ivy"
 
 [control_center]
-hidden_tabs = [ "audio", "monitor", "weather" ]
+hidden_tabs = []
 show_shortcut_labels = false
 sidebar_section = "none"
 
@@ -91,7 +101,7 @@ behavior_order = [ "lock", "screen-off", "lock-and-suspend" ]
     [idle.behavior.lock]
     action = "lock"
     enabled = true
-    timeout = 600.0
+    timeout = 300.0
 
     [idle.behavior.lock-and-suspend]
     action = "lock_and_suspend"
@@ -101,7 +111,7 @@ behavior_order = [ "lock", "screen-off", "lock-and-suspend" ]
     [idle.behavior.screen-off]
     action = "screen_off"
     enabled = true
-    timeout = 660.0
+    timeout = 400.0
 
 [location]
 auto_locate = true
@@ -174,9 +184,11 @@ font_family = "Aporetic Sans"
 # off, so never persisted) — kept explicit here since without it, apps
 # launched through noctalia get killed whenever its systemd service restarts.
 launch_apps_as_systemd_services = true
+niri_overview_type_to_launch_enabled = true
 password_style = "random"
 polkit_agent = true
 screen_time_enabled = true
+show_location = false
 telemetry_enabled = true
 
     [shell.launcher]
@@ -235,12 +247,12 @@ telemetry_enabled = true
 builtin = "Ayu"
 community_palette = "Catppuccin Mocha Sapphire"
 mode = "dark"
-source = "wallpaper"
+source = "builtin"
 wallpaper_scheme = "m3-fruit-salad"
 
     [theme.templates]
     builtin_ids = [ "btop", "gtk3", "gtk4", "ghostty", "kcolorscheme", "niri", "qt" ]
-    community_ids = [ "opencode", "pi-agent", "feishin", "pywalfox-beta4", "discord", "obsidian", "bat", "lazygit", "yazi" ]
+    community_ids = [ "opencode", "pi-agent", "feishin", "pywalfox-beta4", "discord", "obsidian", "zathura", "bat", "lazygit", "yazi" ]
 
 [wallpaper]
 directory = "/home/ivy/media/images/wallpapers"
@@ -250,19 +262,13 @@ transition_on_startup = true
     enabled = true
 
     [wallpaper.default]
-    path = "/home/ivy/media/images/wallpapers/oc_the_blackboard.png"
+    path = "/home/ivy/media/images/wallpapers/Girl_with_a_Pearl_Earring_x_MF_DOOM.png"
 
     [wallpaper.last]
-    path = "/home/ivy/media/images/wallpapers/oc_the_blackboard.png"
+    path = "/home/ivy/media/images/wallpapers/Girl_with_a_Pearl_Earring_x_MF_DOOM.png"
 
     [wallpaper.monitors.eDP-1]
-    path = "/home/ivy/media/images/wallpapers/oc_the_blackboard.png"
-
-    [[wallpaper.favorite]]
-    palette_source = "wallpaper"
-    path = "/home/ivy/media/images/wallpapers/oc_the_blackboard.png"
-    theme_mode = "dark"
-    wallpaper_scheme = "m3-fruit-salad"
+    path = "/home/ivy/media/images/wallpapers/Girl_with_a_Pearl_Earring_x_MF_DOOM.png"
 
     [[wallpaper.favorite]]
     builtin_palette = "Ayu"

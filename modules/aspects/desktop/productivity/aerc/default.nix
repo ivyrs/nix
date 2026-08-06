@@ -4,7 +4,11 @@
 # (address, credentials) live in ../email.nix; this file is just the
 # client's own UI/filter config.
 {
-  den.aspects.desktop.homeManager = {pkgs, ...}: {
+  den.aspects.desktop.homeManager = {
+    lib,
+    pkgs,
+    ...
+  }: {
     # chafa renders image parts inline as terminal art (see the `filters`
     # block below) — aerc's own w3m-based html filter ships wrapped inside
     # its nix package already, so it needs no separate package here.
@@ -20,7 +24,10 @@
         general.unsafe-accounts-conf = true;
         general.mouse-enabled = true;
 
-        ui.styleset-name = "catppuccin-mocha";
+        # mkDefault: hosts without noctalia keep this Catppuccin fallback.
+        # Hosts with noctalia override this to "noctalia" (see noctalia.nix)
+        # to pick up the dynamically-generated styleset instead.
+        ui.styleset-name = lib.mkDefault "catppuccin-mocha";
 
         # Filters pipe a part's bytes through a command and render its stdout
         # in the message pane (what `:view`/Enter uses). aerc's bundled
@@ -51,6 +58,11 @@
       };
 
       stylesets.catppuccin-mocha = builtins.readFile ./aerc-catppuccin-mocha.conf;
+      # Placeholder for noctalia's dynamic theme. On noctalia hosts, this gets
+      # overwritten by a home activation script (see noctalia.nix) with the
+      # generated theme content. On non-noctalia hosts, this empty fallback
+      # won't be used since ui.styleset-name defaults to "catppuccin-mocha".
+      stylesets.noctalia = lib.mkDefault "";
     };
   };
 }
