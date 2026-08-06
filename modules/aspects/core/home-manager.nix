@@ -10,5 +10,6 @@
     den.aspects.neovim
     den.aspects.tmux
     den.aspects.yazi
+    den.aspects.bat
   ];
 }

@@ -5,7 +5,7 @@
       ripgrep
       fd
       jq
-      bat
+      # bat moved to den.aspects.bat (programs.bat configuration)
       eza
       duf
       btop
