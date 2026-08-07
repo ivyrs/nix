@@ -4,11 +4,14 @@
 # picks up the darwin-class (fonts) half.
 {
   den.aspects.theme.darwin = {pkgs, ...}: {
-    fonts.packages = with pkgs; [ibm-plex aporetic];
+    # nerd-fonts.symbols-only ships just "Symbols Nerd Font Mono" (the glyph
+    # set nerd-icons.el and doom-modeline expect), rather than patching every
+    # font in aporetic/ibm-plex with nerd-font glyphs.
+    fonts.packages = with pkgs; [ibm-plex aporetic nerd-fonts.symbols-only];
   };
 
   den.aspects.theme.nixos = {pkgs, ...}: {
-    fonts.packages = with pkgs; [ibm-plex aporetic];
+    fonts.packages = with pkgs; [ibm-plex aporetic nerd-fonts.symbols-only];
 
     environment.systemPackages = with pkgs; [
       adw-gtk3

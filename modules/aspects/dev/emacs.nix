@@ -16,6 +16,7 @@
         all-the-icons
         dashboard
         nerd-icons  # Modern icon set for dashboard
+        nyan-mode
         
         # Navigation and completion
         ivy
@@ -146,6 +147,8 @@
         ;; Modeline
         (use-package doom-modeline
           :init (doom-modeline-mode 1))
+        (use-package nyan-mode
+          :init (nyan-mode))
         
         ;; Projectile for project management
         (use-package projectile
