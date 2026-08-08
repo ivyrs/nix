@@ -6,10 +6,35 @@
 # generating/importing a GPG key with an Authenticate-capable subkey are both
 # manual, do-by-hand steps; nothing here does that for you.
 {
-  den.aspects.pass.homeManager = {pkgs, ...}: {
+  den.aspects.pass.homeManager = {pkgs, ...}: let
+    passPackage = pkgs.pass.withExtensions (exts: [exts.pass-otp]);
+  in {
     programs.password-store = {
       enable = true;
-      package = pkgs.pass.withExtensions (exts: [exts.pass-otp]);
+      package = passPackage;
+    };
+
+    # `pf`: fzf over store entries, copies the selected one to the clipboard
+    # via `pass -c` (which nixpkgs' pass wrapper already resolves through
+    # xclip — works here because niri's xwayland-satellite bridges X11's
+    # clipboard to Wayland's, see modules/aspects/desktop/niri/default.nix).
+    home.packages = [
+      (pkgs.writeShellApplication {
+        name = "pf";
+        runtimeInputs = [pkgs.fzf passPackage];
+        text = ''
+          store="''${PASSWORD_STORE_DIR:-$HOME/.password-store}"
+          entry=$(find -L "$store" -type f -name '*.gpg' -not -path '*/.git/*' |
+            sed -e "s|^$store/||" -e 's/\.gpg$//' |
+            fzf --prompt='pass> ' --height=40% --reverse)
+          [ -n "$entry" ] && pass -c "$entry"
+        '';
+      })
+    ];
+
+    programs.browserpass = {
+      enable = true;
+      browsers = ["firefox"];
     };
 
     programs.gpg.enable = true;

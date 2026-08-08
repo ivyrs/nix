@@ -18,7 +18,7 @@
     # Without it, X11-only apps (e.g. Steam's X11 bootstrapper UI) fail with
     # "Could not open connection to X". playerctl backs the XF86Audio*
     # media-key binds in binds.kdl (MPRIS control) — same PATH reasoning.
-    environment.systemPackages = [pkgs.xwayland-satellite pkgs.brightnessctl pkgs.playerctl];
+    environment.systemPackages = [pkgs.xwayland-satellite pkgs.brightnessctl pkgs.playerctl pkgs.wl-clipboard];
 
     # brightnessctl's udev rules chgrp/chmod /sys/class/backlight/*/brightness
     # to group "video" so config.kdl's XF86MonBrightnessUp/Down binds can run
