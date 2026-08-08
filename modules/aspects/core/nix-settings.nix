@@ -1,7 +1,7 @@
 {
   den.aspects.nix-settings = {
     darwin = {pkgs, ...}: {
-      # Keep the system on Lix — nix-darwin would otherwise swap in upstream Nix.
+      # nix for lesbians
       nix.package = pkgs.lix;
       nix.settings.experimental-features = ["nix-command" "flakes"];
 
@@ -25,18 +25,37 @@
       environment.variables.NH_FLAKE = "/home/ivy/nix";
     };
 
-    nixos = {
+    nixos = {pkgs, ...}: {
+      nixpkgs.overlays = [
+        (final: prev: {
+          inherit
+            (prev.lixPackageSets.stable)
+            nixpkgs-review
+            nix-eval-jobs
+            nix-fast-build
+            colmena
+            ;
+        })
+      ];
+
+      # nix for lesbians
+      nix.package = pkgs.lixPackageSets.stable.lix;
+
       nix.settings.experimental-features = ["nix-command" "flakes"];
       nixpkgs.config.allowUnfree = true;
 
-      # Weekly store optimisation. GC is nh's job here (below) —
-      # nix.gc.automatic and programs.nh.clean both doing it is a
-      # conflict nixpkgs itself warns about, so nh is the sole owner.
+      # Weekly store optimisation. GC is nh's job (below)
       nix.optimise.automatic = true;
 
       nix.settings = {
         extra-substituters = ["https://noctalia.cachix.org"];
         extra-trusted-public-keys = ["noctalia.cachix.org-1:pCOR47nnMEo5thcxNDtzWpOxNFQsBRglJzxWPp3dkU4="];
+        # Every NixOS host already gives wheel passwordless sudo
+        # (security.sudo.wheelNeedsPassword = false), so trusting @wheel
+        # here doesn't grant anything ivy couldn't already reach via `sudo
+        # nix ...` — it just means plain `nix build`/`nixos-rebuild` can
+        # use restricted settings (e.g. extra-sandbox-paths) directly.
+        trusted-users = ["root" "@wheel"];
       };
 
       # den.aspects.cli-tools already installs nh via home-manager (shared

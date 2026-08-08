@@ -34,6 +34,42 @@
         }: {
           hardware.asahi.enable = true;
 
+          # ccache for the Asahi kernel: it builds from source every time
+          # (nixos-apple-silicon has no binary cache — see
+          # https://github.com/NixOS/nixos-hardware/issues/854), and a
+          # bump of the (followed) nixpkgs input alone forces a full
+          # from-scratch rebuild even when the kernel source itself is
+          # unchanged. `programs.ccache.packageNames` can't target it: the
+          # top-level `linux-asahi` attr is a `linuxPackagesFor`-wrapped
+          # set whose `.override` only takes `_kernelPatches`, not
+          # `stdenv`, so the module's `super.${pn}.override { stdenv =
+          # ...; }` would error. Wire it in manually instead: replicate the
+          # module's ccacheWrapper overlay (points CCACHE_DIR at the
+          # persistent cache dir instead of the sandbox's throwaway
+          # $HOME/.ccache) and swap stdenv on the inner `.kernel`
+          # derivation, which does accept it.
+          programs.ccache.enable = true;
+          nix.settings.extra-sandbox-paths = [config.programs.ccache.cacheDir];
+          nixpkgs.overlays = [
+            (final: prev: {
+              ccacheWrapper = prev.ccacheWrapper.override {
+                extraConfig = ''
+                  export CCACHE_COMPRESS=1
+                  export CCACHE_SLOPPINESS=random_seed
+                  export CCACHE_DIR="${config.programs.ccache.cacheDir}"
+                  export CCACHE_UMASK=007
+                '';
+              };
+            })
+          ];
+          boot.kernelPackages = lib.mkForce (
+            pkgs.linuxPackagesFor (
+              (config.hardware.asahi.pkgs.linux-asahi.override {
+                _kernelPatches = config.boot.kernelPatches;
+              }).kernel.override {stdenv = pkgs.ccacheStdenv;}
+            )
+          );
+
           # peripheralFirmwareDirectory points outside this repo: firmware.cpio
           # is Apple's proprietary firmware (extraction itself is standard
           # practice, same as Linux distros pulling WiFi/RAID firmware off a
@@ -56,6 +92,34 @@
           # easier-to-type secret instead of the shared random per-host one.
           sops.secrets.ivy-password-hash-alder = {};
           users.users.ivy.hashedPasswordFile = lib.mkForce config.sops.secrets.ivy-password-hash-alder.path;
+
+          # Pull side: lets a reinstalled/rolled-back alder (or anything
+          # else that ends up needing these aarch64-linux/asahi paths) fetch
+          # from the same cache instead of rebuilding.
+          nix.settings = {
+            extra-substituters = ["https://ivyturner.cachix.org"];
+            extra-trusted-public-keys = ["ivyturner.cachix.org-1:G+GeQA1oBRaM2FfsUJph4QH8bNlkpvEQmxt42YFO00o="];
+          };
+
+          # Push side: sends everything alder builds locally (the
+          # ccache-built kernel included) to the same cache. Auth token is
+          # stored as an EnvironmentFile (CACHIX_AUTH_TOKEN=...) since
+          # that's the only non-interactive way to hand cachix a token; add
+          # it via `sops secrets/secrets.yaml` (see AGENTS.md's Secrets
+          # section).
+          sops.secrets.cachix-auth-token-alder = {};
+          systemd.services.cachix-watch-store = {
+            description = "Push new /nix/store paths to the ivyturner Cachix cache";
+            wantedBy = ["multi-user.target"];
+            after = ["network-online.target"];
+            wants = ["network-online.target"];
+            serviceConfig = {
+              ExecStart = "${pkgs.cachix}/bin/cachix watch-store ivyturner";
+              EnvironmentFile = config.sops.secrets.cachix-auth-token-alder.path;
+              Restart = "on-failure";
+              RestartSec = "30s";
+            };
+          };
 
           environment.systemPackages = with pkgs; [
             curl
