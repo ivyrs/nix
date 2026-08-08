@@ -170,3 +170,7 @@ check` alone won't catch every activation-time issue (e.g. Homebrew/darwin-only
 assertions on aspen). `darwin-rebuild build --flake .#aspen` / `nixos-rebuild
 build --flake .#<host>` (build without activating) is a good middle ground
 when you can't activate directly.
+
+## Committing 
+
+When commiting, DO NOT add any attribution about your tool name or model. 
