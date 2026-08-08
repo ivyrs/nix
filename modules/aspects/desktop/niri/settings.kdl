@@ -3,7 +3,7 @@ input {
         xkb {
             layout "gb"
             variant "mac"
-            // options "grp:win_space_toggle,compose:ralt,ctrl:nocaps"
+            options "caps:escape"
         }
         numlock
     }
@@ -41,4 +41,10 @@ gestures {
     }
 }
 
+overview {
+    zoom 0.16
+}
+
 prefer-no-csd
+
+screenshot-path "~/media/screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png"

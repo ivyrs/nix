@@ -285,7 +285,7 @@ transition_on_startup = true
     [[wallpaper.favorite]]
     palette_source = "wallpaper"
     path = "/home/ivy/media/images/wallpapers/painting-lighthouse-02-1440p.jpg"
-    theme_mode = "light"
+    theme_mode = "dark"
     wallpaper_scheme = "m3-fruit-salad"
 
 [widget.active_window]

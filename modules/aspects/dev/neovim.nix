@@ -45,6 +45,7 @@
         };
 
         vim.utility.oil-nvim.enable = true;
+        vim.dashboard.alpha.enable = true;
 
         # oil.nvim convention: `-` opens the parent directory of the
         # current buffer, mirroring vim-vinegar
@@ -72,6 +73,68 @@
             },
           })
           vim.cmd.colorscheme "catppuccin"
+        '';
+
+        # custom alpha-nvim dashboard with ascii art
+        vim.luaConfigRC.alpha-custom = ''
+          local alpha = require('alpha')
+          local dashboard = require('alpha.themes.dashboard')
+
+          -- Custom header (ASCII art)
+          dashboard.section.header.val = {
+            [[                               ]],
+            [[                               ]],
+            [[   ╭─────────────────────╮     ]],
+            [[   │                     │     ]],
+            [[   │   N  E  O  V  I  M   │     ]],
+            [[   │                     │     ]],
+            [[   ╰─────────────────────╯     ]],
+            [[                               ]],
+          }
+
+          -- Custom buttons
+          dashboard.section.buttons.val = {
+            dashboard.button("f", "  Find file", ":Telescope find_files <CR>"),
+            dashboard.button("e", "  New file", ":ene <BAR> startinsert <CR>"),
+            dashboard.button("r", "  Recent files", ":Telescope oldfiles <CR>"),
+            dashboard.button("g", "  Find text", ":Telescope live_grep <CR>"),
+            dashboard.button("c", "  Config", ":e $MYVIMRC <CR>"),
+            dashboard.button("q", "  Quit", ":qa<CR>"),
+          }
+
+          -- Footer
+          local function footer()
+            local total_plugins = vim.fn.len(vim.fn.globpath(vim.o.runtimepath, "plugin", 0, 1))
+            local datetime = os.date(" %d-%m-%Y   %H:%M:%S")
+            local version = vim.version()
+            local nvim_version_info = "   v" .. version.major .. "." .. version.minor .. "." .. version.patch
+
+            return datetime .. "   " .. total_plugins .. " plugins" .. nvim_version_info
+          end
+
+          dashboard.section.footer.val = footer()
+
+          -- Layout
+          dashboard.config.layout = {
+            { type = "padding", val = 2 },
+            dashboard.section.header,
+            { type = "padding", val = 2 },
+            dashboard.section.buttons,
+            { type = "padding", val = 1 },
+            dashboard.section.footer,
+          }
+
+          -- Apply catppuccin mocha colors
+          dashboard.section.header.opts.hl = "Function"
+          dashboard.section.buttons.opts.hl = "Keyword"
+          dashboard.section.footer.opts.hl = "Comment"
+
+          alpha.setup(dashboard.config)
+
+          -- Disable folding on alpha buffer
+          vim.cmd([[
+            autocmd FileType alpha setlocal nofoldenable
+          ]])
         '';
       };
     };

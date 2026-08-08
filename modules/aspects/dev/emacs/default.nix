@@ -44,6 +44,7 @@
         # Programming languages
         rust-mode
         typescript-mode
+        astro-ts-mode   # Astro framework support
         nix-mode
         markdown-mode
 

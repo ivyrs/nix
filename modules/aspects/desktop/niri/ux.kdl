@@ -42,3 +42,23 @@ layer-rule {
     match namespace="^noctalia-backdrop"
     place-within-backdrop true
 }
+
+// Open the Firefox picture-in-picture player as floating by default.
+window-rule {
+    match app-id=r#"firefox$"# title="^Picture-in-Picture$"
+    open-floating true
+}
+
+/-window-rule {
+    match app-id=r#"^org\.keepassxc\.KeePassXC$"#
+    match app-id=r#"^org\.gnome\.World\.Secrets$"#
+
+    block-out-from "screen-capture"
+}
+
+// rounded corners
+window-rule {
+    geometry-corner-radius 16
+    clip-to-geometry true
+}
+

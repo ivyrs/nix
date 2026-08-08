@@ -248,6 +248,7 @@
 (use-package emacs
   :hook (rust-mode . eglot-ensure)
   :hook (typescript-mode . eglot-ensure)
+  :hook (astro-ts-mode . eglot-ensure)
   :general
   (leader-keys
     "l" '(:ignore t :which-key "lsp")

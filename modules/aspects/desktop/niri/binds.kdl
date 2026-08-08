@@ -9,7 +9,7 @@ binds {
     Mod+B hotkey-overlay-title="open clipboard history" { spawn-sh "noctalia msg panel-toggle clipboard"; }
     Mod+Tab hotkey-overlay-title="open window switcher" { spawn-sh "noctalia msg window-switcher"; }
     Mod+Shift+N hotkey-overlay-title="toggle do not disturb" { spawn-sh "noctalia msg notification-dnd-toggle"; }
-    Mod+Shift+W hotkey-overlay-title="open wallpaper switcher" { spawn-sh "noctalia msg panel-toggle wallpaper"; }
+    Mod+Shift+W hotkey-overlay-title="random wallpaper" { spawn-sh "noctalia msg wallpaper-random"; }
 
     XF86AudioRaiseVolume allow-when-locked=true { spawn-sh "wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.1+ -l 1.0"; }
     XF86AudioLowerVolume allow-when-locked=true { spawn-sh "wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.1-"; }
@@ -27,7 +27,7 @@ binds {
     XF86KbdBrightnessUp allow-when-locked=true { spawn-sh "noctalia msg keyboard-backlight-up"; }
     XF86KbdBrightnessDown allow-when-locked=true { spawn-sh "noctalia msg keyboard-backlight-down"; }
 
-    Mod+O repeat=false { toggle-overview; }
+    Mod+Space repeat=false { toggle-overview; }
 
     Mod+Q repeat=false { close-window; }
 
