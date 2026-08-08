@@ -21,6 +21,7 @@
         birch = "IGGM65Q-7D3CXXE-WL2DZBQ-JFTAVZH-2IGGI3T-NNSEIOE-Y26ERF2-357RMQM";
       };
       obsidianFolderId = "obsidian-vault";
+      passwordStoreFolderId = "password-store";
     };
   };
 }
