@@ -1,8 +1,5 @@
 {
-  den.aspects.tmux.homeManager = {
-    lib,
-    ...
-  }: {
+  den.aspects.tmux.homeManager = {lib, ...}: {
     programs.tmux = {
       enable = true;
       extraConfig = lib.mkMerge [

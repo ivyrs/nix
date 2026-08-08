@@ -8,7 +8,7 @@
       enable = true;
       package =
         if pkgs.stdenv.hostPlatform.isDarwin
-        then pkgs.ghostty-bin 
+        then pkgs.ghostty-bin
         else pkgs.ghostty;
       systemd.enable = false;
       settings = lib.mkMerge [

@@ -1,8 +1,5 @@
 {
-  den.aspects.shell-integrations.homeManager = {
-    lib,
-    ...
-  }: {
+  den.aspects.shell-integrations.homeManager = {lib, ...}: {
     programs.fzf = {
       enable = true;
       enableZshIntegration = true;

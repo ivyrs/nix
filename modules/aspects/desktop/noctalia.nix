@@ -50,11 +50,11 @@
     # noctalia-generated color configuration
     programs.fzf.defaultOptions = lib.mkForce [
       "--style=minimal"
-      "--info=inline-right" 
+      "--info=inline-right"
       "--highlight-line"
       "--no-separator"
     ];
-    
+
     # Source noctalia fzf colors via shell initialization
     home.sessionVariablesExtra = ''
       [ -f "$HOME/.config/fzf/noctalia-colors.sh" ] && source "$HOME/.config/fzf/noctalia-colors.sh"
@@ -63,7 +63,7 @@
     # See tmux/default.nix: override tmux config to source noctalia theme
     programs.tmux.extraConfig = lib.mkForce ''
       ${builtins.readFile ../dev/tmux/tmux.conf}
-      
+
       # Source noctalia-generated theme (will override hardcoded colors above)
       source-file -q ~/.config/tmux/noctalia-theme.conf
     '';
