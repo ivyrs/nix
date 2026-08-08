@@ -12,6 +12,7 @@
     in {
       glance-agent = pkgs.callPackage ../../packages/glance-agent/default.nix {};
       nokkvi = pkgs.callPackage ../../packages/nokkvi/default.nix {};
+      tsui = pkgs.callPackage ../../packages/tsui/default.nix {};
     });
 in {
   flake.packages = perSystemOutputs;

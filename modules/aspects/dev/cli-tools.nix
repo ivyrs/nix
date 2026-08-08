@@ -21,6 +21,7 @@
       xh
       mprocs
       kondo
+      (pkgs.callPackage ../../../packages/tsui/default.nix {})
     ];
   };
 }
