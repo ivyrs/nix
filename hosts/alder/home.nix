@@ -10,6 +10,7 @@
       den.aspects.noctalia
       den.aspects.syncthing-client
       den.aspects.onepassword
+      den.aspects.pass
       den.aspects.theme
       den.aspects.music
     ];
@@ -29,6 +30,30 @@
       # (which aspen — a macOS host — still uses).
       services.syncthing.settings.folders.obsidian.path =
         lib.mkForce "${config.home.homeDirectory}/text/obsidian";
+
+      # alder-only cutover from 1Password's SSH agent to gpg-agent
+      # (den.aspects.pass, modules/aspects/core/pass.nix): "SSH_AUTH_SOCK" is
+      # OpenSSH's literal keyword for "use the env var" rather than a
+      # hardcoded path, which home-manager's gpg-agent module already points
+      # at the right socket. mkForce because onepassword.nix's homeManager
+      # aspect (still included above, for aspen's sake) sets extraConfig too
+      # — types.lines would otherwise concatenate both IdentityAgent lines.
+      programs.ssh.extraConfig = lib.mkForce "IdentityAgent SSH_AUTH_SOCK";
+
+      # Commit signing via the same key, over gpg-agent's ssh-agent
+      # emulation — git.nix only wires up 1Password's op-ssh-sign for
+      # isDarwin, so this is additive here, not an override.
+      programs.git.settings = {
+        user.signingkey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIjv1IJojqA/AjnhzIWBzvf/gqcg3zTEAJ0hwMKCcecK";
+        commit.gpgsign = true;
+        gpg = {
+          format = "ssh";
+          ssh.allowedSignersFile = "${config.home.homeDirectory}/.ssh/allowed_signers";
+        };
+      };
+
+      home.file.".ssh/allowed_signers".text =
+        "ivy@ivy.rs ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIjv1IJojqA/AjnhzIWBzvf/gqcg3zTEAJ0hwMKCcecK\n";
     };
   };
 }
