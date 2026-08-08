@@ -16,6 +16,8 @@
       vesktop
       # Terminal markdown renderer.
       glow
+      # YubiKey CLI: check applet status, set a FIDO2 PIN, etc.
+      yubikey-manager
     ];
   };
 
