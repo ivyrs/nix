@@ -5,7 +5,11 @@
 {config, ...}: let
   meta = config.flake.lib.meta;
 in {
-  den.aspects.desktop.homeManager = {...}: {
+  den.aspects.desktop.homeManager = {
+    config,
+    lib,
+    ...
+  }: {
     accounts.email.accounts.ivy = {
       primary = true;
       address = meta.email;
@@ -30,6 +34,22 @@ in {
       # `default` (Inbox on open) is already implied by folders.inbox above;
       # folders-sort isn't derived from anything else, so it's set directly.
       aerc.extraAccounts."folders-sort" = "INBOX";
+
+      # PGP signing/opportunistic-encryption, via aerc's `gpg` provider (see
+      # general.pgp-provider in aerc/default.nix) and gpg-agent's pinentry
+      # (both from den.aspects.pass) — gated on config.programs.gpg.enable
+      # rather than a host check, so this only activates on hosts that
+      # actually include that aspect (currently alder only; aspen has no
+      # GPG key yet). Fingerprint is the primary (Sign+Certify) key whose
+      # uid matches meta.email — public fingerprints aren't secret, safe to
+      # commit as-is.
+      gpg = lib.mkIf config.programs.gpg.enable {
+        key = "63CC52ABA2340A766FADA1465E1C908C6C7B78F6";
+        signByDefault = true;
+        # Only encrypts when every recipient's public key is already in the
+        # keyring; never blocks sending to recipients without one.
+        encryptByDefault = true;
+      };
     };
 
     accounts.email.accounts.gmail = {

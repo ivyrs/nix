@@ -13,27 +13,18 @@
 
     programs.niri.enable = true;
 
-    # niri (25.08+) auto-spawns xwayland-satellite on demand when an X11
-    # client connects — no KDL config needed, just the binary on PATH.
-    # Without it, X11-only apps (e.g. Steam's X11 bootstrapper UI) fail with
-    # "Could not open connection to X". playerctl backs the XF86Audio*
-    # media-key binds in binds.kdl (MPRIS control) — same PATH reasoning.
-    environment.systemPackages = [pkgs.xwayland-satellite pkgs.brightnessctl pkgs.playerctl pkgs.wl-clipboard];
+    environment.systemPackages = [
+      pkgs.xwayland-satellite 
+      pkgs.brightnessctl 
+      pkgs.playerctl 
+      pkgs.wl-clipboard
+    ];
 
-    # brightnessctl's udev rules chgrp/chmod /sys/class/backlight/*/brightness
-    # to group "video" so config.kdl's XF86MonBrightnessUp/Down binds can run
-    # it unprivileged. Without this the sysfs node stays root-owned and the
-    # binds fail silently.
     services.udev.packages = [pkgs.brightnessctl];
     users.users.ivy.extraGroups = ["video"];
 
-    # udisks2 is the DBus service that home-manager's services.udiskie
-    # (below) actually talks to for mounting; without this enabled here,
-    # udiskie's mount requests fail even though the tray daemon starts fine.
     services.udisks2.enable = true;
 
-    # Noctalia's own greeter, styled to match the desktop session (replaces
-    # tuigreet). See https://docs.noctalia.dev/v5/greeter/
     programs.noctalia-greeter = {
       enable = true;
       settings.session.default = "niri";
@@ -61,7 +52,6 @@
     xdg.configFile."niri/binds.kdl".source = ./binds.kdl;
     xdg.configFile."niri/settings.kdl".source = ./settings.kdl;
 
-    # Removable-media automounter with a tray icon for mount/unmount/eject.
     services.udiskie.enable = true;
   };
 }

@@ -5,6 +5,7 @@
 # client's own UI/filter config.
 {
   den.aspects.desktop.homeManager = {
+    config,
     lib,
     pkgs,
     ...
@@ -21,13 +22,37 @@
         # accounts.conf lands in the nix store (world-readable), but no
         # credentials are written there since passwordCommand is used
         # instead of a literal password — so this is safe to set.
-        general.unsafe-accounts-conf = true;
-        general.mouse-enabled = true;
+        general =
+          {
+            unsafe-accounts-conf = true;
+            mouse-enabled = true;
+          }
+          # Use the system gpg (over gpg-agent, from den.aspects.pass) rather
+          # than aerc's internal OpenPGP keyring — see email.nix's
+          # per-account `gpg` block for the actual signing key.
+          # use-terminal-pinentry matches pass.nix's pinentry-curses (a GUI
+          # pinentry would otherwise have no window to pop up from inside a
+          # TUI). Only set on hosts that include den.aspects.pass (currently
+          # alder); aspen has no GPG key yet, so leaving these off there
+          # just means the (absent) `gpg` account block is never exercised
+          # anyway.
+          // lib.optionalAttrs config.programs.gpg.enable {
+            pgp-provider = "gpg";
+            use-terminal-pinentry = true;
+          };
 
         # mkDefault: hosts without noctalia keep this Catppuccin fallback.
         # Hosts with noctalia override this to "noctalia" (see noctalia.nix)
         # to pick up the dynamically-generated styleset instead.
         ui.styleset-name = lib.mkDefault "catppuccin-mocha";
+
+        # Tab-complete To/Cc/Bcc from khard's address book (see contacts.nix,
+        # the sibling aspect file — same den.aspects.desktop.homeManager
+        # scope, so programs.khard.enable is already on for every host that
+        # gets aerc). --remove-first-line strips khard's "searching for ''
+        # ..." line that --parsable's mutt-compatible mode expects. %s is
+        # aerc's own placeholder for what's been typed so far.
+        compose."address-book-cmd" = "khard email --parsable --remove-first-line %s";
 
         # Filters pipe a part's bytes through a command and render its stdout
         # in the message pane (what `:view`/Enter uses). aerc's bundled

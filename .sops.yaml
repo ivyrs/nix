@@ -6,7 +6,7 @@ keys:
   - &host_alder age130fxnc93w6kndvmymhj5vu0ztzl7s478rdk7ksvswmslr646tcmqgl5kff
 
 creation_rules:
-  - path_regex: secrets/.*\.yaml$
+  - path_regex: secrets.yaml$
     key_groups:
       - age:
           - *admin_ivy
