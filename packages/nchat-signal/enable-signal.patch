@@ -1,0 +1,48 @@
+diff --git c/lib/sgchat/CMakeLists.txt i/lib/sgchat/CMakeLists.txt
+--- c/lib/sgchat/CMakeLists.txt
++++ i/lib/sgchat/CMakeLists.txt
+@@ -20,8 +20,13 @@
+ target_common_config(sgchat)
+ 
+ # Dependency libraries
+-add_subdirectory(go)
+-add_dependencies(sgchat ref-cgosg)
++# Nix-prebuilt Go c-archive + libsignal_ffi.a (see packages/nchat-signal):
++# built out-of-band since the go build step and libsignal.cmake's
++# download-or-build-from-source both need network access unavailable in the
++# Nix sandbox.
++set(SGCHAT_GOLIB @libcgosg@/libcgosg.a)
++set(LIBSIGNAL_FFI_PATH @libsignalFfi@/lib/libsignal_ffi.a)
++target_include_directories(sgchat PRIVATE @libcgosg@)
+ 
+ # Platform specifics
+ if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+@@ -43,13 +48,26 @@
+                        -Wcast-align")
+ 
+ # Linking
++# libsignal_ffi.a is a Rust *staticlib* crate archive: `cargo build -p
++# libsignal-ffi` never runs a final link for a staticlib target, so the
++# `cargo:rustc-link-lib=static=crypto/ssl` directives boring-sys emits are
++# recorded but never applied — unlike the default *shared* libsignal-ffi
++# build (a cdylib), which does go through Cargo's own link step and ends up
++# with BoringSSL baked in. Since nchat needs the static archive (to
++# -Wl,--whole-archive force-load it below), BoringSSL has to be linked in
++# separately here, or every SSL_/X509_/EVP_ symbol libsignal_ffi.a needs
++# stays undefined — invisible until dlopen() at runtime, since nixpkgs'
++# default bindnow hardening (-Wl,-z,now) makes DT_FLAGS_1 override the
++# RTLD_LAZY nchat's own dlopen() call passes.
+ message(STATUS "Go libraries: ${GO_LIBRARIES}")
+ if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+-  target_link_libraries(sgchat PUBLIC ref-cgosg ncutil ${GO_LIBRARIES}
++  target_link_libraries(sgchat PUBLIC ${SGCHAT_GOLIB} ncutil ${GO_LIBRARIES}
+     -Wl,-w -Wl,-force_load,${LIBSIGNAL_FFI_PATH}
++    @boringsslSsl@ @boringsslCrypto@
+     -lm -lz)
+ else()
+-  target_link_libraries(sgchat PUBLIC ref-cgosg ncutil ${GO_LIBRARIES}
++  target_link_libraries(sgchat PUBLIC ${SGCHAT_GOLIB} ncutil ${GO_LIBRARIES} ${SGCHAT_GOLIB}
+     -Wl,--whole-archive ${LIBSIGNAL_FFI_PATH} -Wl,--no-whole-archive
++    @boringsslSsl@ @boringsslCrypto@
+     -ldl -lm -lz)
+ endif()

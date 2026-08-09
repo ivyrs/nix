@@ -12,8 +12,6 @@
       sops
       age
       ssh-to-age
-      # Cross-platform GUI app, shared by every desktop host (aspen + alder).
-      vesktop
       # Terminal markdown renderer.
       glow
       # YubiKey CLI: check applet status, set a FIDO2 PIN, etc.

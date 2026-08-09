@@ -3,7 +3,7 @@
   # Per-service secrets live in `sops-elm-services` below since owners like
   # "forgejo"/"nextcloud" only exist as users on elm.
   flake.modules.nixos.sops = {
-    sops.defaultSopsFile = ../secrets/secrets.yaml;
+    sops.defaultSopsFile = ../secrets.yaml;
     sops.age.sshKeyPaths = ["/etc/ssh/ssh_host_ed25519_key"];
 
     sops.secrets.ivy-password-hash = {};
@@ -17,6 +17,7 @@
     sops.secrets.icloud-username.owner = "ivy";
     sops.secrets.icloud-password.owner = "ivy";
     sops.secrets.gmail-app-password.owner = "ivy";
+    sops.secrets.senpai-srht-token.owner = "ivy";
   };
 
   # elm-only: secrets for services that only run there (forgejo/nextcloud
@@ -38,7 +39,7 @@
   };
 
   flake.modules.darwin.sops = {
-    sops.defaultSopsFile = ../secrets/secrets.yaml;
+    sops.defaultSopsFile = ../secrets.yaml;
     sops.age.sshKeyPaths = ["/etc/ssh/ssh_host_ed25519_key"];
 
     # aerc's IMAP/SMTP password (see modules/aspects/aerc.nix); owned by ivy so
@@ -48,5 +49,6 @@
     sops.secrets.icloud-username.owner = "ivy";
     sops.secrets.icloud-password.owner = "ivy";
     sops.secrets.gmail-app-password.owner = "ivy";
+    sops.secrets.senpai-srht-token.owner = "ivy";
   };
 }

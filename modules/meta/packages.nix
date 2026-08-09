@@ -11,6 +11,7 @@
       pkgs = inputs.nixpkgs.legacyPackages.${system};
     in {
       glance-agent = pkgs.callPackage ../../packages/glance-agent/default.nix {};
+      nchat-signal = pkgs.callPackage ../../packages/nchat-signal/default.nix {};
       nokkvi = pkgs.callPackage ../../packages/nokkvi/default.nix {};
       tsui = pkgs.callPackage ../../packages/tsui/default.nix {};
     });

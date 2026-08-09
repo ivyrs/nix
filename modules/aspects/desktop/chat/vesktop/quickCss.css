@@ -1,0 +1,120 @@
+/* ============================================
+   Vencord QuickCSS — De-annoy Discord
+   Comment out any block you don't want by
+   wrapping it in /* ... */
+   ============================================ */
+
+/* --- Nitro upsell buttons in message box / gift icon --- */
+button[aria-label="Gift a Nitro subscription"],
+button[aria-label="Record a Soundboard sound"],
+[class*="buttons_"] [aria-label="Nitro"] {
+  display: none !important;
+}
+
+/* --- "Try Nitro" tab in gift/emoji picker & premium tabs --- */
+[class*="expressionPickerContentWrapper"] [aria-label*="Nitro"],
+[id*="tab-nitro"] {
+  display: none !important;
+}
+
+/* --- Quests (the annoying "play this game for 15 min" popups) --- */
+[class*="questsTab"],
+[data-list-item-id*="quest"],
+a[href^="/discovery/quests"] {
+  display: none !important;
+}
+
+/* --- Server Boost nag banners & boost progress bar --- */
+[class*="premiumBanner"],
+[class*="boostPromotionPill"],
+[class*="boostBar"] {
+  display: none !important;
+}
+
+/* --- "Upgrade for HD video / more screen share quality" nags --- */
+[class*="premiumSellingPointWrapper"],
+[class*="upsellCTA"] {
+  display: none !important;
+}
+
+/* --- Discord's in-app "Active Now" / friend activity sidebar promos --- */
+[class*="premiumUpsell"] {
+  display: none !important;
+}
+
+/* --- Birthday cake / event confetti icons in message box --- */
+[class*="buttonContainer"] [aria-label*="Birthday"] {
+  display: none !important;
+}
+
+/* --- "Someone you may know" / suggested friends in member list & DMs --- */
+[class*="suggestions_"],
+[class*="peopleYouMayKnow"] {
+  display: none !important;
+}
+
+/* --- App download / "Download Discord" nag on web --- */
+[class*="downloadBar"],
+[class*="bannerContainer"][class*="download"] {
+  display: none !important;
+}
+
+/* --- Server subscription / role subscription promo tiles --- */
+[class*="premiumSubscriptionPromo"] {
+  display: none !important;
+}
+
+/* --- Muted "New in Discord" / changelog badges & red dot spam --- */
+[class*="numberBadge"][class*="changelog"],
+[class*="badge_"][class*="whatsNew"] {
+  display: none !important;
+}
+
+@font-face {
+  font-family: "Aporetic Sans";
+  src: local("Aporetic Sans");
+  font-weight: 100 900; /* variable-weight fallback range */
+}
+
+:root {
+  --font-primary: "Aporetic Sans", sans-serif !important;
+  --font-display: "Aporetic Sans", sans-serif !important;
+  --font-headline: "Aporetic Sans", sans-serif !important;
+  --font-code: "Aporetic Sans Mono", "Aporetic Sans", monospace !important;
+}
+
+/* Belt-and-suspenders fallback for anything not covered by the vars above */
+body, input, textarea, button {
+  font-family: "Aporetic Sans", sans-serif !important;
+}
+
+/* --- Escalated font override: catches gg sans hardcoded on DM list / friends list / etc --- */
+* {
+  font-family: "Aporetic Sans", sans-serif !important;
+}
+
+/* Beats single-class Discord rules (specificity 0,1,0) */
+[class] {
+  font-family: "Aporetic Sans", sans-serif !important;
+}
+
+/* Beats double-class Discord rules (specificity 0,2,0), common on list items */
+[class][class] {
+  font-family: "Aporetic Sans", sans-serif !important;
+}
+
+/* Beats triple-class Discord rules — covers quick switcher, search results, etc */
+[class][class][class] {
+  font-family: "Aporetic Sans", sans-serif !important;
+}
+
+/* Explicit scoped override for the quick switcher, in case of even deeper nesting */
+[class*="quickSwitcher"],
+[class*="quickSwitcher"] * {
+  font-family: "Aporetic Sans", sans-serif !important;
+}
+
+input:not(#vencord-aporetic):not(#vencord-aporetic),
+textarea:not(#vencord-aporetic):not(#vencord-aporetic) {
+  font-family: "Aporetic Sans", sans-serif !important;
+}
