@@ -247,7 +247,7 @@ telemetry_enabled = true
 builtin = "Ayu"
 community_palette = "Catppuccin Mocha Sapphire"
 mode = "dark"
-source = "builtin"
+source = "wallpaper"
 wallpaper_scheme = "m3-fruit-salad"
 
     [theme.templates]
