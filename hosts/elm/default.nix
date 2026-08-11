@@ -27,6 +27,8 @@
       den.aspects.gotosocial
       den.aspects.forgejo
       den.aspects.multi-scrobbler
+      den.aspects.ergo
+      den.aspects.soju
     ];
 
     nixos = {
