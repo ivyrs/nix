@@ -30,17 +30,7 @@ in {
 
           vdirsyncer = {
             enable = true;
-            # Explicit list rather than "from a" autodiscovery, for two
-            # reasons: some collections are Nextcloud Tasks lists (VTODO,
-            # not VEVENT) rather than real calendars, and a few real
-            # calendars still had opaque UUID hrefs instead of a readable
-            # slug — both checked directly against the server (`curl
-            # PROPFIND ... supported-calendar-component-set`, and
-            # `vdirsyncer discover calendar_nextcloud` for displaynames).
-            # Task lists (homelab, xela-does-the-uk-list, we, and the "music
-            # wishlist" UUID collection) are intentionally omitted; "tasks"
-            # is kept despite being VTODO since it's actually used.
-            # New/removed calendars need a manual update here.
+
             collections = [
               "personal"
               "love-computer"
@@ -73,15 +63,7 @@ in {
           vdirsyncer = {
             enable = true;
             userNameCommand = ["cat" "/run/secrets/icloud-username"];
-            # iCloud's CalDAV collection hrefs are opaque UUIDs (unlike
-            # Nextcloud, which uses readable slugs) and vdirsyncer/khal name
-            # local calendars after the collection href, not its displayname
-            # — so "from a" autodiscovery would leave every iCloud calendar
-            # showing as a UUID in khal. Pin each one to a readable local
-            # name instead (found via `vdirsyncer discover calendar_icloud`,
-            # ["local name" "remote href" "local name"]); new/removed iCloud
-            # calendars need a manual update here since this list is no
-            # longer auto-discovered.
+
             collections = [
               ["ic-home" "120638F4-CF02-48D9-A1A8-23E3187F39D8" "ic-home"]
               ["ic-events" "3CF03A8D-1C6F-4F83-878D-5F044764F97C" "ic-events"]
@@ -101,5 +83,13 @@ in {
 
     programs.vdirsyncer.enable = true;
     programs.khal.enable = true;
+
+    xdg.configFile."todoman/config.py".text = ''
+      path = "~/.calendar/nextcloud/*"
+      date_format = "%Y-%m-%d"
+      time_format = "%H:%M"
+      default_list = "tasks"
+      default_due = 0
+     '';
   };
 }

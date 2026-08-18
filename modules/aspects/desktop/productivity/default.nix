@@ -4,7 +4,7 @@
 # desktop/default.nix and mac/homebrew.nix, so each pair stays tied together.
 {
   den.aspects.productivity.nixos = {pkgs, ...}: {
-    environment.systemPackages = [pkgs.obsidian pkgs.calibre];
+    environment.systemPackages = [pkgs.obsidian pkgs.calibre pkgs.todoman];
   };
 
   den.aspects.productivity.darwin.homebrew.casks = ["obsidian" "calibre"];
