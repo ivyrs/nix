@@ -41,19 +41,14 @@
       };
     };
 
-    # IRC, via sourcehut's chat.sr.ht bouncer rather than a direct network
-    # connection — see https://man.sr.ht/chat.sr.ht/quickstart.md. SASL
-    # username is the sourcehut account name; the bouncer treats an OAuth
-    # personal access token as the password. Per-network IRC config (which
-    # upstream networks the bouncer joins) is set separately via
-    # `/msg BouncerServ` or https://chat.sr.ht, not from here.
+    # IRC, using self-hosted bouncer
     programs.senpai = {
       enable = true;
       config = {
-        address = "chat.sr.ht:6697";
-        nickname = "ivyrose";
-        username = "ivyrs";
-        password-cmd = ["cat" "/run/secrets/senpai-srht-token"];
+        address = "bnc.ocelot-perch.ts.net:6698";
+        nickname = "ivy";
+        username = "ivy";
+        password-cmd = ["cat" "/run/secrets/ivy-soju-pass"];
       };
     };
   };

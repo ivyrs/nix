@@ -17,7 +17,7 @@
     sops.secrets.icloud-username.owner = "ivy";
     sops.secrets.icloud-password.owner = "ivy";
     sops.secrets.gmail-app-password.owner = "ivy";
-    sops.secrets.senpai-srht-token.owner = "ivy";
+    sops.secrets.ivy-soju-pass.owner = "ivy";
   };
 
   # elm-only: secrets for services that only run there (forgejo/nextcloud
