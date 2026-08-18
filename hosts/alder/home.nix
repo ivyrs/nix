@@ -16,6 +16,7 @@ in {
       den.aspects.dev-tools
       den.aspects.emacs
       den.aspects.niri
+      # den.aspects.mango # disabled for now
       den.aspects.noctalia
       den.aspects.syncthing-client
       den.aspects.onepassword

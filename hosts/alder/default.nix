@@ -13,6 +13,7 @@
       den.aspects.i18n
       den.aspects.tailscale-client
       den.aspects.niri
+      # den.aspects.mango # disabled for now
       den.aspects.noctalia
       den.aspects.onepassword
       den.aspects.desktop
