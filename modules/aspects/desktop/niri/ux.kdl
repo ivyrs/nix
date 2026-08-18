@@ -49,7 +49,14 @@ window-rule {
     open-floating true
 }
 
-/-window-rule {
+// pinentry-gnome3's passphrase prompt (den.aspects.gpg, modules/aspects/core/gpg.nix)
+// as a small floating dialog rather than tiling it into the layout.
+window-rule {
+    match app-id=r#"^pinentry"#
+    open-floating true
+}
+
+window-rule {
     match app-id=r#"^org\.keepassxc\.KeePassXC$"#
     match app-id=r#"^org\.gnome\.World\.Secrets$"#
 

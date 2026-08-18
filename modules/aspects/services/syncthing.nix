@@ -37,10 +37,11 @@ in {
             }; # elm doubles as vault history/backup
           };
         };
-        # alder-only for now: aspen doesn't have the GPG key den.aspects.pass
-        # relies on yet, so it can't decrypt anything in here anyway. Same
-        # staggered versioning as obsidian — elm is the backup/history copy,
-        # not a device anyone types a passphrase into day-to-day.
+        # alder-only for now: holds alder's den.aspects.keepassxc database
+        # (not extended to aspen — out of scope for that migration, not a
+        # technical blocker). Same staggered versioning as obsidian — elm is
+        # the backup/history copy, not a device anyone opens the vault on
+        # day-to-day.
         folders."password-store" = {
           id = st.passwordStoreFolderId;
           path = "/var/lib/syncthing/password-store";

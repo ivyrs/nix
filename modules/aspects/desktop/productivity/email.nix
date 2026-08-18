@@ -37,7 +37,7 @@ in {
 
       # PGP signing/opportunistic-encryption, via aerc's `gpg` provider (see
       # general.pgp-provider in aerc/default.nix) and gpg-agent's pinentry
-      # (both from den.aspects.pass) — gated on config.programs.gpg.enable
+      # (both from den.aspects.gpg) — gated on config.programs.gpg.enable
       # rather than a host check, so this only activates on hosts that
       # actually include that aspect (currently alder only; aspen has no
       # GPG key yet). Fingerprint is the primary (Sign+Certify) key whose

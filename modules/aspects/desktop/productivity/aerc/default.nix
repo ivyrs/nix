@@ -27,15 +27,15 @@
             unsafe-accounts-conf = true;
             mouse-enabled = true;
           }
-          # Use the system gpg (over gpg-agent, from den.aspects.pass) rather
+          # Use the system gpg (over gpg-agent, from den.aspects.gpg) rather
           # than aerc's internal OpenPGP keyring — see email.nix's
           # per-account `gpg` block for the actual signing key.
-          # use-terminal-pinentry matches pass.nix's pinentry-curses (a GUI
-          # pinentry would otherwise have no window to pop up from inside a
-          # TUI). Only set on hosts that include den.aspects.pass (currently
-          # alder); aspen has no GPG key yet, so leaving these off there
-          # just means the (absent) `gpg` account block is never exercised
-          # anyway.
+          # use-terminal-pinentry is aerc's own directive to prompt in the
+          # terminal it's already running in, rather than letting gpg-agent's
+          # configured pinentry (a GUI popup) fight for focus. Only set on
+          # hosts that include den.aspects.gpg (currently alder); aspen has
+          # no GPG key yet, so leaving these off there just means the
+          # (absent) `gpg` account block is never exercised anyway.
           // lib.optionalAttrs config.programs.gpg.enable {
             pgp-provider = "gpg";
             use-terminal-pinentry = true;
