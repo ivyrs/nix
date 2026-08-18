@@ -34,7 +34,7 @@
 (setq backup-directory-alist '(("." . "~/.saves")))
 
 ;; Font configuration
-(set-face-attribute 'default nil :font "Aporetic Sans" :height 110)
+(set-face-attribute 'default nil :font "Aporetic Sans" :height 120)
 (set-face-attribute 'fixed-pitch nil :font "Aporetic Sans Mono")
 (set-face-attribute 'variable-pitch nil :font "Aporetic Sans")
 
@@ -236,10 +236,12 @@
   (leader-keys
     "'" '(vterm-toggle :which-key "terminal")))
 
-;; Automatically manage tree-sitter grammars and major modes
+;; Tree-sitter major mode remapping (grammars come from Nix, see
+;; extraPackages -- treesit-auto must not try to compile them itself,
+;; since there's no C toolchain on PATH and the nix store is read-only)
 (use-package treesit-auto
   :custom
-  (treesit-auto-install 'prompt)
+  (treesit-auto-install nil)
   :config
   (treesit-auto-add-to-auto-mode-alist 'all)
   (global-treesit-auto-mode))
@@ -255,6 +257,17 @@
     "l <escape>" '(keyboard-escape-quit :which-key t)
     "l r" '(eglot-rename :which-key "rename")
     "l a" '(eglot-code-actions :which-key "code actions")))
+
+;; Astro mode
+;;
+;; astro-ts-mode's own package autoloads try to register themselves in
+;; auto-mode-alist gated on (treesit-ready-p 'astro), but that runs during
+;; package-activate-all -- before treesit.el has been loaded by anything
+;; else -- so it errors with (void-function treesit-ready-p) and silently
+;; never registers. Declaring :mode here explicitly is what actually makes
+;; .astro files open in astro-ts-mode.
+(use-package astro-ts-mode
+  :mode "\\.astro\\'")
 
 ;; Markdown mode
 (use-package markdown-mode

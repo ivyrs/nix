@@ -39,8 +39,18 @@
           vterm
           vterm-toggle
 
-          # Language support (eglot is built in; treesit-auto manages grammars)
+          # Language support (eglot is built in; treesit-auto manages major-mode
+          # remapping; grammars themselves come prebuilt from nixpkgs below,
+          # since treesit-auto's own compile-on-demand needs a C toolchain
+          # and a writable install dir, neither of which exist here)
           treesit-auto
+          (treesit-grammars.with-grammars (grammars:
+            with grammars; [
+              tree-sitter-typescript
+              tree-sitter-tsx
+              tree-sitter-astro
+              tree-sitter-css # astro-ts-mode embeds this for <style> blocks
+            ]))
 
           # Programming languages
           rust-mode
