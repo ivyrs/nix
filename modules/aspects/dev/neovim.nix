@@ -35,6 +35,7 @@
           css.enable = true;
           go.enable = true;
           markdown.enable = true; # also mdx
+          python.enable = true;
         };
 
         vim.theme = {
