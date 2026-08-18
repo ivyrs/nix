@@ -2,6 +2,13 @@ binds {
     Mod+Shift+Slash { show-hotkey-overlay; }
 
     Mod+return hotkey-overlay-title="open terminal" { spawn "ghostty"; }
+    // focus-or-spawn (den.aspects.niri, modules/aspects/desktop/niri/default.nix)
+    // raises the app's existing window instead of opening a duplicate.
+    // ghostty's app-id must be dotted reverse-DNS (GTK GApplication ID
+    // requirement) or it silently falls back to the com.mitchellh.ghostty
+    // default and this class-based match won't distinguish the window.
+    Mod+E hotkey-overlay-title="open file manager" { spawn "focus-or-spawn" "re.ivy.yazi" "ghostty" "--class=re.ivy.yazi" "-e" "yazi"; }
+    Mod+O hotkey-overlay-title="open obsidian" { spawn "focus-or-spawn" "md.Obsidian" "obsidian"; }
     Mod+D hotkey-overlay-title="open launcher" { spawn-sh "noctalia msg panel-toggle launcher"; }
     Super+Alt+L hotkey-overlay-title="lock screen" { spawn-sh "noctalia msg session lock"; }
 

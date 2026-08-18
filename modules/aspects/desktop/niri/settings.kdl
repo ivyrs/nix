@@ -42,7 +42,7 @@ gestures {
 }
 
 overview {
-    zoom 0.16
+    zoom 0.32
 }
 
 prefer-no-csd
