@@ -160,7 +160,7 @@
   ;; Custom ASCII art banner
   ;; Options: 'official, 'logo, 1-3 (built-in ASCII), or path to file
   ;; e.g. "~/.config/emacs/banner.txt" or (expand-file-name "banner.txt" user-emacs-directory)
-  (setq dashboard-startup-banner 'official) ;; Built-in text banner
+  (setq dashboard-startup-banner 1) ;; Built-in text banner
   (setq dashboard-center-content t)
   (setq dashboard-show-shortcuts nil)
   (setq dashboard-items '((recents  . 5)

@@ -5,7 +5,18 @@
 # rather than autodiscovering everything with "from a".
 {config, ...}: let
   meta = config.flake.lib.meta;
+  secrets = {
+    # ivy-nextcloud-app-password is also declared in contacts.nix — both
+    # consume the same account-wide Nextcloud app password (see that file's
+    # comment), so both declare it; sops-nix merges identical definitions.
+    sops.secrets.ivy-nextcloud-app-password.owner = "ivy";
+    sops.secrets.icloud-username.owner = "ivy";
+    sops.secrets.icloud-password.owner = "ivy";
+  };
 in {
+  den.aspects.desktop.nixos = secrets;
+  den.aspects.desktop.darwin = secrets;
+
   den.aspects.desktop.homeManager = {...}: {
     accounts.calendar = {
       basePath = ".calendar";

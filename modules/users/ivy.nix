@@ -18,6 +18,8 @@
       config,
       ...
     }: {
+      sops.secrets.ivy-password-hash = {};
+
       users.users.ivy = {
         description = "ivy";
         shell = pkgs.zsh;

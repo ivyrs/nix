@@ -2,6 +2,8 @@
   meta = config.flake.lib.meta;
 in {
   den.aspects.vaultwarden.nixos = {config, ...}: {
+    sops.secrets.vaultwarden-env = {};
+
     services.vaultwarden = {
       enable = true;
       dbBackend = "sqlite";

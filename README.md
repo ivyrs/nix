@@ -29,11 +29,13 @@ aspect-oriented Nix framework. It's a formalization of the "dendritic
 pattern": [`import-tree`](https://github.com/vic/import-tree) recursively
 imports every `.nix` file under `modules/` and `hosts/` (via
 [`flake-parts`](https://github.com/hercules-ci/flake-parts)' `flakeModules.modules`),
-and each file registers itself either under a `flake.modules.<class>.<name>`
-namespace (plain reusable modules) or a `den.aspects.<name>` namespace
-(features that can span multiple Nix classes, get `includes`d by name, and
+and each file registers itself under a `den.aspects.<name>` namespace
+(a feature that can span multiple Nix classes, get `includes`d by name, and
 get delivered to hosts/users) — there's no central registry to update, add a
-file and it's picked up. Den sits on top of `import-tree` with two more
+file and it's picked up. (A handful of files register plain flake-level
+outputs instead — `flake.lib`, `flake.formatter`, `flake.packages`,
+`flake.homeConfigurations` — for things that aren't per-host aspects at
+all; see `modules/meta/`.) Den sits on top of `import-tree` with two more
 layers:
 
 - **`den.hosts`** — declares each machine and its users
@@ -53,11 +55,6 @@ layers:
 Cross-module constants (the `houseplants.cloud` domain, OIDC issuer, SMTP
 account, syncthing device IDs) live in `modules/meta/meta.nix` under
 `flake.lib.meta` — change them there, not in the consuming service files.
-
-`modules/sops.nix` is the one holdout still using the plain
-`flake.modules.<class>.<name>` form (pulled into a host's aspect via
-`config.flake.modules.<class>.<name>` in its `imports`); everything else has
-been converted to `den.aspects.<name>`.
 
 ### Batteries
 
@@ -135,10 +132,14 @@ different account, add a one-line entry in `home-configurations.nix`.
   (`den.aspects.niri`'s `programs.noctalia-greeter`); `nix-settings.nix`
   adds `noctalia.cachix.org` as an extra substituter on every NixOS host so
   these don't need a local build.
-- `sops-nix` is wired into every host (including houseplants, despite
-  having no secrets of its own — every NixOS host needs it regardless,
-  since `modules/users/ivy.nix`'s shared `ivy` aspect decrypts
-  `ivy-password-hash` on all of them).
+- `sops-nix` is wired into every host via `den.aspects.sops`
+  (`modules/aspects/core/sops.nix`, bootstrap only — file location + host
+  age key). Individual `sops.secrets.<name>` declarations live next to
+  whichever aspect consumes them (e.g. `nextcloud-admin-password` in
+  `modules/aspects/services/nextcloud.nix`), not in one central file.
+  Every host still needs the bootstrap regardless of which secrets it
+  decrypts, since `modules/users/ivy.nix`'s shared `ivy` aspect declares
+  `ivy-password-hash` on all of them.
 - `disko` declares houseplants' disk layout (`hosts/houseplants/_disko.nix`),
   used for its original `nixos-anywhere` install; not used on aspen/elm/alder.
 - `nix-homebrew` manages Homebrew casks/brews declaratively on aspen.
@@ -152,24 +153,27 @@ different account, add a one-line entry in `home-configurations.nix`.
 ## Secrets
 
 Managed with [sops-nix](https://github.com/Mic92/sops-nix). Each machine
-decrypts `secrets/secrets.yaml` at activation using an age key derived from
-its own `/etc/ssh/ssh_host_ed25519_key` — no key files to provision or lose.
-`.sops.yaml` lists the age recipients (each host, plus a personal key for
-editing).
+decrypts `secrets.yaml` (repo root) at activation using an age key derived
+from its own `/etc/ssh/ssh_host_ed25519_key` — no key files to provision or
+lose. `.sops.yaml` lists the age recipients (each host, plus a personal key
+for editing).
 
 To edit secrets from a workstation:
 
 ```
-sops secrets/secrets.yaml
+sops secrets.yaml
 ```
 
 This requires a personal age private key at `~/.config/sops/age/keys.txt`
-(path pinned via `SOPS_AGE_KEY_FILE` in `modules/aspects/core.nix`)
-whose public key is listed in `.sops.yaml` as `admin_ivy`. That private key
-lives only on your own machine(s) — back it up somewhere durable, since
-losing it (without still having a host that can decrypt) means
-re-encrypting from scratch.
+(path pinned via `SOPS_AGE_KEY_FILE` in
+`modules/aspects/core/home-manager.nix`) whose public key is listed in
+`.sops.yaml` as `admin_ivy`. That private key lives only on your own
+machine(s) — back it up somewhere durable, since losing it (without still
+having a host that can decrypt) means re-encrypting from scratch.
 
-New secrets: add the value via `sops`, then declare it in `modules/sops.nix`
-(`sops.secrets.<name> = { };`) and reference it at
-`config.sops.secrets.<name>.path` wherever it's consumed.
+New secrets: add the value via `sops`, then declare
+`sops.secrets.<name> = { };` directly in the aspect that consumes it (next
+to wherever `config.sops.secrets.<name>.path` gets read) rather than in a
+central file — see `modules/aspects/services/nextcloud.nix` for an example.
+Every host that includes that aspect already has the `den.aspects.sops`
+bootstrap (file location + age key) needed to decrypt it.

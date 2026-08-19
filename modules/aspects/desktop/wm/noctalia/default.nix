@@ -39,7 +39,7 @@
     '';
 
     programs.tmux.extraConfig = lib.mkForce ''
-      ${builtins.readFile ../../dev/tmux/tmux.conf}
+      ${builtins.readFile ../../../dev/tmux/tmux.conf}
 
       # Source noctalia-generated theme (will override hardcoded colors above)
       source-file -q ~/.config/tmux/noctalia-theme.conf

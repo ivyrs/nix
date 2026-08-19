@@ -4,7 +4,14 @@
 # credentials) isn't tangled with the aerc client's own UI/filter config.
 {config, ...}: let
   meta = config.flake.lib.meta;
+  secrets = {
+    sops.secrets.aerc-fastmail-password.owner = "ivy";
+    sops.secrets.gmail-app-password.owner = "ivy";
+  };
 in {
+  den.aspects.desktop.nixos = secrets;
+  den.aspects.desktop.darwin = secrets;
+
   den.aspects.desktop.homeManager = {
     config,
     lib,

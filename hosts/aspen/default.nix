@@ -1,5 +1,4 @@
 {
-  config,
   den,
   inputs,
   ...
@@ -14,6 +13,8 @@
     includes = [
       den.batteries.hostname
       den.aspects.nix-settings
+      den.aspects.sops
+      den.aspects.overlays
       den.aspects.homebrew
       den.aspects.aerospace
       den.aspects.system-defaults
@@ -27,7 +28,6 @@
       imports = [
         inputs.sops-nix.darwinModules.sops
         inputs.nix-homebrew.darwinModules.nix-homebrew
-        config.flake.modules.darwin.sops
         ({pkgs, ...}: {
           nixpkgs.hostPlatform = "aarch64-darwin";
 

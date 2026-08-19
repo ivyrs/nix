@@ -8,6 +8,8 @@
   deviceSet = names: lib.genAttrs names (name: {id = st.devices.${name};});
 in {
   den.aspects.syncthing.nixos = {config, ...}: {
+    sops.secrets.syncthing-gui-password.owner = "syncthing";
+
     services.syncthing = {
       enable = true;
       dataDir = "/var/lib/syncthing";

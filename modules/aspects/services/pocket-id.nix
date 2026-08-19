@@ -2,6 +2,8 @@
   meta = config.flake.lib.meta;
 in {
   den.aspects.pocket-id.nixos = {config, ...}: {
+    sops.secrets.pocket-id-encryption-key = {};
+
     services.pocket-id = {
       enable = true;
       settings = {

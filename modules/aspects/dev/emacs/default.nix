@@ -46,6 +46,7 @@
           treesit-auto
           (treesit-grammars.with-grammars (grammars:
             with grammars; [
+              tree-sitter-javascript
               tree-sitter-typescript
               tree-sitter-tsx
               tree-sitter-astro

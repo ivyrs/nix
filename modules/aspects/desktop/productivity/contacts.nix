@@ -5,7 +5,17 @@
 # passwords are account-wide, not calendar-specific).
 {config, ...}: let
   meta = config.flake.lib.meta;
+  secrets = {
+    # Same account-wide secrets calendars.nix declares — reused, not
+    # calendar-specific; sops-nix merges the identical definitions.
+    sops.secrets.ivy-nextcloud-app-password.owner = "ivy";
+    sops.secrets.icloud-username.owner = "ivy";
+    sops.secrets.icloud-password.owner = "ivy";
+  };
 in {
+  den.aspects.desktop.nixos = secrets;
+  den.aspects.desktop.darwin = secrets;
+
   den.aspects.desktop.homeManager = {...}: {
     accounts.contact = {
       basePath = ".contacts";

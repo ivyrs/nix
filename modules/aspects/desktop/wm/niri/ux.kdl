@@ -69,3 +69,9 @@ window-rule {
     clip-to-geometry true
 }
 
+// Make Obsidian take focus when launched.
+// Required for Obsidian Web Clipper clipboard-based mode.
+window-rule {
+    match app-id=r#"^md.Obsidian$"#
+    open-focused true
+}

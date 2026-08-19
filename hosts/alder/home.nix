@@ -12,6 +12,7 @@ in {
     includes = [
       den.aspects.home-manager
       den.aspects.ghostty
+      den.aspects.librewolf
       den.aspects.desktop
       den.aspects.dev-tools
       den.aspects.emacs

@@ -2,6 +2,8 @@
   meta = config.flake.lib.meta;
 in {
   den.aspects.miniflux.nixos = {config, ...}: {
+    sops.secrets.miniflux-admin-credentials = {};
+
     services.miniflux = {
       enable = true;
       config = {

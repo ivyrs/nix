@@ -1,9 +1,3 @@
-/* ============================================
-   Vencord QuickCSS — De-annoy Discord
-   Comment out any block you don't want by
-   wrapping it in /* ... */
-   ============================================ */
-
 /* --- Nitro upsell buttons in message box / gift icon --- */
 button[aria-label="Gift a Nitro subscription"],
 button[aria-label="Record a Soundboard sound"],
@@ -17,7 +11,7 @@ button[aria-label="Record a Soundboard sound"],
   display: none !important;
 }
 
-/* --- Quests (the annoying "play this game for 15 min" popups) --- */
+/* --- Quests --- */
 [class*="questsTab"],
 [data-list-item-id*="quest"],
 a[href^="/discovery/quests"] {

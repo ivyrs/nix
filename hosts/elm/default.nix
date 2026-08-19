@@ -1,5 +1,4 @@
 {
-  config,
   den,
   inputs,
   ...
@@ -16,6 +15,7 @@
     includes = [
       den.batteries.hostname
       den.aspects.nix-settings
+      den.aspects.sops
       den.aspects.i18n
       den.aspects.tailscale-server
       den.aspects.syncthing
@@ -35,8 +35,6 @@
       imports = [
         ./_hardware-configuration.nix
         inputs.sops-nix.nixosModules.sops
-        config.flake.modules.nixos.sops
-        config.flake.modules.nixos.sops-elm-services
         ({pkgs, ...}: {
           # Bootloader.
           boot.loader.systemd-boot.enable = true;

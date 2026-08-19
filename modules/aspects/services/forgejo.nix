@@ -7,6 +7,10 @@ in {
     lib,
     ...
   }: {
+    sops.secrets.forgejo-internal-token.owner = "forgejo";
+    sops.secrets.forgejo-oauth2-jwt-secret.owner = "forgejo";
+    sops.secrets.forgejo-lfs-jwt-secret.owner = "forgejo";
+
     services.forgejo = {
       enable = true;
       package = pkgs.forgejo; # fountain tracked the rolling "15" tag, not forgejo-lts

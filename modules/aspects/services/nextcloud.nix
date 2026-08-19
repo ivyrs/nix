@@ -6,6 +6,11 @@ in {
     pkgs,
     ...
   }: {
+    sops.secrets.nextcloud-admin-password.owner = "nextcloud";
+    sops.secrets.nextcloud-oidc-client-secret.owner = "nextcloud";
+    sops.secrets.nextcloud-smtp-password.owner = "nextcloud";
+    sops.secrets.nextcloud-harp-shared-key-env = {};
+
     services.nextcloud = {
       enable = true;
       package = pkgs.nextcloud34;

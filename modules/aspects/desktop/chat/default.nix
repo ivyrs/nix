@@ -1,6 +1,10 @@
 # Terminal chat clients, cross-platform via nixpkgs (aspen + alder both
 # build these fine — no homebrew-cask split needed like productivity/).
 {
+  # senpai's IRC password, used unconditionally below on both platforms.
+  den.aspects.desktop.nixos.sops.secrets.ivy-soju-pass.owner = "ivy";
+  den.aspects.desktop.darwin.sops.secrets.ivy-soju-pass.owner = "ivy";
+
   den.aspects.desktop.homeManager = {
     pkgs,
     lib,
@@ -9,18 +13,6 @@
     home.packages = with pkgs;
       [
         profanity # XMPP — no home-manager module, config lives in-app
-      ]
-      ++ [
-        # Telegram + WhatsApp + Signal — no home-manager module, config lives
-        # in-app. Signal support (nchat-signal, see packages/nchat-signal) is
-        # Linux-only: it's only been built/tested on alder, and libsignal-ffi
-        # needs xcodebuild on Darwin which is untested here — aspen keeps
-        # plain nixpkgs nchat (Telegram + WhatsApp) until that's verified.
-        (
-          if lib.strings.hasSuffix "linux" pkgs.stdenv.hostPlatform.system
-          then pkgs.callPackage ../../../../packages/nchat-signal/default.nix {}
-          else nchat
-        )
       ];
 
     # Matrix. Not gomuks: nixpkgs' gomuks-0.3.1 still links the deprecated,

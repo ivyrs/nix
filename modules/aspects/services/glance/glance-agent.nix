@@ -12,6 +12,8 @@
     package = pkgs.callPackage ../../../../packages/glance-agent/default.nix {};
     port = 27973;
   in {
+    sops.secrets.glance-agent-token = {};
+
     systemd.services.glance-agent = {
       description = "Glance agent (remote server-stats reporting)";
       after = ["network.target"];

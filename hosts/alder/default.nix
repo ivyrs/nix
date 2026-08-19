@@ -1,5 +1,4 @@
 {
-  config,
   den,
   inputs,
   ...
@@ -10,6 +9,8 @@
     includes = [
       den.batteries.hostname
       den.aspects.nix-settings
+      den.aspects.sops
+      den.aspects.overlays
       den.aspects.i18n
       den.aspects.tailscale-client
       den.aspects.niri
@@ -26,7 +27,6 @@
         ./_hardware-configuration.nix
         inputs.nixos-apple-silicon.nixosModules.default
         inputs.sops-nix.nixosModules.sops
-        config.flake.modules.nixos.sops
         ({
           pkgs,
           lib,

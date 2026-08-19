@@ -18,6 +18,8 @@ in {
       cp ${./theme.css} $out/themes/theme.css
     '';
   in {
+    sops.secrets.gotosocial-env = {};
+
     services.gotosocial = {
       enable = true;
       inherit package;

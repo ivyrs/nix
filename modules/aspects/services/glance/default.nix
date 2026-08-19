@@ -6,6 +6,9 @@
   meta = config.flake.lib.meta;
 in {
   den.aspects.glance.nixos = {config, ...}: {
+    sops.secrets.glance-city = {};
+    sops.secrets.glance-agent-token = {};
+
     services.glance = {
       enable = true;
       settings = {

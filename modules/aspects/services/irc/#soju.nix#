@@ -1,0 +1,39 @@
+# soju IRC bouncer, sitting in front of ergo (../ergo.nix). Bouncer
+# accounts/networks aren't declarative — after first deploy, create one
+# with `sojuctl user create -admin ivy` and point it at ergo with
+# `sojuctl network create -addr irc+insecure://127.0.0.1:6667 -user ivy`.
+{config, ...}: let
+  meta = config.flake.lib.meta;
+in {
+  den.aspects.soju.nixos = {config, ...}: {
+    services.soju = {
+      enable = true;
+      hostName = "bnc.${meta.tailnet}";
+      # Loopback-only, plaintext — TLS is terminated by tailscaled instead
+      # (see the tailscale-serve-bnc unit below), same reasoning as ergo's
+      # listener.
+      listen = ["irc+insecure://127.0.0.1:6698"];
+      
+    };
+
+    # Exposed as a Tailscale Service (svc:bnc -> bnc.<tailnet>.ts.net); see
+    # ../ergo.nix's tailscale-serve-irc unit for why this goes through the
+    # `tailscale serve` CLI instead of the declarative option, and why the
+    # --tls-terminated-tcp port below must match the backend port exactly.
+    systemd.services.tailscale-serve-bnc = {
+      description = "Advertise soju as the bnc Tailscale Service";
+      after = ["tailscaled.service" "soju.service"];
+      wants = ["tailscaled.service"];
+      wantedBy = ["multi-user.target"];
+      partOf = ["tailscaled.service"];
+      serviceConfig = {
+        Type = "oneshot";
+        RemainAfterExit = true;
+        Restart = "on-failure";
+        RestartSec = "2s";
+        ExecStart = "${config.services.tailscale.package}/bin/tailscale serve --service=svc:bnc --tls-terminated-tcp=6698 tcp://127.0.0.1:6698";
+        ExecStop = "${config.services.tailscale.package}/bin/tailscale serve --service=svc:bnc --tls-terminated-tcp=6698 off";
+      };
+    };
+  };
+}
