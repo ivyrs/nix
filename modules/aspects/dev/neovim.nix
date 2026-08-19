@@ -83,14 +83,9 @@
 
           -- Custom header (ASCII art)
           dashboard.section.header.val = {
-            [[                               ]],
-            [[                               ]],
-            [[   ╭─────────────────────╮     ]],
-            [[   │                     │     ]],
-            [[   │   N  E  O  V  I  M   │     ]],
-            [[   │                     │     ]],
-            [[   ╰─────────────────────╯     ]],
-            [[                               ]],
+            [[   ╭──────────╮  ]],
+            [[   │  NEOVIM  │  ]],
+            [[   ╰──────────╯  ]],
           }
 
           -- Custom buttons
@@ -99,7 +94,6 @@
             dashboard.button("e", "  New file", ":ene <BAR> startinsert <CR>"),
             dashboard.button("r", "  Recent files", ":Telescope oldfiles <CR>"),
             dashboard.button("g", "  Find text", ":Telescope live_grep <CR>"),
-            dashboard.button("c", "  Config", ":e $MYVIMRC <CR>"),
             dashboard.button("q", "  Quit", ":qa<CR>"),
           }
 
@@ -110,7 +104,7 @@
             local version = vim.version()
             local nvim_version_info = "   v" .. version.major .. "." .. version.minor .. "." .. version.patch
 
-            return datetime .. "   " .. total_plugins .. " plugins" .. nvim_version_info
+            return datetime .. nvim_version_info
           end
 
           dashboard.section.footer.val = footer()

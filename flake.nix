@@ -33,7 +33,7 @@
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
     # neovim config for nerds
-    nvf.url = "github:notashelf/nvf";
+    nvf.url = "github:notashelf/nvf/v26.07";
     nvf.inputs.nixpkgs.follows = "nixpkgs";
 
     # wallpaper engine
