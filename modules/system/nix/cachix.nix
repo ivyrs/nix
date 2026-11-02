@@ -1,5 +1,3 @@
-{ config, pkgs, ... }:
-
 {
   nix.settings = {
     extra-substituters = [
@@ -13,33 +11,5 @@
       "noctalia.cachix.org-1:pCOR47nnMEo5thcxNDtzWpOxNFQsBRglJzxWPp3dkU4="
       "umbriel.cachix.org-1:JfNq/2yg2S6D6z4Z2dVSZrZlDPQTKtexB6GAVLD98nw="
     ];
-  };
-
-  # TODO fix auth tokens
-  sops.secrets.cachix-auth-token-alder = { };
-
-  systemd.services.cachix-watch-store = {
-    description = "Push new /nix/store paths to the ivyturner Cachix cache";
-
-    wantedBy = [
-      "multi-user.target"
-    ];
-
-    after = [
-      "network-online.target"
-    ];
-
-    wants = [
-      "network-online.target"
-    ];
-
-    serviceConfig = {
-      ExecStart = "${pkgs.cachix}/bin/cachix watch-store ivyturner";
-
-      EnvironmentFile = config.sops.secrets.cachix-auth-token-alder.path;
-
-      Restart = "on-failure";
-      RestartSec = "30s";
-    };
   };
 }

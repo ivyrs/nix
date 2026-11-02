@@ -14,7 +14,9 @@ decommissioned rather than migrated.
 | Host | Platform | Purpose |
 | --- | --- | --- |
 | Alder | aarch64 Linux | Asahi desktop |
+| Maple | x86_64 Linux | Desktop |
 | Aspen | aarch64 Darwin | macOS desktop |
+| installer | x86_64 Linux | Installation ISO |
 
 ## Local Workflow
 
@@ -32,8 +34,30 @@ and nix-darwin's bootstrap procedure, explicitly selecting `#aspen`.
 Alder additionally requires its local `/etc/nixos/asahi-firmware` directory.
 Its build/switch recipes pass `--impure`; a full firmware-dependent build cannot
 be performed on another machine merely by adding that flag. Apple firmware must
-not be published. Alder's automatic Cachix store uploader is disabled, while
-cache downloads remain enabled.
+not be published. **Alder currently enables an automatic Cachix store uploader**
+in `modules/system/nix/cachix.nix`. Review/disable uploads before firmware builds;
+cache downloads do not require the uploader. Removing the declaration without
+activating a new configuration does not stop an already running uploader.
+
+## x86 Applications
+
+Alder uses [nix-x86-on-aarch64](https://github.com/rowanG077/nix-x86-on-aarch64)
+for x86 and x86-64 Linux applications, Steam, and Wine. On Asahi's 16 KiB-page
+kernel, the runtime automatically uses muvm and native DRM graphics forwarding.
+After rebuilding and starting a new login session (for KVM group membership):
+
+```sh
+x86-arm doctor
+nix-shell -p x86pkgs.hello --run hello
+steam
+x86-arm-wine /path/to/windows-installer.exe
+```
+
+`x86-arm stop` stops the runtime's VM and its applications. Wine defaults to
+`~/.local/share/x86-on-arm/wineprefix`; set `WINEPREFIX` to use another prefix.
+The runtime owns both x86 ELF handlers, replacing Alder's QEMU binfmt setup.
+It does not advertise x86 build support to the Nix daemon, so uncached x86
+packages and the installer ISO need a suitable builder.
 
 ## Secrets and Recovery
 
@@ -52,6 +76,9 @@ Outstanding work is tracked in `TODO.md`: credential rotation, Aspen PIM
 credentials, backup/restore coverage, and privilege-policy decisions. Clearing a
 credential from this checkout does not remove it from Git history or old store
 paths.
+
+The [cleanup audit](AUDIT.md) records input usage, retained dependency pins,
+verification results, and prioritized follow-ups.
 
 ## Home Manager Exports
 

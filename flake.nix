@@ -5,34 +5,35 @@
     # Keep hosts on stable; use this only for packages with a concrete need.
     nixpkgs-unstable.url = "nixpkgs/nixos-unstable";
 
-    # hardware support
+    # --- hardware support
     apple-silicon = {
       url = "github:nix-community/nixos-apple-silicon/release-2026-07-30";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # speaking in tongues (age encrypted strings)
+    nix-x86-on-aarch64 = {
+      url = "github:rowanG077/nix-x86-on-aarch64";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     sops = {
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # symlink everything
     home-manager = {
       url = "github:nix-community/home-manager/release-26.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # --- macOS stuff
     nix-darwin = {
       url = "github:nix-darwin/nix-darwin/nix-darwin-26.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-
     nix-homebrew.url = "github:zhaofengli/nix-homebrew";
 
-    # wallpaper engine
     noctalia.url = "github:noctalia-dev/noctalia/cachix";
-
     umbriel.url = "github:noctalia-dev/umbriel/cachix";
 
     # terminal-based music player/library, pointed at Navidrome via the
@@ -49,16 +50,13 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # NVF also builds plugins (including blink-cmp) with its own nixpkgs.
     nvf.url = "github:NotAShelf/nvf/v26.07";
 
     otter-launcher = {
       url = "github:kuokuo123/otter-launcher";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.home-manager.follows = "home-manager";
-    };
-
-    wlctl = {
-      url = "github:aashish-thapa/wlctl";
     };
 
     # format all the things
@@ -72,10 +70,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    steam-asahi = {
-      url = "github:sm-idk/steam-asahi";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
   };
 
   outputs =

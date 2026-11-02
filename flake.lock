@@ -242,6 +242,26 @@
         "type": "github"
       }
     },
+    "nix-x86-on-aarch64": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1790210091,
+        "narHash": "sha256-ZM9kDVJNjFHVHR1Osx+6SdG2Lufnfx2Ek0Wcxc3KX00=",
+        "owner": "rowanG077",
+        "repo": "nix-x86-on-aarch64",
+        "rev": "5d69793a1c8b31d724fccd9b6acaa33587c923b3",
+        "type": "github"
+      },
+      "original": {
+        "owner": "rowanG077",
+        "repo": "nix-x86-on-aarch64",
+        "type": "github"
+      }
+    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1787101114,
@@ -326,22 +346,6 @@
         "url": "https://channels.nixos.org/nixos-unstable/nixexprs.tar.xz"
       }
     },
-    "nixpkgs_5": {
-      "locked": {
-        "lastModified": 1782847189,
-        "narHash": "sha256-twXPFqFsrrY5r28Zh7Homgcp2gUMBgQ6WDS98Q/3xFI=",
-        "owner": "nixos",
-        "repo": "nixpkgs",
-        "rev": "b6018f87da91d19d0ab4cf979885689b469cdd41",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nixos",
-        "ref": "nixos-25.11",
-        "repo": "nixpkgs",
-        "type": "github"
-      }
-    },
     "noctalia": {
       "inputs": {
         "nixpkgs": "nixpkgs_2"
@@ -416,16 +420,15 @@
         "nix-darwin": "nix-darwin",
         "nix-homebrew": "nix-homebrew",
         "nix-index-database": "nix-index-database",
+        "nix-x86-on-aarch64": "nix-x86-on-aarch64",
         "nixpkgs": "nixpkgs",
         "nixpkgs-unstable": "nixpkgs-unstable",
         "noctalia": "noctalia",
         "nvf": "nvf",
         "otter-launcher": "otter-launcher",
         "sops": "sops",
-        "steam-asahi": "steam-asahi",
         "treefmt-nix": "treefmt-nix",
-        "umbriel": "umbriel",
-        "wlctl": "wlctl"
+        "umbriel": "umbriel"
       }
     },
     "sops": {
@@ -445,26 +448,6 @@
       "original": {
         "owner": "Mic92",
         "repo": "sops-nix",
-        "type": "github"
-      }
-    },
-    "steam-asahi": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1783937169,
-        "narHash": "sha256-d+0Bfwtt7HmLW2Usnw9XHA/uyNVHy3G1wT1yNQWuyCs=",
-        "owner": "sm-idk",
-        "repo": "steam-asahi",
-        "rev": "5e538015e267bfd57ccf49e5ed0660ac7fd9f8ea",
-        "type": "github"
-      },
-      "original": {
-        "owner": "sm-idk",
-        "repo": "steam-asahi",
         "type": "github"
       }
     },
@@ -535,24 +518,6 @@
         "owner": "noctalia-dev",
         "ref": "cachix",
         "repo": "umbriel",
-        "type": "github"
-      }
-    },
-    "wlctl": {
-      "inputs": {
-        "nixpkgs": "nixpkgs_5"
-      },
-      "locked": {
-        "lastModified": 1788059764,
-        "narHash": "sha256-ekrzW0MF8umqEopkcM1NCruC6X2G5nf3wQCVYzG+yAs=",
-        "owner": "aashish-thapa",
-        "repo": "wlctl",
-        "rev": "8a885dbbdf76e1b3ace99912f0f6f6ccfe53e0b8",
-        "type": "github"
-      },
-      "original": {
-        "owner": "aashish-thapa",
-        "repo": "wlctl",
         "type": "github"
       }
     },

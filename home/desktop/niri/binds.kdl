@@ -14,13 +14,12 @@ binds {
     Mod+N hotkey-overlay-title="open control center" { spawn-sh "noctalia msg panel-toggle control-center"; }
     Mod+Tab hotkey-overlay-title="open window switcher" { spawn-sh "noctalia msg window-switcher"; }
     Mod+Shift+N hotkey-overlay-title="toggle do not disturb" { spawn-sh "noctalia msg notification-dnd-toggle"; }
-    Mod+Shift+W hotkey-overlay-title="random wallpaper" { spawn-sh "noctalia msg wallpaper-random"; }
 
     // ── launchers ─────────────────────────────────────────────
-    Mod+Slash hotkey-overlay-title="Command bar (otter)" {
+    Mod+Slash hotkey-overlay-title="open command center" {
         spawn "ghostty" "--gtk-single-instance=false" "--class=rs.ivy.launcher" "-e" "otter-launcher";
     }
-    Mod+D hotkey-overlay-title="App search (fsel)" {
+    Mod+D hotkey-overlay-title="open app launcher" {
         spawn "ghostty" "--gtk-single-instance=false" "--class=rs.ivy.launcher" "-e" "fsel" "-d" "-r";
     }
 

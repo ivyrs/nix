@@ -1,7 +1,5 @@
 {
-  config,
   metadata,
-  pkgs,
   ...
 }:
 
@@ -11,6 +9,7 @@
 
     ../../../modules/system/nix
     ../../../modules/system/nix/nixos.nix
+    ../../../modules/system/nix-ld.nix
 
     ../../../modules/users/ivy.nix
 
@@ -58,28 +57,6 @@
     powerOnBoot = true;
   };
 
-  programs.nix-ld = {
-    enable = true;
-    libraries = with pkgs; [
-      # video
-      wayland
-      libxkbcommon
-      libdecor
-      libGL
-      vulkan-loader
-      libX11
-      libXext
-      libXcursor
-      libXrandr
-      libXi
-      libXinerama
-      # audio
-      alsa-lib
-      libpulseaudio
-      pipewire
-    ];
-  };
-
   hardware.graphics.enable = true; # provides /run/opengl-driver (Mesa)
 
   boot.loader = {
@@ -87,7 +64,6 @@
     efi.canTouchEfiVariables = true;
   };
 
-  environment.systemPackages = [ ];
   system.stateVersion = "26.05";
 
   # TODO: bootstrap-only, matches no sops secret yet. Run `passwd` after

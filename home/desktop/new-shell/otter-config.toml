@@ -49,7 +49,7 @@ cmd = "tui nvim ~/.config/otter-launcher/man.txt"
 
 [[modules]]
 description = "nm config"
-prefix = "wifi"
+prefix = "net"
 cmd = "tui nmtui"
 
 [[modules]]

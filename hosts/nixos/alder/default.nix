@@ -1,19 +1,21 @@
 {
   config,
+  inputs,
   metadata,
-  pkgs,
   ...
 }:
 
 {
   imports = [
     ./hardware.nix
+    inputs.nix-x86-on-aarch64.nixosModules.default
 
     ../../../modules/hardware/apple-silicon.nix
     ../../../modules/hardware/peripherals.nix
 
     ../../../modules/system/nix
     ../../../modules/system/nix/nixos.nix
+    ../../../modules/system/nix-ld.nix
     ../../../modules/system/nix/cachix.nix
     ../../../modules/system/boot/blahaj.nix
 
@@ -59,44 +61,26 @@
 
   zramSwap.enable = true;
 
-  # lets us build the x86_64-linux installer ISO (hosts/nixos/installer)
-  # locally under qemu emulation instead of needing a remote builder.
-  boot.binfmt.emulatedSystems = [ "x86_64-linux" ];
+  # Asahi's 16 KiB pages select the muvm backend automatically.
+  programs.x86-on-arm = {
+    enable = true;
+    steam.enable = true;
+    wine.enable = true;
+  };
 
   hardware.bluetooth = {
     enable = true;
     powerOnBoot = true;
   };
 
-  programs.nix-ld = {
-    enable = true;
-    libraries = with pkgs; [
-      # video
-      wayland
-      libxkbcommon
-      libdecor
-      libGL
-      vulkan-loader
-      libX11
-      libXext
-      libXcursor
-      libXrandr
-      libXi
-      libXinerama
-      # audio
-      alsa-lib
-      libpulseaudio
-      pipewire
-    ];
-  };
-
   hardware.graphics.enable = true; # provides /run/opengl-driver (Mesa)
 
-  environment.systemPackages = [ ];
   system.stateVersion = "25.11";
 
-  users.users.${metadata.user.username}.hashedPasswordFile =
-    config.sops.secrets.ivy-password-hash-alder.path;
+  users.users.${metadata.user.username} = {
+    extraGroups = [ "kvm" ];
+    hashedPasswordFile = config.sops.secrets.ivy-password-hash-alder.path;
+  };
 
   sops.defaultSopsFile = ../../../secrets/alder.yaml;
   sops.secrets = {
