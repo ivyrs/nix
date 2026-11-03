@@ -42,6 +42,7 @@
     };
 
     albedo.url = "git+https://tangled.org/okami.mom/albedo";
+    hermes-agent.url = "github:NousResearch/hermes-agent";
 
     nokkvi.url = "github:f-o-o-g-s/nokkvi";
 

@@ -90,5 +90,6 @@
     icloud-username.owner = metadata.user.username;
     icloud-password.owner = metadata.user.username;
     ivy-soju-pass.owner = metadata.user.username;
+    hermes-env.owner = metadata.user.username;
   };
 }

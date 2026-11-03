@@ -1,4 +1,9 @@
-{ inputs, metadata, ... }:
+{
+  inputs,
+  metadata,
+  config,
+  ...
+}:
 
 {
   imports = [
@@ -12,6 +17,7 @@
     extraSpecialArgs = {
       inherit inputs metadata;
       isDarwin = false;
+      hermesEnvFile = config.sops.secrets.hermes-env.path;
     };
 
     backupFileExtension = "hm-backup";
