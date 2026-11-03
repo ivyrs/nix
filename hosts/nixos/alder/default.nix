@@ -8,7 +8,7 @@
 {
   imports = [
     ./hardware.nix
-    inputs.nix-x86-on-aarch64.nixosModules.default
+    # inputs.nix-x86-on-aarch64.nixosModules.default
 
     ../../../modules/hardware/apple-silicon.nix
     ../../../modules/hardware/peripherals.nix
@@ -27,7 +27,6 @@
     ../../../modules/services/ly.nix
 
     ../../../modules/desktop/niri.nix
-    ../../../modules/desktop/umbriel.nix
     ../../../modules/desktop/portals.nix
     ../../../modules/desktop/audio.nix
     ../../../modules/desktop/theme.nix
@@ -62,11 +61,11 @@
   zramSwap.enable = true;
 
   # Asahi's 16 KiB pages select the muvm backend automatically.
-  programs.x86-on-arm = {
-    enable = true;
-    steam.enable = true;
-    wine.enable = true;
-  };
+  # programs.x86-on-arm = {
+  #   enable = true;
+  #   steam.enable = true;
+  #   wine.enable = true;
+  # };
 
   hardware.bluetooth = {
     enable = true;

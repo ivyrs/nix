@@ -18,7 +18,6 @@
     ../../../modules/services/ly.nix
 
     ../../../modules/desktop/niri.nix
-    ../../../modules/desktop/umbriel.nix
     ../../../modules/desktop/portals.nix
     ../../../modules/desktop/audio.nix
     ../../../modules/desktop/theme.nix
