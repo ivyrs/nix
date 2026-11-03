@@ -1,94 +1,26 @@
 {
-  config,
   lib,
   pkgs,
   inputs,
   ...
 }:
 let
-  # Use latest ncspot with Spotify OAuth refresh token fix (PR #1861)
-  # ncspot 1.4.0 fixes: "Stop discarding the Web API refresh token on every refresh"
-  ncspot-latest = pkgs.ncspot.overrideAttrs (old: rec {
-    version = "1.4.0";
-    src = pkgs.fetchFromGitHub {
-      owner = "hrkfdn";
-      repo = "ncspot";
-      rev = "v${version}";
-      hash = "sha256-YJbdXLqFPYKnluHCR5svAGIkzbKH3xYPOnA2uQCK5q4=";
-    };
-    cargoDeps = pkgs.rustPlatform.fetchCargoVendor {
-      inherit src;
-      hash = "sha256-4RRAFThnp06QFb3U4IjRTRc3B9muyajH592ZNWJrJZY=";
-    };
-  });
-  musikcube = inputs.musikcube.packages.${pkgs.stdenv.hostPlatform.system}.default;
-  musikcube-package =
-    if pkgs.stdenv.hostPlatform.isDarwin then
-      musikcube.overrideAttrs (old: {
-        buildInputs = (old.buildInputs or [ ]) ++ [
-          pkgs.gnutls
-          pkgs.libev
-        ];
-      })
-    else
-      musikcube;
+  inherit (pkgs.stdenv.hostPlatform) isLinux;
+
+  ncspot = inputs.nixpkgs-unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system}.ncspot;
 in
 {
-  home.packages =
-    (with pkgs; [
-      ncspot-latest
-      feishin
-      musikcube-package
-    ])
-    ++ lib.optionals pkgs.stdenv.hostPlatform.isLinux [ pkgs.playerctl ];
+  home.packages = [
+    ncspot
+    pkgs.feishin
+    pkgs.musikcube
+  ]
+  ++ lib.optionals isLinux [
+    pkgs.playerctl
+    inputs.nokkvi.packages.${pkgs.stdenv.hostPlatform.system}.default
+  ];
 
-  ## mpd
-  home.activation.mpdDirectories = lib.mkIf pkgs.stdenv.hostPlatform.isDarwin (
-    lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-      run ${pkgs.coreutils}/bin/mkdir -p ${
-        lib.escapeShellArgs [
-          config.services.mpd.dataDir
-          config.services.mpd.playlistDirectory
-          "${config.home.homeDirectory}/Library/Logs/mpd"
-        ]
-      }
-    ''
-  );
-
-  services.mpd = {
-    enable = true;
-
-    network = {
-      listenAddress = "127.0.0.1";
-      port = 6600;
-    };
-
-    musicDirectory = "${config.home.homeDirectory}/media/music";
-    # TODO: make this overridable
-
-    extraConfig =
-      if pkgs.stdenv.hostPlatform.isDarwin then
-        ''
-          audio_output {
-            type "osx"
-            name "CoreAudio"
-          }
-        ''
-      else
-        ''
-          audio_output {
-            type "pipewire"
-            name "PipeWire"
-          }
-        '';
-  };
-  ## rmpc
-  programs.rmpc = {
-    enable = true;
-  };
-
-  ## musikcube
-
+  # Musikcube navigation and playback keys.
   home.file.".config/musikcube/hotkeys.json" = {
     text = builtins.toJSON {
       key_up = "k";
