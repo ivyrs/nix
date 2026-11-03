@@ -325,10 +325,6 @@ wallpaper_scheme = "m3-content"
         input_path = "$XDG_CONFIG_HOME/noctalia/templates/fzf.sh"
         output_path = "$XDG_CONFIG_HOME/fzf/noctalia-colors.sh"
 
-        [theme.templates.user.musikcube]
-        input_path = "$XDG_CONFIG_HOME/noctalia/templates/musikcube-theme.json"
-        output_path = "$XDG_CONFIG_HOME/musikcube/themes/noctalia.json"
-
         [theme.templates.user.neovim]
         input_path = "$XDG_CONFIG_HOME/noctalia/templates/nvim-matugen.lua"
         output_path = "$XDG_CONFIG_HOME/nvim-noctalia/matugen.lua"
