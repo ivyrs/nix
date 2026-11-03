@@ -34,21 +34,16 @@
     nix-homebrew.url = "github:zhaofengli/nix-homebrew";
 
     noctalia.url = "github:noctalia-dev/noctalia/cachix";
-    umbriel.url = "github:noctalia-dev/umbriel/cachix";
-
-    # terminal-based music player/library, pointed at Navidrome via the
-    # subsonicsource plugin. Feeds the noctalia theme template in
-    # home/desktop/noctalia.
-    musikcube = {
-      url = "github:ivyrs/musikcube2";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
 
     # Helium browser (prebuilt upstream Linux release, repackaged for Nix)
     helium-browser = {
       url = "github:oxcl/nix-flake-helium-browser";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    albedo.url = "git+https://tangled.org/okami.mom/albedo";
+
+    nokkvi.url = "github:f-o-o-g-s/nokkvi";
 
     # NVF also builds plugins (including blink-cmp) with its own nixpkgs.
     nvf.url = "github:NotAShelf/nvf/v26.07";
