@@ -75,7 +75,7 @@ cmd = "tui wiremix"
 [[modules]]
 description = "opencode session"
 prefix = "ai"
-cmd = """dir="{}"; [ -n "$dir" ] || dir="$HOME"; case "$dir" in "~") dir="$HOME" ;; "~/"*) dir="$HOME/${dir#~/}" ;; esac; cd -- "$dir" && tui opencode"""
+cmd = """dir="{}"; [ -n "$dir" ] || dir="$HOME"; case "$dir" in "~") dir="$HOME" ;; "~/"*) dir="$HOME/${dir#~/}" ;; esac; cd -- "$dir" && tui albedo"""
 with_argument = true
 
 [[modules]]
