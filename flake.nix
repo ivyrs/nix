@@ -6,6 +6,11 @@
     nixpkgs-unstable.url = "nixpkgs/nixos-unstable";
 
     # --- hardware support
+    jovian = {
+      url = "github:Jovian-Experiments/Jovian-NixOS/development";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     apple-silicon = {
       url = "github:nix-community/nixos-apple-silicon/release-2026-07-30";
       inputs.nixpkgs.follows = "nixpkgs";

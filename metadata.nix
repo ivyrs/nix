@@ -40,5 +40,10 @@
       name = "maple";
       system = "x86_64-linux";
     };
+
+    willow = {
+      name = "willow";
+      system = "x86_64-linux";
+    };
   };
 }

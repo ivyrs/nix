@@ -17,6 +17,7 @@ decommissioned rather than migrated.
 | Maple | x86_64 Linux | Desktop |
 | Aspen | aarch64 Darwin | macOS desktop |
 | installer | x86_64 Linux | Installation ISO |
+| Willow | x86_64 Linux | Steam Deck OLED ([draft](hosts/nixos/willow/README.md), not yet exported) |
 
 ## Local Workflow
 
