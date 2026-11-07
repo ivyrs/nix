@@ -11,6 +11,7 @@
   services.udiskie.enable = true;
 
   home.packages = [
+    pkgs.playerctl # media keys, including standalone homeModules.niri consumers
     pkgs.wl-clipboard # move this into a Desktop file when it makes sense
 
     (pkgs.writeShellApplication {

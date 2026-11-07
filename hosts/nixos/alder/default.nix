@@ -55,6 +55,21 @@
 
   services.tailscale.extraSetFlags = [ "--operator=ivy" ];
 
+  # GeoClue needs a per-user agent even for explicitly authorized clients.
+  services.geoclue2 = {
+    enable = true;
+    enableDemoAgent = true;
+    enableNmea = false;
+    enable3G = false;
+    enableCDMA = false;
+    enableModemGPS = false;
+    submitData = false;
+    appConfig.gammastep = {
+      isAllowed = true;
+      isSystem = true;
+    };
+  };
+
   services.upower.enable = true;
   services.power-profiles-daemon.enable = true;
 

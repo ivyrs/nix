@@ -9,15 +9,18 @@ binds {
     // default and this class-based match won't distinguish the window.
     Mod+E hotkey-overlay-title="open file manager" { spawn "focus-or-spawn" "rs.ivy.yazi" "ghostty" "--class=rs.ivy.yazi" "-e" "yazi"; }
     Mod+O hotkey-overlay-title="open obsidian" { spawn "focus-or-spawn" "md.Obsidian" "obsidian"; }
-    Super+Alt+L hotkey-overlay-title="lock screen" { spawn-sh "noctalia msg session lock"; }
+    Super+Alt+L hotkey-overlay-title="lock screen" { spawn "desktop-lock"; }
 
     Mod+N hotkey-overlay-title="open control center" { spawn-sh "noctalia msg panel-toggle control-center"; }
     Mod+Tab hotkey-overlay-title="open window switcher" { spawn-sh "noctalia msg window-switcher"; }
-    Mod+Shift+N hotkey-overlay-title="toggle do not disturb" { spawn-sh "noctalia msg notification-dnd-toggle"; }
+    Mod+Shift+N hotkey-overlay-title="toggle do not disturb" { spawn "makoctl" "mode" "-t" "do-not-disturb"; }
+    Mod+BackSpace hotkey-overlay-title="dismiss notification" { spawn "makoctl" "dismiss"; }
+    Mod+Shift+BackSpace hotkey-overlay-title="dismiss all notifications" { spawn "makoctl" "dismiss" "--all"; }
+    Mod+Ctrl+N hotkey-overlay-title="recall last notification" { spawn "makoctl" "restore"; }
 
     // ── launchers ─────────────────────────────────────────────
     Mod+Slash hotkey-overlay-title="open command center" {
-        spawn "ghostty" "--gtk-single-instance=false" "--class=rs.ivy.launcher" "-e" "otter-launcher";
+        spawn "otter-prompt";
     }
     Mod+D hotkey-overlay-title="open app launcher" {
         spawn "ghostty" "--gtk-single-instance=false" "--class=rs.ivy.launcher" "-e" "fsel" "-d" "-r";
@@ -34,20 +37,21 @@ binds {
     Shift+Print { spawn-sh "noctalia msg screenshot-fullscreen"; }
 
     // ── media ─────────────────────────────────────────────────
-    XF86AudioPlay  allow-when-locked=true { spawn-sh "noctalia msg media toggle"; }
-    XF86AudioPause allow-when-locked=true { spawn-sh "noctalia msg media toggle"; }
-    XF86AudioNext  allow-when-locked=true { spawn-sh "noctalia msg media next"; }
-    XF86AudioPrev  allow-when-locked=true { spawn-sh "noctalia msg media previous"; }
+    // Prefer music apps; fall back to other MPRIS players except Firefox.
+    XF86AudioPlay  allow-when-locked=true { spawn "playerctl" "--player=musikcube,ncspot,feishin,%any" "--ignore-player=firefox" "play-pause"; }
+    XF86AudioPause allow-when-locked=true { spawn "playerctl" "--player=musikcube,ncspot,feishin,%any" "--ignore-player=firefox" "play-pause"; }
+    XF86AudioNext  allow-when-locked=true { spawn "playerctl" "--player=musikcube,ncspot,feishin,%any" "--ignore-player=firefox" "next"; }
+    XF86AudioPrev  allow-when-locked=true { spawn "playerctl" "--player=musikcube,ncspot,feishin,%any" "--ignore-player=firefox" "previous"; }
 
     // ── volume / brightness ───────────────────────────────────
     XF86AudioRaiseVolume allow-when-locked=true { spawn-sh "wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%+"; }
     XF86AudioLowerVolume allow-when-locked=true { spawn-sh "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"; }
     XF86AudioMute        allow-when-locked=true { spawn-sh "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"; }
-    XF86MonBrightnessUp   allow-when-locked=true { spawn "brightnessctl" "set" "5%+"; }
-    XF86MonBrightnessDown allow-when-locked=true { spawn "brightnessctl" "set" "5%-"; }
+    XF86MonBrightnessUp   allow-when-locked=true { spawn "desktop-brightness" "screen" "up"; }
+    XF86MonBrightnessDown allow-when-locked=true { spawn "desktop-brightness" "screen" "down"; }
 
-    XF86KbdBrightnessUp allow-when-locked=true { spawn-sh "noctalia msg keyboard-backlight-up"; }
-    XF86KbdBrightnessDown allow-when-locked=true { spawn-sh "noctalia msg keyboard-backlight-down"; }
+    XF86KbdBrightnessUp allow-when-locked=true { spawn "desktop-brightness" "keyboard" "up"; }
+    XF86KbdBrightnessDown allow-when-locked=true { spawn "desktop-brightness" "keyboard" "down"; }
 
     Mod+Space repeat=false { toggle-overview; }
 
@@ -194,7 +198,7 @@ binds {
 
     Mod+Escape allow-inhibiting=false { toggle-keyboard-shortcuts-inhibit; }
 
-    Mod+Shift+E hotkey-overlay-title="open power menu" { spawn-sh "noctalia msg panel-toggle session"; }
+    Mod+Shift+E hotkey-overlay-title="open power menu" { spawn "power-menu"; }
 
     Mod+Shift+P { power-off-monitors; }
 }

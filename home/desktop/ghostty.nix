@@ -11,7 +11,7 @@
     settings = lib.mkMerge [
       {
         # Noctalia can override this later.
-        theme = lib.mkDefault "Catppuccin Mocha";
+        theme = lib.mkDefault "Gruvbox Dark";
 
         font-family = "Aporetic Sans Mono";
         font-size = 14;
@@ -20,10 +20,6 @@
         window-padding-x = 10;
         window-padding-y = 10;
         confirm-close-surface = false;
-
-        keybind = [
-          "super+v=paste_from_clipboard"
-        ];
       }
 
       (lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {

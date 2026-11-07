@@ -39,6 +39,57 @@ in `modules/system/nix/cachix.nix`. Review/disable uploads before firmware build
 cache downloads do not require the uploader. Removing the declaration without
 activating a new configuration does not stop an already running uploader.
 
+## Screen locking
+
+Linux desktops use swaylock and swayidle independently of Noctalia. `Super+Alt+L`
+and Otter's `lock` command run `desktop-lock`. Idle locks after 300 seconds and
+powers monitors off after 400 seconds; activity powers them back on. Suspend
+locks first, with no automatic idle suspend. The locker uses the login password
+through the PAM service in `modules/desktop/niri.nix`.
+
+After switching, test a manual lock/unlock (including an incorrect password),
+`loginctl lock-session`, idle screen-off/wake, and suspend/resume. Keep a second
+TTY available for recovery during the first check. Noctalia's lockscreen and
+idle actions are disabled; its remaining shell features are unchanged.
+The locker uses `~/media/images/wp-new/dark/wallhaven-qrp9ql.png` as a static
+wallpaper, with a translucent Gruvbox indicator and no keyboard-layout label.
+Change `programs.swaylock.settings.image` to select another image; a missing
+image falls back to the dark solid background.
+The locker runs in `desktop-lock.service`, not Otter's terminal. Its readiness
+notification lets suspend wait until the lock is established. Check failures with
+`journalctl --user -u desktop-lock.service`. Noctalia's mutable
+`~/.local/state/noctalia/settings.toml` can override the declarative idle flags;
+existing saved lock/screen-off actions must also be disabled when migrating.
+Standalone users of `homeModules.lock` must configure swaylock PAM themselves.
+
+## Media keys
+
+Niri's play/pause, next, and previous keys call playerctl directly, including
+while locked. Selection prefers Musikcube, then ncspot, then Feishin, then other
+MPRIS players (for example Chromium); Firefox is excluded as before. When more
+than one music app is open this is a fixed priority, not last-used selection.
+Noctalia's media widget is separate and unchanged.
+
+## Notifications
+
+Mako handles application notifications, with Gruvbox popups at the top right.
+Normal popups default to seven seconds; critical notifications default to staying
+until dismissed. History is kept in memory, capped at 50 entries, and lost when
+Mako exits. Existing Noctalia history is not migrated or deleted. Claude sender
+names `claude`, `Claude`, and `Claude Code` expire after seven seconds and are
+excluded from history (Mako uses exact sender names, not substring matching).
+
+- `Mod+Shift+N` / Otter `dnd`: toggle do not disturb (hides all popups).
+- `Mod+BackSpace`: dismiss; `Mod+Shift+BackSpace`: dismiss all.
+- `Mod+Ctrl+N` / Otter `notif`: recall the last notification.
+- Left click invokes the default action; right click dismisses.
+
+Noctalia's notification daemon is disabled; internal shell toasts remain its own.
+After switching, check `systemctl --user status mako` and send a test with
+`notify-send "Mako" "Notifications are working"`. Test DND and recall too.
+If Noctalia still owns application notifications, check its saved settings for
+`notification.enable_daemon`, which must not override the declared `false`.
+
 ## x86 Applications
 
 Alder uses [nix-x86-on-aarch64](https://github.com/rowanG077/nix-x86-on-aarch64)
@@ -81,6 +132,10 @@ The [cleanup audit](AUDIT.md) records input usage, retained dependency pins,
 verification results, and prioritized follow-ups.
 
 ## Home Manager Exports
+
+`flake.nix` wires hosts and development tooling together. Reusable Home Manager
+exports are listed in `home/exports.nix`; standalone package outputs live in
+`pkgs/default.nix` (Neovim on all supported systems, plus fsel and nmrs-tui on Linux).
 
 The `homeModules` output exposes shell, Git, tmux, Neovim, Niri, Ghostty,
 Noctalia, and combined profiles. Modules that use flake inputs require consumers

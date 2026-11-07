@@ -92,3 +92,18 @@ window-rule {
     default-column-width { fixed 500; }
     default-window-height { fixed 600; }
 }
+
+// Otter's command prompt is independent of the full-height fsel launcher.
+window-rule {
+    match app-id=r#"^rs\.ivy\.otter$"#
+    open-floating true
+    default-column-width { fixed 500; }
+    default-window-height { fixed 40; }
+}
+
+window-rule {
+    match app-id=r#"^rs\.ivy\.power$"#
+    open-floating true
+    default-column-width { fixed 360; }
+    default-window-height { fixed 180; }
+}

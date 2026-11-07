@@ -1,12 +1,9 @@
 {
-  lib,
   pkgs,
   inputs,
   ...
 }:
 let
-  inherit (pkgs.stdenv.hostPlatform) isLinux;
-
   ncspot = inputs.nixpkgs-unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system}.ncspot;
 in
 {
@@ -14,10 +11,6 @@ in
     ncspot
     pkgs.feishin
     pkgs.musikcube
-  ]
-  ++ lib.optionals isLinux [
-    pkgs.playerctl
-    inputs.nokkvi.packages.${pkgs.stdenv.hostPlatform.system}.default
   ];
 
   # Musikcube navigation and playback keys.

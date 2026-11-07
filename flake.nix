@@ -1,9 +1,12 @@
 {
   inputs = {
     nixpkgs.url = "nixpkgs/nixos-26.05";
-
-    # Keep hosts on stable; use this only for packages with a concrete need.
     nixpkgs-unstable.url = "nixpkgs/nixos-unstable";
+
+    home-manager = {
+      url = "github:nix-community/home-manager/release-26.05";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     # --- hardware support
     apple-silicon = {
@@ -16,22 +19,14 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    sops = {
-      url = "github:Mic92/sops-nix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    home-manager = {
-      url = "github:nix-community/home-manager/release-26.05";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     # --- macOS stuff
     nix-darwin = {
       url = "github:nix-darwin/nix-darwin/nix-darwin-26.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nix-homebrew.url = "github:zhaofengli/nix-homebrew";
+
+    # -- desktop stuff
 
     noctalia.url = "github:noctalia-dev/noctalia/cachix";
 
@@ -44,9 +39,8 @@
     albedo.url = "git+https://tangled.org/okami.mom/albedo";
     hermes-agent.url = "github:NousResearch/hermes-agent";
 
-    nokkvi.url = "github:f-o-o-g-s/nokkvi";
+    # nokkvi.url = "github:f-o-o-g-s/nokkvi";
 
-    # NVF also builds plugins (including blink-cmp) with its own nixpkgs.
     nvf.url = "github:NotAShelf/nvf/v26.07";
 
     otter-launcher = {
@@ -54,6 +48,8 @@
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.home-manager.follows = "home-manager";
     };
+
+    # -- flake plumbing
 
     # format all the things
     treefmt-nix = {
@@ -66,6 +62,10 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    sops = {
+      url = "github:Mic92/sops-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -135,93 +135,28 @@
         ];
       };
 
-      homeModules = {
-        shell = {
-          imports = [ ./home/shell ];
-          _module.args = { inherit metadata; };
-        };
-        tmux = ./home/shell/tmux;
-        git = {
-          imports = [ ./home/dev/git ];
-          _module.args = { inherit metadata; };
-        };
-
-        nvim = ./home/dev/neovim/core.nix;
-        nvim-full = ./home/dev/neovim;
-
-        niri = ./home/desktop/niri;
-        ghostty = ./home/desktop/ghostty.nix;
-        noctalia = {
-          imports = [ ./home/desktop/noctalia ];
-          _module.args = { inherit metadata; };
-        };
-
-        default = {
-          _module.args = { inherit metadata; };
-          imports = [
-            ./home/shell
-            ./home/dev/git
-            ./home/dev/neovim/core.nix
-            ./home/shell/tmux
-          ];
-        };
-
-        desktop = {
-          _module.args = { inherit metadata; };
-          imports = [
-            ./home/desktop/niri
-            ./home/desktop/noctalia
-            ./home/desktop/ghostty.nix
-          ];
-        };
-      };
+      homeModules = import ./home/exports.nix { inherit metadata; };
 
       packages = forAllSystems (
         system:
-        let
+        import ./pkgs {
+          inherit inputs;
           pkgs = nixpkgs.legacyPackages.${system};
-        in
-        {
-          default = self.packages.${system}.neovim;
-
-          neovim =
-            (inputs.nvf.lib.neovimConfiguration {
-              inherit pkgs;
-              modules = [
-                ./home/dev/neovim/config/core.nix
-                ./home/dev/neovim/config/languages.nix
-              ];
-            }).neovim;
-
-          neovim-core =
-            (inputs.nvf.lib.neovimConfiguration {
-              inherit pkgs;
-              modules = [
-                ./home/dev/neovim/config/core.nix
-              ];
-            }).neovim;
         }
       );
-
       formatter = forAllSystems (system: treefmtEval.${system}.config.build.wrapper);
 
       checks = forAllSystems (system: {
         formatting = treefmtEval.${system}.config.build.check self;
       });
 
-      devShells = forAllSystems (
-        system:
-        let
-          pkgs = nixpkgs.legacyPackages.${system};
-        in
-        {
-          default = pkgs.mkShell {
-            packages = with pkgs; [
-              just
-              nil
-            ];
-          };
-        }
-      );
+      devShells = forAllSystems (system: {
+        default = nixpkgs.legacyPackages.${system}.mkShell {
+          packages = with nixpkgs.legacyPackages.${system}; [
+            just
+            nil
+          ];
+        };
+      });
     };
 }

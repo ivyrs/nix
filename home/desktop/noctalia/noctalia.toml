@@ -2,54 +2,78 @@
 enable_sounds = true
 
 [backdrop]
+blur_intensity = 0.99999997764825821
 enabled = true
 
-[bar.default]
-auto_hide = false
-background_opacity = 0.29999999329447746
-capsule_group = []
-center = [ "cat", "workspaces", "media" ]
-concave_edge_corners = true
-end = [ "tray", "notifications", "network", "volume", "battery", "bar" ]
-font_weight = 400
-hover_highlight = false
-layer = "top"
-margin_ends = 720
-padding = 16
-position = "bottom"
-radius = 16
-reserve_space = true
-shadow = false
-show_on_workspace_switch = false
-start = [ "clock" ]
-thickness = 24
-widget_spacing = 10
+[bar]
+order = [ "default" ]
 
-    [bar.default.dead_zone.actions]
-    scroll_down = "panel-toggle noctalia/wallhaven:browser"
+    [bar.default]
+    auto_hide = false
+    background_opacity = 0.29999999329447746
+    capsule_group = []
+    center = [ "workspaces", "active_window" ]
+    concave_edge_corners = true
+    end = [ "tray", "notifications", "network", "bluetooth", "volume", "battery", "keyboard_layout" ]
+    font_weight = 400
+    hover_highlight = false
+    layer = "top"
+    margin_ends = 0
+    padding = 16
+    position = "bottom"
+    radius = 16
+    reserve_space = true
+    shadow = false
+    show_on_workspace_switch = false
+    start = [ "clock", "audio_visualizer", "media" ]
+    thickness = 24
+    widget_spacing = 10
 
-[battery.device."/org/freedesktop/UPower/devices/battery_hidpp_battery_0"]
-warning_threshold = 5
+        [bar.default.dead_zone.actions]
+        scroll_down = "none"
+
+[battery]
+warning_threshold = 15
+
+    [battery.device."/org/freedesktop/UPower/devices/battery_hidpp_battery_0"]
+    warning_threshold = 5
+
+[bluetooth]
+connect_when_enabled = true
+
+[brightness]
+enable_ddcutil = true
+minimum_brightness = 0.0099999997764825821
 
 [calendar]
+dedupe_events = true
 enabled = true
+refresh_minutes = 5
+
+    [calendar.account.elm_test]
+    name = "elm test"
+    provider = "custom"
+    server_url = "http://elm:5232/"
+    type = "caldav"
+    username = "ivy"
 
     [calendar.account.houseplants_cal]
-    calendars = []
+    calendars = [ "contact_birthdays", "college" ]
+    color = "tertiary"
     credential_source = "file"
     name = "Houseplants"
     password_file = "/run/secrets/ivy-nextcloud-app-password"
     provider = "custom"
-    server_url = "https://nc.@servicesDomain@/remote.php/dav"
+    server_url = "https://nc.houseplants.cloud/remote.php/da"
     type = "caldav"
-    username = "@username@"
+    username = "ivy"
 
 [control_center]
-hidden_tabs = [ "audio", "monitor", "screen-time" ]
+hidden_tabs = []
 show_session_button = false
 show_shortcut_labels = false
 sidebar_section = "none"
-width = 620
+width = 750
 
     [control_center.calendar]
     show_week_numbers = true
@@ -57,23 +81,60 @@ width = 620
     [[control_center.shortcuts]]
     type = "caffeine"
 
-    [[control_center.shortcuts]]
-    type = "nightlight"
-
-    [[control_center.shortcuts]]
-    type = "notification"
-
-    [[control_center.shortcuts]]
-    type = "weather"
-
 [desktop_widgets]
 enabled = false
+schema_version = 2
+widget_order = [ "desktop-widget-0000000000000002", "desktop-widget-0000000000000001" ]
+
+    [desktop_widgets.grid]
+    cell_size = 64
+    major_interval = 4
+    visible = true
+
+    [desktop_widgets.widget.desktop-widget-0000000000000001]
+    box_height = 256.0
+    box_width = 256.0
+    cx = 960.0
+    cy = 600.0
+    output = "eDP-1"
+    placement_height = 1200.0
+    placement_width = 1920.0
+    rotation = 0.0
+    type = "clock"
+
+        [desktop_widgets.widget.desktop-widget-0000000000000001.settings]
+        background_opacity = 0.0
+        background_padding = 0
+        background_radius = 0
+        center_text = true
+        clock_style = "analog"
+        font_family = ""
+        shadow = false
+
+    [desktop_widgets.widget.desktop-widget-0000000000000002]
+    box_height = 192.0
+    box_width = 256.0
+    cx = 576.0
+    cy = 680.0
+    output = "eDP-1"
+    placement_height = 1200.0
+    placement_width = 1920.0
+    rotation = 0.0
+    type = "audio_visualizer"
+
+        [desktop_widgets.widget.desktop-widget-0000000000000002.settings]
+        background_opacity = 0.0
+        bands = 32
+        reversed = false
+        show_when_idle = true
 
 [dock]
 auto_hide = true
 background_opacity = 0.4999999888241291
 concave_edge_corners = false
+enabled = true
 margin_edge = 16
+position = "left"
 reserve_space = false
 show_dots = true
 
@@ -86,34 +147,65 @@ pre_action_fade_seconds = 15
 
     [idle.behavior.lock]
     action = "lock"
-    enabled = true
+    enabled = false
     timeout = 300.0
 
     [idle.behavior.lock-and-suspend]
     action = "lock_and_suspend"
-    enabled = true
+    enabled = false
     timeout = 900.0
 
     [idle.behavior.screen-off]
     action = "screen_off"
-    enabled = true
+    enabled = false
     timeout = 400.0
 
 [location]
 auto_locate = true
 
 [lockscreen]
+# swaylock/swayidle own locking, including logind and suspend events.
+enabled = false
+lock_before_suspend = false
 fingerprint = false
 
 [lockscreen_widgets]
 enabled = false
 schema_version = 2
-widget_order = [ "lockscreen-login-box@WL-1", "lockscreen-login-box@eDP-1" ]
+widget_order = [ "lockscreen-login-box@DP-1", "lockscreen-login-box@WL-1", "lockscreen-login-box@eDP-1" ]
 
     [lockscreen_widgets.grid]
     cell_size = 16
     major_interval = 4
     visible = true
+
+    [lockscreen_widgets.widget."lockscreen-login-box@DP-1"]
+    box_height = 196.0
+    box_width = 810.0
+    cx = 1280.0
+    cy = 1197.3333740234375
+    output = "DP-1"
+    placement_height = 1440.0
+    placement_width = 2560.0
+    rotation = 0.0
+    type = "login_box"
+
+        [lockscreen_widgets.widget."lockscreen-login-box@DP-1".settings]
+        background_color = "surface_container"
+        background_opacity = 0.88
+        background_radius = 12.0
+        center_password_text = false
+        input_opacity = 1.0
+        input_radius = 6.0
+        layout = "regular"
+        show_caps_lock = true
+        show_keyboard_layout = true
+        show_login_button = true
+        show_media = true
+        show_password_reveal = true
+        show_session_buttons = true
+        show_unlock_hint = true
+        show_weather = true
 
     [lockscreen_widgets.widget."lockscreen-login-box@WL-1"]
     box_height = 196.0
@@ -127,7 +219,7 @@ widget_order = [ "lockscreen-login-box@WL-1", "lockscreen-login-box@eDP-1" ]
     type = "login_box"
 
         [lockscreen_widgets.widget."lockscreen-login-box@WL-1".settings]
-        background_color = "surface_variant"
+        background_color = "surface_container"
         background_opacity = 0.88
         background_radius = 12.0
         center_password_text = false
@@ -138,6 +230,7 @@ widget_order = [ "lockscreen-login-box@WL-1", "lockscreen-login-box@eDP-1" ]
         show_keyboard_layout = true
         show_login_button = true
         show_media = true
+        show_password_reveal = true
         show_session_buttons = true
         show_unlock_hint = true
         show_weather = true
@@ -154,7 +247,7 @@ widget_order = [ "lockscreen-login-box@WL-1", "lockscreen-login-box@eDP-1" ]
     type = "login_box"
 
         [lockscreen_widgets.widget."lockscreen-login-box@eDP-1".settings]
-        background_color = "surface_variant"
+        background_color = "surface_container"
         background_opacity = 0.88
         background_radius = 12.0
         center_password_text = false
@@ -165,6 +258,7 @@ widget_order = [ "lockscreen-login-box@WL-1", "lockscreen-login-box@eDP-1" ]
         show_keyboard_layout = true
         show_login_button = true
         show_media = true
+        show_password_reveal = true
         show_session_buttons = true
         show_unlock_hint = true
         show_weather = true
@@ -173,6 +267,8 @@ widget_order = [ "lockscreen-login-box@WL-1", "lockscreen-login-box@eDP-1" ]
 enabled = true
 
 [notification]
+# Mako owns org.freedesktop.Notifications. Noctalia keeps internal shell toasts.
+enable_daemon = false
 filter_order = [ "filter" ]
 history_retention_hours = 1
 
@@ -194,31 +290,42 @@ position_vertical = "top_right"
     privacy = false
 
 [plugin_settings."noctalia/wallhaven"]
-api_key = ""
+api_key = "HpsWwKq1znrLVFV1dPuZ8rk84wg9E6Hu"
 
 [plugins]
-enabled = [ "noctalia/wallhaven", "noctalia/bitwarden" ]
+enabled = [ "noctalia/bongocat" ]
 
 [shell]
 app_icon_color = "primary"
 app_icon_colorize = true
+avatar_path = "/home/ivy/media/images/memes/tumblr_db168e752ba48d5da59efff8bb13a2b8_f7a8e4bb_1280_1.jpg"
+button_borders = false
+card_borders = false
 external_ip_enabled = true
 font_family = "Aporetic Sans"
+input_borders = false
 launch_apps_as_systemd_services = true
-niri_overview_type_to_launch_enabled = true
+niri_overview_type_to_launch_enabled = false
 password_style = "random"
 polkit_agent = true
-popup_shadows = false
+popup_borders = false
+popup_shadows = true
 screen_time_enabled = true
-settings_show_advanced = false
-settings_window_translucent = true
+settings_show_advanced = true
+settings_window_translucent = false
+show_close_buttons = false
 show_location = false
 telemetry_enabled = true
+
+    [shell.keyboard_layout.custom_labels]
+    "English (UK, Macintosh)" = "gb"
+    "English (US)" = "us"
 
     [shell.launcher]
     categories = false
     compact = true
-    pinned = [ "firefox", "emacs", "vesktop", "feishin" ]
+    layout = "simple"
+    pinned = [ "helium", "emacs", "firefox", "vesktop", "feishin" ]
     show_app_origin_indicator = false
     show_icons = false
     sort_by_usage = false
@@ -229,23 +336,28 @@ telemetry_enabled = true
     [shell.panel]
     clipboard_position = "auto"
     control_center_placement = "floating"
+    control_center_position = "center"
     launcher_placement = "floating"
     launcher_position = "auto"
     open_near_click_control_center = true
-    polkit_position = "auto"
+    polkit_position = "center"
     session_placement = "floating"
     session_position = "center"
     shadow = true
     transparency_mode = "soft"
     wallpaper_placement = "floating"
 
+    [shell.screen_corners]
+    size = 16
+
     [shell.screenshot]
-    directory = "@home@/media/screenshots"
+    directory = "/home/ivy/media/screenshots"
     pipe_command = "swappy -f -"
-    pipe_to_command = true
+    pipe_to_command = false
 
     [shell.session]
     grid = true
+    grid_columns = 4
     show_shortcuts = false
 
         [[shell.session.actions]]
@@ -266,7 +378,8 @@ telemetry_enabled = true
         [[shell.session.actions]]
         action = "lock_and_suspend"
         countdown_seconds = 0.0
-        enabled = false
+        enabled = true
+        label = "lock + suspend"
         shortcut = "3"
         variant = "default"
 
@@ -286,20 +399,24 @@ telemetry_enabled = true
         shortcut = "3"
         variant = "destructive"
 
+    [shell.window_switcher]
+    style = "compact"
+
 [theme]
 builtin = "Ayu"
-community_palette = "Catppuccin Mocha Sapphire"
+community_palette = "Gruvbox Material"
 mode = "dark"
-source = "wallpaper"
-wallpaper_scheme = "m3-content"
+source = "community"
+wallpaper_scheme = "m3-fruit-salad"
 
     [theme.templates]
-    builtin_ids = [ "btop", "emacs", "gtk3", "gtk4", "ghostty", "kcolorscheme", "niri", "qt" ]
+    builtin_ids = [ "btop", "cava", "emacs", "gtk3", "gtk4", "ghostty", "kcolorscheme", "niri", "qt" ]
     community_ids = [
+        "opencode",
         "pi-agent",
         "feishin",
         "pywalfox-beta4",
-        "discord_midnight_vesktop",
+        "discord",
         "nchat",
         "senpai",
         "obsidian",
@@ -313,10 +430,6 @@ wallpaper_scheme = "m3-content"
         input_path = "$XDG_CONFIG_HOME/noctalia/templates/aerc.conf"
         output_path = "$XDG_CONFIG_HOME/aerc/stylesets/noctalia"
 
-        [theme.templates.user.opencode]
-        input_path = "$XDG_CONFIG_HOME/noctalia/templates/opencode.json"
-        output_path = "$XDG_CONFIG_HOME/opencode/themes/matugen.json"
-
         [theme.templates.user.atuin]
         input_path = "$XDG_CONFIG_HOME/noctalia/templates/atuin.toml"
         output_path = "$XDG_CONFIG_HOME/atuin/themes/noctalia.toml"
@@ -325,65 +438,76 @@ wallpaper_scheme = "m3-content"
         input_path = "$XDG_CONFIG_HOME/noctalia/templates/fzf.sh"
         output_path = "$XDG_CONFIG_HOME/fzf/noctalia-colors.sh"
 
+        [theme.templates.user.ncspot]
+        input_path = "$XDG_CONFIG_HOME/noctalia/templates/ncspot.toml"
+        output_path = "$XDG_CONFIG_HOME/ncspot/config.toml"
+
         [theme.templates.user.neovim]
         input_path = "$XDG_CONFIG_HOME/noctalia/templates/nvim-matugen.lua"
         output_path = "$XDG_CONFIG_HOME/nvim-noctalia/matugen.lua"
         post_hook = "pkill -SIGUSR1 nvim || true"
 
+        [theme.templates.user.opencode]
+        input_path = "$XDG_CONFIG_HOME/noctalia/templates/opencode.json"
+        output_path = "$XDG_CONFIG_HOME/opencode/themes/matugen.json"
+
         [theme.templates.user.tmux]
         input_path = "$XDG_CONFIG_HOME/noctalia/templates/tmux.conf"
         output_path = "$XDG_CONFIG_HOME/tmux/noctalia-theme.conf"
 
-        [theme.templates.user.ncspot]
-        input_path = "$XDG_CONFIG_HOME/noctalia/templates/ncspot.toml"
-        output_path = "$XDG_CONFIG_HOME/ncspot/config.toml"
-
 [wallpaper]
-directory = "@home@/media/images/wallpapers"
+directory = "/home/ivy/media/images/wallpapers"
+directory_dark = "/home/ivy/media/images/wp-new/dark"
+directory_light = "/home/ivy/media/images/wp-new/light"
+transition = [ "fade", "honeycomb", "stripes", "wipe", "zoom" ]
 transition_on_startup = true
 
     [wallpaper.automation]
     enabled = true
+    recursive = true
 
     [wallpaper.default]
-    path = "@home@/media/images/wallpapers/red-city.png"
+    path = "/home/ivy/media/images/wp-new/dark/wallhaven-28dqwx.jpg"
 
     [wallpaper.last]
-    path = "@home@/media/images/wallpapers/red-city.png"
+    path = "/home/ivy/media/images/wp-new/dark/wallhaven-28dqwx.jpg"
+
+    [wallpaper.monitors.DP-1]
+    path = "/home/ivy/media/images/wp-new/dark/wallhaven-73omxo_3840x2160.png"
 
     [wallpaper.monitors.WL-1]
-    path = "@home@/media/images/wallpapers/wallhaven-5gwvz5.jpg"
+    path = "/home/ivy/media/images/wallpapers/wallhaven-5gwvz5.jpg"
 
     [wallpaper.monitors.eDP-1]
-    path = "@home@/media/images/wallpapers/red-city.png"
+    path = "/home/ivy/media/images/wp-new/dark/wallhaven-28dqwx.jpg"
 
     [[wallpaper.favorite]]
     palette_source = "wallpaper"
-    path = "@home@/media/images/wallpapers/wallhaven-5gwvz5.jpg"
+    path = "/home/ivy/media/images/wallpapers/wallhaven-5gwvz5.jpg"
     theme_mode = "dark"
     wallpaper_scheme = "m3-content"
 
     [[wallpaper.favorite]]
     palette_source = "wallpaper"
-    path = "@home@/media/images/wallpapers/wallhaven-e76pew.png"
+    path = "/home/ivy/media/images/wallpapers/wallhaven-e76pew.png"
     theme_mode = "dark"
     wallpaper_scheme = "m3-fruit-salad"
 
     [[wallpaper.favorite]]
     palette_source = "wallpaper"
-    path = "@home@/media/images/wallpapers/painting-lighthouse-02-1440p.jpg"
+    path = "/home/ivy/media/images/wallpapers/painting-lighthouse-02-1440p.jpg"
     theme_mode = "dark"
     wallpaper_scheme = "m3-fruit-salad"
 
     [[wallpaper.favorite]]
     palette_source = "wallpaper"
-    path = "@home@/media/images/wallpapers/wallhaven_4dolyl.jpg"
+    path = "/home/ivy/media/images/wallpapers/wallhaven_4dolyl.jpg"
     theme_mode = "dark"
     wallpaper_scheme = "m3-content"
 
     [[wallpaper.favorite]]
     palette_source = "wallpaper"
-    path = "@home@/media/images/wallpapers/oc_the_blackboard.png"
+    path = "/home/ivy/media/images/wallpapers/oc_the_blackboard.png"
     theme_mode = "dark"
     wallpaper_scheme = "m3-content"
 
@@ -392,11 +516,18 @@ display = "text_only"
 max_length = 500
 min_length = 0
 
+[widget.audio_visualizer]
+mirrored = false
+
 [widget.bar]
 type = "raycursive/discord-voice:bar"
 
 [widget.battery]
 hide_when_full = true
+
+[widget.bluetooth]
+hide_when_no_connected_device = true
+show_label = true
 
 [widget.cat]
 audio_spectrum = true
@@ -405,22 +536,38 @@ scale = 1.1000000000000001
 tappy_mode = true
 type = "noctalia/bongocat:cat"
 
+[widget.cat_2]
+audio_spectrum = true
+tappy_mode = true
+type = "noctalia/bongocat:cat"
+
+[widget.keyboard_layout]
+color = "primary"
+hide_when_single_layout = true
+show_glyph = false
+
 [widget.media]
-album_art_only = true
-enabled = false
-hide_artist = true
+album_art_only = false
+art_size = 18
+artist_first = true
+enabled = true
+hide_artist = false
+hide_when_idle = true
 hide_when_no_media = true
-max_length = 180
+max_length = 357
 
 [widget.network]
-enabled = false
-show_label = false
+enabled = true
+show_label = true
 show_vpn_label = true
 vpn_status = "both"
 
 [widget.notifications]
 enabled = false
 hide_when_no_unread = true
+
+[widget.spacer_2]
+type = "spacer"
 
 [widget.tray]
 drawer = true

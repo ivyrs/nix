@@ -1,25 +1,23 @@
 # ~/.config/otter-launcher/config.toml
-# Command bar for niri + Noctalia. Opened by Mod+Slash in a floating Ghostty
-# window (app-id rs.ivy.launcher). Known prefixes run a TUI in the same window;
-# anything else falls through to fsel app search.
+# One-line command prompt for niri, opened by Mod+Slash in Foot (rs.ivy.otter).
+# Commands open their own windows; unmatched input falls through to fsel.
 
 [general]
-height = 0
-default_module = "search"   # unmatched input -> fsel with the text pre-filled
-empty_module = "search"     # Enter on empty input -> fsel
+height = 1
+default_module = "s"   # unmatched input -> fsel with the text pre-filled
+empty_module = "s"     # Enter on empty input -> fsel
 exec_cmd = "sh -c"
 
 [interface]
-header = """
-\u001B[2m[ $(date +%H:%M) ]  [ BAT $(cat /sys/class/power_supply/macsmc_battery/capacity)% ]  [ $USER@$(printf $HOSTNAME) ]\u001B[0m
-
-"""
+header = ""
+suggestion_mode = "hint"
+separator = false
 header_color = "reset"
-prefix_padding = 10          # longest prefix is "monitors" (8) + gap
+prefix_padding = 7         # align command descriptions
 prefix_color = "yellow"
 description_color = "reset"
 prompt_sign = "/ "
-placeholder = "command"
+placeholder = ""
 selection_prefix = "▌ "
 inverse_selection = true
 
@@ -29,37 +27,39 @@ inverse_selection = true
 
 [[modules]]
 description = "search apps"
-prefix = "search"
-cmd = "fsel -d -r -ss \"{}\""
+prefix = "s"
+cmd = "tui fsel -d -r -ss \"{}\""
 with_argument = true
 
 [[modules]]
 description = "launch app directly"
-prefix = "app"
-cmd = "fsel -d -r -p \"{}\""
+prefix = "a"
+cmd = "tui fsel -d -r -p \"{}\""
 with_argument = true
 
 # ── command mode ───────────────────────────────────────────────
-# Each runs in place of otter; quitting the TUI closes the window.
+
+# network
 
 [[modules]]
-description = "help"
-prefix = "man"
-cmd = "tui nvim ~/.config/otter-launcher/man.txt"
-
-[[modules]]
-description = "nm config"
+description = "network config"
 prefix = "net"
-cmd = "tui nmtui"
+cmd = "tui nmrs-tui"
 
 [[modules]]
-description = "open btop"
-prefix = "stat"
-cmd = "tui btop"
+description = "bluetooth config"
+prefix = "bt"
+cmd = "tui bluetui"
+
+
+[[modules]]
+description = "configure tailscale"
+prefix = "ts"
+cmd = "tui lazytailscale"
 
 [[modules]]
 description = "open music player"
-prefix = "music"
+prefix = "mus"
 cmd = "tui musikcube"
 
 [[modules]]
@@ -69,21 +69,43 @@ cmd = "tui zapp update"
 
 [[modules]]
 description = "audio mixer"
-prefix = "audio"
+prefix = "vol"
 cmd = "tui wiremix"
 
 [[modules]]
-description = "opencode session"
+description = "open agent"
 prefix = "ai"
 cmd = """dir="{}"; [ -n "$dir" ] || dir="$HOME"; case "$dir" in "~") dir="$HOME" ;; "~/"*) dir="$HOME/${dir#~/}" ;; esac; cd -- "$dir" && tui albedo"""
 with_argument = true
 
 [[modules]]
 description = "display config"
-prefix = "monitors"
+prefix = "mon"
 cmd = "setsid -f wdisplays"
 
+[[modules]]
+description = "open btop"
+prefix = "stat"
+cmd = "tui btop"
+
 # ── shell control ──────────────────────────────────────────────
+
+[[modules]]
+description = "screen brightness (0–100, up/down)"
+prefix = "bright"
+cmd = "desktop-brightness screen {}"
+with_argument = true
+
+[[modules]]
+description = "keyboard backlight (0–100, up/down)"
+prefix = "kbd"
+cmd = "desktop-brightness keyboard {}"
+with_argument = true
+
+[[modules]]
+description = "power menu"
+prefix = "power"
+cmd = "power-menu"
 
 [[modules]]
 description = "toggle light/dark"
@@ -91,19 +113,24 @@ prefix = "theme"
 cmd = "noctalia msg theme-mode-toggle && noctalia msg wallpaper-random"
 
 [[modules]]
-description = "open wallpaper menu"
-prefix = "wall"
-cmd = "noctalia msg wallpaper-random"
-
-[[modules]]
 description = "randomise wallpaper"
-prefix = "rand-wall"
+prefix = "wall"
 cmd = "noctalia msg wallpaper-random"
 
 [[modules]]
 description = "lock"
 prefix = "lock"
-cmd = "noctalia msg session lock"
+cmd = "desktop-lock"
+
+[[modules]]
+description = "toggle do not disturb"
+prefix = "dnd"
+cmd = "makoctl mode -t do-not-disturb"
+
+[[modules]]
+description = "recall last notification"
+prefix = "notif"
+cmd = "makoctl restore"
 
 # ── escape hatch ───────────────────────────────────────────────
 
@@ -113,10 +140,7 @@ prefix = "sh"
 cmd = "{}"
 with_argument = true
 
-# tailscale
-
 [[modules]]
-description = "configure tailscale"
-prefix = "ts"
-cmd = "tui lazytailscale"
-
+description = "learn about the prompt"
+prefix = "man"
+cmd = "tui less ~/nix/home/desktop/otter/man.md"

@@ -6,15 +6,19 @@
 
 {
   imports = [
-    ./ai.nix
+    # ./ai.nix
     ./firefox.nix
     ./ghostty.nix
     ./peripherals.nix
   ]
   ++ lib.optionals (!isDarwin) [
     ./niri
+    ./brightness.nix
+    ./lock.nix
+    ./notifications.nix
     ./noctalia
     ./helium.nix
-    ./new-shell
+    ./otter
+    ./fsel
   ];
 }

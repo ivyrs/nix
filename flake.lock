@@ -436,22 +436,6 @@
     },
     "nixpkgs_5": {
       "locked": {
-        "lastModified": 1789684949,
-        "narHash": "sha256-ZKhUe/2IJUq1JhKxKMu8rbkgSGmPP2ZCqlIPn40aGCM=",
-        "owner": "NixOS",
-        "repo": "nixpkgs",
-        "rev": "e554fab72f81915600f3f449b786fd9af40439a5",
-        "type": "github"
-      },
-      "original": {
-        "owner": "NixOS",
-        "ref": "nixos-unstable",
-        "repo": "nixpkgs",
-        "type": "github"
-      }
-    },
-    "nixpkgs_6": {
-      "locked": {
         "lastModified": 1783148766,
         "narHash": "sha256-H9+N+GFtsbVC8ZniHliChM7ndizxtqVZs6bnGOLM3WQ=",
         "rev": "a50de1b7d8a586adc18d2395c19de7d6058e6030",
@@ -482,24 +466,6 @@
         "type": "github"
       }
     },
-    "nokkvi": {
-      "inputs": {
-        "nixpkgs": "nixpkgs_5"
-      },
-      "locked": {
-        "lastModified": 1793366879,
-        "narHash": "sha256-2xDJLzaXghHkESQsinTNLihrlw8Dh/yysR16QDjWYpY=",
-        "owner": "f-o-o-g-s",
-        "repo": "nokkvi",
-        "rev": "c7e34b3f61a14f6c9f78d72bed4f2546b3435096",
-        "type": "github"
-      },
-      "original": {
-        "owner": "f-o-o-g-s",
-        "repo": "nokkvi",
-        "type": "github"
-      }
-    },
     "npm-lockfile-fix": {
       "inputs": {
         "nixpkgs": [
@@ -525,7 +491,7 @@
       "inputs": {
         "flake-compat": "flake-compat_2",
         "mnw": "mnw",
-        "nixpkgs": "nixpkgs_6"
+        "nixpkgs": "nixpkgs_5"
       },
       "locked": {
         "lastModified": 1785074026,
@@ -631,7 +597,6 @@
         "nixpkgs": "nixpkgs_3",
         "nixpkgs-unstable": "nixpkgs-unstable",
         "noctalia": "noctalia",
-        "nokkvi": "nokkvi",
         "nvf": "nvf",
         "otter-launcher": "otter-launcher",
         "sops": "sops",

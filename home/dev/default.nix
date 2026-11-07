@@ -1,8 +1,8 @@
 {
   imports = [
     ./git
-    ./emacs
+    # ./emacs
     ./neovim
-    ./gram.nix
+    # ./gram.nix
   ];
 }

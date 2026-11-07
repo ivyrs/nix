@@ -1,6 +1,6 @@
 { pkgs, ... }:
 {
-  home.packages = [ pkgs.fsel ];
+  home.packages = [ (pkgs.callPackage ../../../pkgs/fsel.nix { }) ];
 
   xdg.configFile."fsel/config.toml".text = ''
     terminal_launcher = "ghostty --gtk-single-instance=false --class=rs.ivy.tui -e"
