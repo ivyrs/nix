@@ -10,7 +10,6 @@
 
     settings = lib.mkMerge [
       {
-        # Noctalia can override this later.
         theme = lib.mkDefault "Gruvbox Dark";
 
         font-family = "Aporetic Sans Mono";

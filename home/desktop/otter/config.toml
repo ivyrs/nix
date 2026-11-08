@@ -1,7 +1,3 @@
-# ~/.config/otter-launcher/config.toml
-# One-line command prompt for niri, opened by Mod+Slash in Foot (rs.ivy.otter).
-# Commands open their own windows; unmatched input falls through to fsel.
-
 [general]
 height = 1
 default_module = "s"   # unmatched input -> fsel with the text pre-filled
@@ -21,10 +17,6 @@ placeholder = ""
 selection_prefix = "▌ "
 inverse_selection = true
 
-# ── apps (fsel) ────────────────────────────────────────────────
-# Keep unbind_proc off for these; -d detaches GUI apps so they
-# survive the launcher window closing.
-
 [[modules]]
 description = "search apps"
 prefix = "s"
@@ -36,8 +28,6 @@ description = "launch app directly"
 prefix = "a"
 cmd = "tui fsel -d -r -p \"{}\""
 with_argument = true
-
-# ── command mode ───────────────────────────────────────────────
 
 # network
 
@@ -51,11 +41,12 @@ description = "bluetooth config"
 prefix = "bt"
 cmd = "tui bluetui"
 
-
 [[modules]]
 description = "configure tailscale"
 prefix = "ts"
 cmd = "tui lazytailscale"
+
+# media
 
 [[modules]]
 description = "open music player"
@@ -63,14 +54,14 @@ prefix = "mus"
 cmd = "tui musikcube"
 
 [[modules]]
-description = "flash moonlander"
-prefix = "kb"
-cmd = "tui zapp update"
-
-[[modules]]
 description = "audio mixer"
 prefix = "vol"
 cmd = "tui wiremix"
+
+[[modules]]
+description = "flash moonlander"
+prefix = "kb"
+cmd = "tui zapp update"
 
 [[modules]]
 description = "open agent"
@@ -79,16 +70,9 @@ cmd = """dir="{}"; [ -n "$dir" ] || dir="$HOME"; case "$dir" in "~") dir="$HOME"
 with_argument = true
 
 [[modules]]
-description = "display config"
-prefix = "mon"
-cmd = "setsid -f wdisplays"
-
-[[modules]]
 description = "open btop"
 prefix = "stat"
 cmd = "tui btop"
-
-# ── shell control ──────────────────────────────────────────────
 
 [[modules]]
 description = "screen brightness (0–100, up/down)"
@@ -131,8 +115,6 @@ cmd = "makoctl mode -t do-not-disturb"
 description = "recall last notification"
 prefix = "notif"
 cmd = "makoctl restore"
-
-# ── escape hatch ───────────────────────────────────────────────
 
 [[modules]]
 description = "run a shell command"
