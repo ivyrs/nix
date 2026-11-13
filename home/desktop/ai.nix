@@ -15,12 +15,12 @@ in
 {
   imports = [ inputs.hermes-agent.homeManagerModules.default ];
   home.packages = [
-    unstable.opencode
-    (unstable.callPackage ../../pkgs/t3-code-nightly.nix { })
-    unstable.claude-code
-    unstable.codex
+    # unstable.opencode
+    # (unstable.callPackage ../../pkgs/t3-code-nightly.nix { })
+    # unstable.claude-code
+    # unstable.codex
     inputs.albedo.packages.${pkgs.stdenv.hostPlatform.system}.default
-    (pkgs.callPackage ../../pkgs/polytoken.nix { })
+    # (pkgs.callPackage ../../pkgs/polytoken.nix { })
   ];
 
   services.hermes-agent = {

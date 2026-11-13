@@ -16,9 +16,9 @@ in
     settings = {
       # A local image, not a dependency on Noctalia's runtime state. If absent,
       # swaylock keeps the solid background rather than refusing to lock.
-      image = "${config.home.homeDirectory}/media/images/wp-new/dark/wallhaven-qrp9ql.png";
+      # image = "${config.home.homeDirectory}/media/images/wp-new/dark/wallhaven-qrp9ql.png";
       scaling = "fill";
-      color = "282828";
+      color = "040404";
       font = "sans-serif";
       font-size = 20;
       hide-keyboard-layout = true;

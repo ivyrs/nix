@@ -2,6 +2,7 @@
   config,
   inputs,
   metadata,
+  pkgs,
   ...
 }:
 
@@ -107,4 +108,9 @@
     ivy-soju-pass.owner = metadata.user.username;
     hermes-env.owner = metadata.user.username;
   };
+
+  services.usbmuxd.enable = true;
+  environment.systemPackages = with pkgs; [
+    libimobiledevice
+  ];
 }

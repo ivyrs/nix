@@ -6,7 +6,7 @@
 
 {
   imports = [
-    # ./ai.nix
+    ./ai.nix
     ./firefox.nix
     ./ghostty.nix
     ./peripherals.nix
