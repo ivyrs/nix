@@ -5,10 +5,10 @@
     settings = lib.mkDefault {
       os.editPreset = "nvim";
 
-      git.pagers = [
+      git.diffRenderers = [
         {
           colorArg = "always";
-          pager = "delta --dark --paging=never";
+          command = "delta --dark --paging=never";
         }
       ];
 

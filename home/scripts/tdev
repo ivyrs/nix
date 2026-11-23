@@ -73,7 +73,7 @@ tmux new-window \
 
 tmux send-keys \
   -t "$name:agent" \
-  "opencode" C-m
+  "albedo new" C-m
 
 # Return to editor and focus Neovim.
 tmux select-window -t "$name:editor"

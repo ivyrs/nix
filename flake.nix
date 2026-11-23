@@ -51,6 +51,11 @@
 
     # -- flake plumbing
 
+    prism = {
+      url = "git+https://tangled.org/poacher.dev/prism";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # format all the things
     treefmt-nix = {
       url = "github:numtide/treefmt-nix";
@@ -91,13 +96,7 @@
 
       forAllSystems = nixpkgs.lib.genAttrs systems;
 
-      mkNixosHost =
-        name:
-        nixpkgs.lib.nixosSystem {
-          system = metadata.hosts.${name}.system;
-          specialArgs = { inherit inputs metadata; };
-          modules = [ (./hosts/nixos + "/${name}") ];
-        };
+      hostSystems = import ./prism { inherit inputs metadata aspenMetadata; };
 
       treefmtEval = forAllSystems (
         system:
@@ -109,30 +108,12 @@
     {
       inherit metadata;
 
-      nixosConfigurations =
-        (nixpkgs.lib.genAttrs [
-          "alder"
-          "maple"
-        ] mkNixosHost)
-        // {
-          installer = nixpkgs.lib.nixosSystem {
-            system = "x86_64-linux";
-            specialArgs = { inherit inputs metadata; };
-            modules = [ ./hosts/nixos/installer ];
-          };
-        };
+      nixosConfigurations = {
+        inherit (hostSystems) alder maple installer;
+      };
 
-      darwinConfigurations.aspen = inputs.nix-darwin.lib.darwinSystem {
-        system = metadata.hosts.aspen.system;
-
-        specialArgs = {
-          inherit inputs;
-          metadata = aspenMetadata;
-        };
-
-        modules = [
-          ./hosts/darwin/aspen
-        ];
+      darwinConfigurations = {
+        inherit (hostSystems) aspen;
       };
 
       homeModules = import ./home/exports.nix { inherit metadata; };

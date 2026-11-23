@@ -66,7 +66,7 @@ cmd = "tui zapp update"
 [[modules]]
 description = "open agent"
 prefix = "ai"
-cmd = """dir="{}"; [ -n "$dir" ] || dir="$HOME"; case "$dir" in "~") dir="$HOME" ;; "~/"*) dir="$HOME/${dir#~/}" ;; esac; cd -- "$dir" && tui albedo"""
+cmd = """dir="{}"; [ -n "$dir" ] || dir="$HOME"; case "$dir" in "~") dir="$HOME" ;; "~/"*) dir="$HOME/${dir#~/}" ;; esac; cd -- "$dir" && tui albedo new"""
 with_argument = true
 
 [[modules]]

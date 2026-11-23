@@ -15,7 +15,7 @@
     ./dev
     ./files
     ./media
-    ./pim
+    ./productivity
     ./security
     ./shell
     ./shell/tmux

@@ -17,7 +17,7 @@ let
           }.deb";
           hash =
             {
-              aarch64-linux = "sha256-pJUSdkdrNLgDMCqnEPUxdpS6MJjeCgG2ztHON4DS9qQ=";
+              aarch64-linux = "sha256-Z4rW0LRJYfCf8A8Q6blYDdX1qsl2TnyQD4lwNs6LeSA=";
               x86_64-linux = "sha256-DmdZY9vhydvUNBV8iucNVSQofDsMvJa4W/eIVm7GBVE=";
             }
             .${pkgs.stdenv.hostPlatform.system};

@@ -10,7 +10,8 @@
       "x-scheme-handler/https" = [ "helium.desktop" ];
       "application/pdf" = [ "org.pwmt.zathura-pdf-mupdf.desktop" ];
       "application/epub+zip" = [ "org.pwmt.zathura-pdf-mupdf.desktop" ];
-    } // lib.genAttrs [
+    }
+    // lib.genAttrs [
       "image/x-farbfeld"
       "image/tiff"
       "image/tiff-fx"

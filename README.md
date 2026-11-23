@@ -133,7 +133,9 @@ verification results, and prioritized follow-ups.
 
 ## Home Manager Exports
 
-`flake.nix` wires hosts and development tooling together. Reusable Home Manager
+`flake.nix` exposes hosts constructed by Prism in `prism/` alongside development
+tooling. Existing host modules remain explicit; no shared tag policy is applied
+yet. See [the migration notes](docs/prism-step2.md) for equivalence checks. Reusable Home Manager
 exports are listed in `home/exports.nix`; standalone package outputs live in
 `pkgs/default.nix` (Neovim on all supported systems, plus fsel and nmrs-tui on Linux).
 

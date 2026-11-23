@@ -1,0 +1,67 @@
+{
+  "baseRevision": "317931258a64715cea2b82f1b8243fb9f5d79fc7",
+  "lockfileSha256": "ebbcf41571096aa55535f73d700b0a66ce951f6efdb932bd755a4efd217be7eb",
+  "protectedFileSha256": {
+    "flake.lock": "ebbcf41571096aa55535f73d700b0a66ce951f6efdb932bd755a4efd217be7eb",
+    "metadata.nix": "a56bc440d8e2ab95c51da83f09720ae7518da30cec34a7690aaa2f7c571bda2f",
+    "hosts/nixos/alder/hardware.nix": "ee68cb46f42d25bb78aab996bcc10662adf5ceed79e3b79428e3f41c2bde869b",
+    "hosts/nixos/maple/hardware.nix": "9f962267fe009fc92d351d47d4db0b25557ee905504fc96b341ea895a419ff20"
+  },
+  "beforeHermesDisable": {
+    "alder": {
+      "home": "/nix/store/nlqr9d3yrx3f36f1qj56b87cmj10qwbh-home-manager-generation.drv",
+      "system": "/nix/store/ayh5zbis2znv3sxdlll4afwccndgjn2k-nixos-system-alder-26.05.20260819.b18a4b9.drv"
+    },
+    "maple": {
+      "error": "attribute 'sops' missing (Hermes secret argument)"
+    },
+    "aspen": {
+      "error": "attribute 'hermesEnvFile' missing"
+    },
+    "installer": {
+      "system": "/nix/store/hbp2hrpkncmhhibialr8iwa3isbbyn5w-nixos-system-nixos-26.05.20260819.b18a4b9.drv"
+    }
+  },
+  "afterHermesDisable": {
+    "alder": {
+      "hermesProgramDeclared": false,
+      "hermesUnits": [],
+      "home": "/nix/store/w53bvpaww7afc99wy9wgi959gw622r90-home-manager-generation.drv",
+      "homeDirectory": "/home/ivy",
+      "homeStateVersion": "25.11",
+      "platform": "aarch64-linux",
+      "stateVersion": "25.11",
+      "system": "/nix/store/f6kjaavbqz8gxhjb6dklf74n7q09vy2a-nixos-system-alder-26.05.20260819.b18a4b9.drv"
+    },
+    "maple": {
+      "hermesProgramDeclared": false,
+      "hermesUnits": [],
+      "home": "/nix/store/1r7bhx72rpdwq9pnx353w6sr7b47wk2g-home-manager-generation.drv",
+      "homeDirectory": "/home/ivy",
+      "homeStateVersion": "25.11",
+      "platform": "x86_64-linux",
+      "stateVersion": "26.05",
+      "system": "/nix/store/9q3r7rsb93xa80hyk6nq53ld2cc2qvri-nixos-system-maple-26.05.20260819.b18a4b9.drv"
+    },
+    "aspen": {
+      "hermesProgramDeclared": false,
+      "hermesUnits": [],
+      "home": "/nix/store/95nwrxj411x8w6g639688z4g91ljknj8-home-manager-generation.drv",
+      "homeDirectory": "/Users/ivy",
+      "homeStateVersion": "25.11",
+      "platform": "aarch64-darwin",
+      "stateVersion": 6,
+      "system": "/nix/store/2m6y65daj877c1jc5ghkfvm8lxlvhs9w-darwin-system-26.05.c3e90c8.drv"
+    },
+    "installer": {
+      "platform": "x86_64-linux",
+      "stateVersion": "26.05",
+      "system": "/nix/store/35cr56n3zm5b7r50h5v62m19jcjbdv2z-nixos-system-nixos-26.05.20260819.b18a4b9.drv"
+    }
+  },
+  "limitations": [
+    "Evaluation only; no full host build or activation.",
+    "Installer derivation captures repository contents and changes when the report or migration files are included.",
+    "Flake formatting build blocked by HTTP 403 from lore.kernel.org fetching a keyutils dependency."
+  ]
+}
