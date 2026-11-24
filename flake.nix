@@ -39,6 +39,10 @@
     albedo.url = "git+https://tangled.org/okami.mom/albedo";
     hermes-agent.url = "github:NousResearch/hermes-agent";
 
+    # Local development input; flake.lock pins the reviewed Lark checkpoint.
+    # Replace with a published URL when this should work on other machines.
+    lark.url = "git+file:///home/ivy/projects/code/lark?ref=main";
+
     # nokkvi.url = "github:f-o-o-g-s/nokkvi";
 
     nvf.url = "github:NotAShelf/nvf/v26.07";
