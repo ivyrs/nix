@@ -39,6 +39,31 @@ in `modules/system/nix/cachix.nix`. Review/disable uploads before firmware build
 cache downloads do not require the uploader. Removing the declaration without
 activating a new configuration does not stop an already running uploader.
 
+## SSH-only Home Manager
+
+`homeConfigurations."ivy@ssh"` is a standalone x86_64 Linux home for the existing
+`ivy` account at `/home/ivy`, intended for SSH access on an otherwise unmanaged
+server. It reuses the shell, Git/Lazygit, tmux, and core Neovim modules without
+importing desktop applications or services. Git signing is off by default; no
+private keys or secrets are deployed.
+
+With Nix installed, run these commands **as ivy on the server**, from this checkout:
+
+```sh
+nix build '.#homeConfigurations."ivy@ssh".activationPackage'
+./result/activate
+```
+
+For subsequent updates, run `home-manager switch --flake '.#ivy@ssh'`.
+Activation manages only the user's home: it does not create the account, configure
+sshd/authorized keys, or change the login shell. Start `zsh` explicitly, or ask the
+server administrator to configure it as the account's login shell. Existing
+conflicting dotfiles must be moved aside or backed up before activation.
+
+The output name is a profile label, not a required hostname. Adjust `home/ssh.nix`
+if the account's actual home directory differs. The existing `just build` and
+`just switch` recipes remain system-only.
+
 ## Screen locking
 
 Linux desktops use swaylock and swayidle independently of Noctalia. `Super+Alt+L`

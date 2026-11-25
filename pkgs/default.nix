@@ -22,6 +22,7 @@ in
 }
 // pkgs.lib.optionalAttrs pkgs.stdenv.hostPlatform.isLinux {
   fsel = pkgs.callPackage ./fsel.nix { };
+  cclip = pkgs.callPackage ./cclip.nix { };
   nmrs-tui = pkgs.callPackage ./nmrs-tui.nix {
     inherit (inputs.nixpkgs-unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system}) rustPlatform;
   };

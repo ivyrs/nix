@@ -1,6 +1,47 @@
 { pkgs, ... }:
+let
+  fsel = pkgs.callPackage ../../../pkgs/fsel.nix { };
+  cclip = pkgs.callPackage ../../../pkgs/cclip.nix { };
+in
 {
-  home.packages = [ (pkgs.callPackage ../../../pkgs/fsel.nix { }) ];
+  home.packages = [
+    fsel
+    cclip
+    (pkgs.writeShellApplication {
+      name = "fsel-clipboard";
+      runtimeInputs = [
+        pkgs.ghostty
+        pkgs.wl-clipboard
+        fsel
+        cclip
+      ];
+      # Override the app launcher's hidden info panel for clipboard previews.
+      text = ''
+        exec ghostty --gtk-single-instance=false --class=rs.ivy.launcher -e \
+          fsel --cclip --replace --info-size 40
+      '';
+    })
+  ];
+
+  systemd.user.services.cclip = {
+    Unit = {
+      Description = "Clipboard history for fsel";
+      PartOf = [ "graphical-session.target" ];
+      After = [ "graphical-session.target" ];
+      ConditionEnvironment = "WAYLAND_DISPLAY";
+    };
+    Service = {
+      # Prefer image data over HTML, and plain text over other text formats.
+      # Keep the default secret-data exclusion and do not watch primary selection.
+      ExecStart = "${cclip}/bin/cclipd -c 1000 -t image/png -t image/* -t text/plain;charset=utf-8 -t text/plain -t text/*";
+      Restart = "on-failure";
+      RestartSec = 2;
+      UMask = "0077";
+    };
+    # Home Manager starts new units wanted by active targets on a switch.
+    # niri.service is already running and is not a target.
+    Install.WantedBy = [ "graphical-session.target" ];
+  };
 
   xdg.configFile."fsel/config.toml".text = ''
     terminal_launcher = "ghostty --gtk-single-instance=false --class=rs.ivy.tui -e"

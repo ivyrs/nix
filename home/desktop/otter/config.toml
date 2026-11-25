@@ -24,6 +24,11 @@ cmd = "tui fsel -d -r -ss \"{}\""
 with_argument = true
 
 [[modules]]
+description = "clipboard history"
+prefix = "clip"
+cmd = "fsel-clipboard"
+
+[[modules]]
 description = "launch app directly"
 prefix = "a"
 cmd = "tui fsel -d -r -p \"{}\""
@@ -51,7 +56,7 @@ cmd = "tui lazytailscale"
 [[modules]]
 description = "open music player"
 prefix = "mus"
-cmd = "tui musikcube"
+cmd = "tui lark"
 
 [[modules]]
 description = "audio mixer"
@@ -73,6 +78,30 @@ with_argument = true
 description = "open btop"
 prefix = "stat"
 cmd = "tui btop"
+
+[[modules]]
+description = "search nixwiki"
+prefix = "sw"
+cmd = "xdg-open https://wiki.nixos.org/w/index.php?search='{}'"
+with_argument = true
+url_encode = true
+unbind_proc = true
+
+[[modules]]
+description = "search packages"
+prefix = "sp"
+cmd = "xdg-open 'https://search.nixos.org/packages?channel=26.05&query={}'"
+with_argument = true
+url_encode = true
+unbind_proc = true
+
+[[modules]]
+description = "query dictionary"
+prefix = "sd"
+cmd = "xdg-open https://dictionary.cambridge.org/dictionary/english/'{}'"
+with_argument = true
+url_encode = true
+unbind_proc = true
 
 [[modules]]
 description = "screen brightness (0–100, up/down)"

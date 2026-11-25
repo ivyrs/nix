@@ -70,6 +70,10 @@ editing, not vi mode. Ctrl+C is copy, not the cancel shortcut.
         output visible after the prompt closes. For interactive tools
         or output you want to keep, use `sh tui PROGRAM ARGUMENT...`.
 
+    clip
+        Browse clipboard history in fsel. Enter copies the selected item;
+        paste it normally in the destination app. Also bound to Mod+Ctrl+V.
+
     man
         Open this manual in less in a separate terminal.
 
@@ -177,6 +181,12 @@ Only enter trusted input; this is not a sandbox or a literal-text API.
 An unmatched program name is an app search, not a shell command. Use
 `sh` explicitly for shell commands. Tools and hardware controls require
 the corresponding programs, services, permissions, and devices.
+
+Clipboard history is recorded by cclipd while niri is running, including
+text and images. It persists at ~/.local/share/cclip/db.sqlite3 (or under
+$XDG_DATA_HOME), with up to 1000 untagged entries; tagged entries are kept.
+Data marked secret by the source app is ignored, but other copied secrets
+may still be saved. History is stored unencrypted, readable only by you.
 
 ## SEE ALSO
 

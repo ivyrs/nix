@@ -122,6 +122,17 @@
 
       homeModules = import ./home/exports.nix { inherit metadata; };
 
+      homeConfigurations."${metadata.user.username}@ssh" =
+        inputs.home-manager.lib.homeManagerConfiguration
+          {
+            pkgs = nixpkgs.legacyPackages.x86_64-linux;
+            extraSpecialArgs = { inherit inputs metadata; };
+            modules = [
+              self.homeModules.default
+              ./home/ssh.nix
+            ];
+          };
+
       packages = forAllSystems (
         system:
         import ./pkgs {
@@ -131,9 +142,18 @@
       );
       formatter = forAllSystems (system: treefmtEval.${system}.config.build.wrapper);
 
-      checks = forAllSystems (system: {
-        formatting = treefmtEval.${system}.config.build.check self;
-      });
+      checks = forAllSystems (
+        system:
+        {
+          formatting = treefmtEval.${system}.config.build.check self;
+        }
+        // nixpkgs.lib.optionalAttrs nixpkgs.legacyPackages.${system}.stdenv.hostPlatform.isLinux {
+          cclip-database = self.packages.${system}.cclip.tests.database;
+          fsel-session = import ./tests/fsel-session.nix {
+            pkgs = nixpkgs.legacyPackages.${system};
+          };
+        }
+      );
 
       devShells = forAllSystems (system: {
         default = nixpkgs.legacyPackages.${system}.mkShell {

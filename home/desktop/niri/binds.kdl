@@ -26,6 +26,8 @@ binds {
         spawn "ghostty" "--gtk-single-instance=false" "--class=rs.ivy.launcher" "-e" "fsel" "-d" "-r";
     }
 
+    Mod+Ctrl+V hotkey-overlay-title="open clipboard history" { spawn "fsel-clipboard"; }
+
     // ── workspaces ────────────────────────────────────────────
     Mod+Grave hotkey-overlay-title="Toggle scratch workspace" { spawn "scratch-toggle"; }
     Mod+Shift+Grave { move-window-to-workspace "scratch"; }
